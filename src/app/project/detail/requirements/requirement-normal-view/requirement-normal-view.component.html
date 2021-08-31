@@ -1,0 +1,163 @@
+<div class="wrapper">
+  <div class="top-header">
+    <h1>Requirements</h1>
+    <a (click)="onAddRequirementClick($event)" *ngIf="showAddButton" class="defaultButton cp-button">Create Requirement</a>
+  </div>
+  <div class="project-area">
+    <div class="row card first-line">
+      <div class="date">
+        <label>Due date:</label>
+        <span>{{projectDetail.due_date}}</span>
+      </div>
+      <div class="revenuue textContinue">
+        <label>Revenue:</label>
+        <span>{{projectDetail.revenue | amountWords: 1}}</span>
+      </div>
+      <div class="cost textContinue">
+        <label>Cost:</label>
+        <span>{{projectDetail.cost | amountWords: 0}}</span>
+      </div>
+      <div class="percentage {{projectDetail.cost_percentage > 100 ? 'issue' : ''}}">{{projectDetail.cost_percentage}}%</div>
+    </div>
+    <div class="row card">
+      <div class="row second-line">
+        <div class="requirement">
+          <label>Requirements total:</label>
+          <span>{{projectDetail.requirementsCompletedCount}} / {{projectDetail.requirementCount}}</span>
+        </div>
+        <div class="revenuue textContinue">
+          <label>Planned:</label>
+          <span>{{projectDetail.plannedRevenue}}</span>
+        </div>
+        <div class="cost textContinue">
+          <label>Planned:</label>
+          <span>{{projectDetail.plannedCost}}</span>
+        </div>
+        <div class="percentage">
+          <span *ngIf="projectDetail.planned_cost_percentage > 0">{{projectDetail.planned_cost_percentage}}</span>
+        </div>
+      </div>
+      <div class="row second-line">
+        <div class="signed">
+          <label>Last signed:</label>
+          <span>{{projectDetail.last_signed}}</span>
+        </div>
+        <div class="revenuue textContinue">
+          <label>Actual:</label>
+          <span>{{projectDetail.actualRevenue}}</span>
+        </div>
+        <div class="cost textContinue">
+          <label>Actual:</label>
+          <span>{{projectDetail.actualCost}}
+            <div class="triangle" *ngIf="projectDetail.actualCost > projectDetail.plannedCost"></div>
+          </span>
+        </div>
+        <div class="percentage">
+          <span *ngIf="projectDetail.actual_cost_percentage > 0">{{projectDetail.actual_cost_percentage}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-wrapper">
+    <div class="back-requirement" *ngIf="isBacklog && requirementList.length > 0">
+      <div class="br-button" (click)="onBackLogButton('false')">
+        <mat-icon>keyboard_backspace</mat-icon>
+        <div class="text">Requirements</div>
+      </div>
+    </div>
+    <div class="backlog-button" *ngIf="requirementList.length > 0">
+      <div class="bb-button" [class.active]="isBacklog" (click)="onBackLogButton('true')">
+        <mat-icon class="material-icons-outlined">folder_open</mat-icon>
+        <div class="text">Backlog</div>
+      </div>
+    </div>
+    <div class="tags-filter">
+      <div class="tag-filter on-white" *ngIf="!loading && !isBacklog && showAddButton">
+        <app-searchable-select
+          [options]="labelList"
+          placeholder="Categories"
+          [selected]="labelFilter.value"
+          (update)="labelSelected($event)"
+        ></app-searchable-select>
+      </div>
+    </div>
+    <div class="filters-icons">
+      <div class="actions {{listView!=='Default' ? 'active' : ''}}" *ngIf="!isBacklog && showAddButton">
+        <div *ngIf="listView!=='Default'" class="action-text">
+          View by {{listView}}
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu class="view-groups" #menu="matMenu" xPosition="before">
+          <div class="view-head">View by</div>
+          <div class="view-row" (click)="viewChange('Default')">
+            <div class="view-checkbox"><mat-radio-button class="example-radio-button" disableRipple="true" [checked]="listView==='Default'"></mat-radio-button></div>
+            <div class="view-text">Default</div>
+          </div>
+          <div class="view-row" (click)="viewChange('State')">
+            <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='State'"></mat-radio-button></div>
+            <div class="view-text">State</div>
+          </div>
+          <div class="view-row" (click)="viewChange('Priority')">
+            <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='Priority'"></mat-radio-button></div>
+            <div class="view-text">Priority</div>
+          </div>
+        </mat-menu>
+      </div>
+      <div class="list-sytle {{listView === 'Default' && !isBacklog && showAddButton ? '' : 'disabled'}}">
+        <div class="ls-item {{activeStyle=='list' ? 'active' : ''}}" (click)="changeStyle('list')">
+          <div class="icon">
+            <img src="/assets/images/list.svg" />
+          </div>
+        </div>
+        <div class="ls-item {{activeStyle=='gird' ? 'active' : ''}}" (click)="changeStyle('gird')">
+          <div class="icon">
+            <img src="/assets/images/grid.svg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="row" *ngIf="!loading && !isBacklog && ((listView === 'Default' && requirementList.length === 0) || (listView !== 'Default' && groupList.length === 0))">
+    <div class="notFound">
+      <img src="/assets/images/empty_requirements_icon.svg" />
+      <div class="text">Ops! There are no requirement. <br /> Create your first requirement.</div>
+      <a class="link" *ngIf="searchKey==''" (click)="onAddRequirementClick($event)">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Create new Requirement</span>
+      </a>
+    </div>
+  </div>
+  <app-requirement-list-view
+    *ngIf="!loading && !isBacklog && requirementList.length > 0 && activeStyle === 'list' && listView === 'Default'"
+    [list]="requirementList"
+  ></app-requirement-list-view>
+  <app-requirement-gird-view
+    *ngIf="!loading && !isBacklog && requirementList.length > 0 && activeStyle === 'gird' && listView === 'Default'"
+    [list]="requirementList"
+    (refresh)="refreshListing()"
+    (onexpend)="onGirdExpend($event)"
+    (onedit)="onEditClick($event)"
+  ></app-requirement-gird-view>
+  <app-requirement-group-view
+    *ngIf="!loading && !isBacklog && groupList.length > 0 && listView !== 'Default'"
+    [groups]="groupList"
+    [list]="requirementList"
+    [type]="listView"
+    [projectId]="projectID"
+    [searchKey]="searchKey"
+  ></app-requirement-group-view>
+  <div *ngIf="pageLoading" style="display:flex;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <app-requirement-backlog-list
+    *ngIf="!loading && isBacklog"
+    [project]="projectID"
+    [searchKey]="searchKey"
+  ></app-requirement-backlog-list>
+</div>

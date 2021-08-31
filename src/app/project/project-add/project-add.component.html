@@ -1,0 +1,279 @@
+<app-menu></app-menu>
+
+<div class="container">
+  <div class="project-add-wrapper main-container">
+    <h1 *ngIf="!isEditing">Create Project</h1>
+    <h1 *ngIf="isEditing">Edit Project</h1>
+    <div class="card">
+      <div *ngIf="loading" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <form [formGroup]="projectForm" *ngIf="!loading">
+        <div class="section general">
+          <div class="header">General Information</div>
+          <div class="row">
+            <div class="col3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Project Group *</mat-label>
+                <input type="text" matInput formControlName="group" [matAutocomplete]="groupac">
+                <mat-autocomplete #groupac="matAutocomplete" [displayWith]="displayGroup">
+                  <mat-option *ngFor="let option of filteredGroup | async" [value]="option">
+                    {{option.title}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Project Name *</mat-label>
+                <input matInput type="text" color="xui" class="xui" formControlName="name">
+                <mat-error *ngIf="projectForm.hasError('required', 'name')">
+                  Please enter name of project.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Project ID *</mat-label>
+                <input matInput (keypress)="keyPressAlphaNumeric($event)" type="text" formControlName="code">
+                <mat-error *ngIf="projectForm.hasError('required', 'name')">
+                  Please enter code of project.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col3">
+              <mat-form-field class="example-full-width">
+                <mat-label>Project Owner *</mat-label>
+                <input type="text" matInput formControlName="owner" [matAutocomplete]="ownerac">
+                <mat-autocomplete #ownerac="matAutocomplete" [displayWith]="displayOwner">
+                  <mat-option *ngFor="let ownr of filteredOwner | async" [value]="ownr">
+                    {{ownr.name}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Start Date *</mat-label>
+                <input matInput [matDatepicker]="startDate" (click)="startDate.open()" formControlName="startDate">
+                <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="startDate">
+                  <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+                <mat-error *ngIf="projectForm.hasError('required', 'startDate')">
+                  Please enter start date.
+                </mat-error>
+                <mat-error *ngIf="projectForm.hasError('matched', 'startDate')">
+                  Start date should be less than due date.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Due Date (Optional)</mat-label>
+                <input matInput [matDatepicker]="duedate" (click)="duedate.open()" formControlName="dueDate">
+                <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="duedate">
+                  <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #duedate></mat-datepicker>
+                <mat-error *ngIf="projectForm.hasError('matched', 'dueDate')">
+                  Due Date Should be greate than Start Date.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col3" style="padding-top: 15px;padding-bottom: 13px;">
+              <app-searchable-select
+                [options]="typeList"
+                placeholder="Type"
+                [selected]="selectedType"
+                (update)="typeSelected($event)"
+              ></app-searchable-select>
+              <!-- <mat-form-field class="example-full-width">
+                <mat-label>Category *</mat-label>
+                <input type="text" matInput formControlName="category" [matAutocomplete]="categoryac">
+                <mat-autocomplete #categoryac="matAutocomplete" [displayWith]="displayCategory">
+                  <mat-option *ngFor="let category of filteredCategory | async" [value]="category">
+                    {{category.categoryText}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field> -->
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Revenue</mat-label>
+                <input (keypress)="keyPressNumeric($event)" matInput type="text" color="xui" class="xui" formControlName="revenue">
+                <mat-error ngxErrors="projectForm.revenue">
+                  <p ngxError="required">Please enter revenue of project.</p>
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field>
+                <mat-label>Cost</mat-label>
+                <input (keypress)="keyPressNumeric($event)" matInput type="text" color="xui" class="xui" formControlName="cost">
+                <mat-error ngxErrors="projectForm.cost">
+                  <p ngxError="required">Please enter cost of project.</p>
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="section list">
+          <div class="header">List</div>
+          <div class="row">
+            <div class="checkbox-row" *ngFor="let option of this.listToShow">
+              <mat-checkbox
+                [disabled]="option.disabled"
+                [checked]="newProject.list.includes(option.listId)"
+                [value]="option.listId"
+                (change)="setAll($event)"
+              >{{option.listName}}</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="section requirements">
+          <div class="header">Requirement Fields </div>
+          <div class="row">
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>Revenue</mat-label>
+                <mat-select [formControl]="newProject.requirements.revenue" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>Cost</mat-label>
+                <mat-select [formControl]="newProject.requirements.cost" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>Efforts</mat-label>
+                <mat-select [formControl]="newProject.requirements.efforts" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>Points</mat-label>
+                <mat-select [formControl]="newProject.requirements.points" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>Start Date</mat-label>
+                <mat-select [formControl]="newProject.requirements.startDate" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col3">
+              <mat-form-field class="exstyle">
+                <mat-label>End Date</mat-label>
+                <mat-select [formControl]="newProject.requirements.endDate" (selectionChange)="requirementSelect($event)">
+                  <mat-option *ngFor="let req of requirementList" [value]="req.id">{{req.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <div class="section stagenplatforms">
+          <div class="row">
+            <div class="col2">
+              <div class="header">Stages
+                <div style="margin-left: 16px;">
+                  <mat-slide-toggle (change)="newStageChanged('stage')" [formControl]="newProject.isStagesEnabled"></mat-slide-toggle>
+                </div>
+              </div>
+              <div class="row total-count" *ngIf="newProject.isStagesEnabled.value">
+                <span class="total">Total:</span>
+                <span class="count {{getTotalPercentages('stage') > 100 ? 'error' : ''}}">{{getTotalPercentages('stage')}}%</span>
+              </div>
+              <div class="row">
+                <div class="form-section" *ngIf="newProject.isStagesEnabled.value">
+                  <div class="ap-stagerow" *ngFor="let stage of stageList;index as i">
+                    <div class="aps-input">
+                      <mat-form-field class="example-form-field">
+                        <mat-label>Stage Name</mat-label>
+                        <input matInput type="text" [formControl]="stageList[i].name">
+                      </mat-form-field>
+                    </div>
+                    <div class="aps-percantage">
+                      <mat-form-field class="example-form-field">
+                        <mat-label>Percentage</mat-label>
+                        <input matInput (keypress)="keyPressNumeric($event)" type="text" [formControl]="stageList[i].percentage">
+                      </mat-form-field>
+                    </div>
+                    <div class="aps-delete" (click)="deleteStage($event, stage)" *ngIf="!stage.saved">
+                      <mat-icon>delete_outline</mat-icon>
+                    </div>
+                  </div>
+                  <div class="aps-addrow" (click)="addNewStage($event)" *ngIf="getTotalPercentages('stage') <= 100">
+                    <div class="apa-icon"><mat-icon>add_circle_outline</mat-icon></div>
+                    <div class="apa-text">Add new Stage</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col2">
+              <div class="header">Platform
+                <div style="margin-left: 16px;">
+                  <mat-slide-toggle (change)="newStageChanged('platform')" [formControl]="newProject.isPlatformsEnabled"></mat-slide-toggle>
+                </div>
+              </div>
+              <div class="row total-count" *ngIf="newProject.isPlatformsEnabled.value">
+                <span class="total">Total:</span>
+                <span class="count {{getTotalPercentages('platform') > 100 ? 'error' : ''}}">{{getTotalPercentages('platform')}}%</span>
+              </div>
+              <div class="row">
+                <div class="form-section" *ngIf="newProject.isPlatformsEnabled.value">
+                  <div class="ap-stagerow" *ngFor="let platform of platformList;index as i">
+                    <div class="aps-input">
+                      <mat-form-field class="example-form-field">
+                        <mat-label>Platform Name</mat-label>
+                        <input matInput type="text" [formControl]="platformList[i].name">
+                      </mat-form-field>
+                    </div>
+                    <div class="aps-percantage">
+                      <mat-form-field class="example-form-field">
+                        <mat-label>Percentage</mat-label>
+                        <input matInput (keypress)="keyPressNumeric($event)" type="text" [formControl]="platformList[i].percentage">
+                      </mat-form-field>
+                    </div>
+                    <div class="aps-delete" (click)="deletePlatform($event, platform)" *ngIf="!platform.saved">
+                      <mat-icon>delete_outline</mat-icon>
+                    </div>
+                  </div>
+                  <div class="aps-addrow" (click)="addNewPlatform($event)" *ngIf="getTotalPercentages('platform') <= 100">
+                    <div class="apa-icon"><mat-icon>add_circle_outline</mat-icon></div>
+                    <div class="apa-text">Add new Platform</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ap-buttons">
+          <button (click)="submitForm($event)" [disabled]="projectForm.invalid">{{isEditing ? 'Update' : 'Create'}} Project</button>
+          <button *ngIf="!isEditing" routerLink="/project/list" class="defaultButton outlined">Cancel</button>
+          <button *ngIf="isEditing" routerLink="/project/{{editId}}" class="defaultButton outlined">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- [disabled]="projectForm.invalid" -->

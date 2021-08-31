@@ -1,0 +1,105 @@
+@import './variables.scss';
+@import './mixins.scss';
+.label-caption {
+  color: #9c9da6;
+  font-size: $f16;
+  white-space: nowrap;
+}
+
+.label-answer {
+  color: $main-color;
+  font-size: $f16;
+  @include text-ellipsis;
+}
+
+
+.application-status {
+  padding: 5px 10px;
+  font-size: $f16;
+  border-radius: 4px;
+
+  &.draft {
+    color: $orange-color;
+    background-color: rgb(255,183,77, 0.1);
+
+    path {
+      fill: $orange-color;
+    }
+  }
+
+  &.new {
+    background-color: rgba(0, 174, 239, 0.1);
+    color: $azure;
+
+    path {
+      fill: $azure;
+    }
+  }
+
+  &.rejected {
+    background-color: rgba(226, 27, 36, 0.1);
+    color: $error-color;
+
+    path {
+      fill: $error-color;
+    }
+  }
+
+  &.accepted {
+    background-color: rgba(141, 198, 63, 0.15);
+    color: var(--primary-color);
+
+    path {
+      fill: var(--primary-color);
+    }
+  }
+
+  &.invited {
+    background-color: rgb(149,117,205, 0.1);
+    color: $color-invited;
+
+    path {
+      fill: $color-invited;
+    }
+  }
+
+  &.cancelled, &.locked {
+    background-color: rgb(176,190,197, 0.1);
+    color: $cool-gray;
+
+    path {
+      fill: $cool-gray;
+    }
+  }
+
+  &.returned{
+    background-color: #ffffff;
+    text-decoration: line-through;
+    border: 1px solid;
+    font-weight: bold;
+  }
+}
+
+.status-left-border {
+  border-left: 4px solid;
+
+  &.accepted {
+    border-left-color: rgb(141, 198, 63, 0.8);
+  }
+
+  &.rejected {
+    border-left-color: rgba(226, 27, 36, 0.8);
+  }
+
+  &.new {
+    border-left-color: rgba(0, 174, 239, 0.8);
+  }
+
+  &.locked, &.reassigned {
+    border-left-color: rgb(176,190,197, 0.8);
+  }
+
+  &.draft {
+    border-left-color: rgb(255,183,77, 0.8)
+  }
+}

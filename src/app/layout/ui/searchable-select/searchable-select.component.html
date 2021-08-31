@@ -1,0 +1,23 @@
+<mat-form-field class="xfilter {{class}}">
+  <mat-label>{{placeholder}}</mat-label>
+  <mat-select
+    [placeholder]="placeholder"
+    panelClass="searchable-panel"
+    [multiple]="multi"
+    [formControl]="control"
+    (selectionChange)="onSelected($event)"
+    disableOptionCentering
+    [disabled]="disabled"
+  >
+    <mat-option>
+      <ngx-mat-select-search
+        [formControl]="search"
+        placeholderLabel="Search..."
+        noEntriesFoundLabel="No record found"
+      ></ngx-mat-select-search>
+    </mat-option>
+    <mat-option *ngFor="let option of filteredOptions | async" [value]="option.id">
+      {{option.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

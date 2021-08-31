@@ -1,0 +1,33 @@
+<div class="user-detail">
+  <div class="header">
+    <div class="fo-close" (click)="onCancel()">
+      <mat-icon>close</mat-icon>
+    </div>
+  </div>
+  <div class="user-info">
+    <div class="image">
+      <img src="{{user.userProfilePicture}}">
+    </div>
+    <div class="name">{{user.fullName}}</div>
+    <div class="position">{{user.role}}</div>
+  </div>
+  <div class="desciption-area">
+    <div class="desciption">{{user.descriptionOfRole}}</div>
+  </div>
+  <div class="access-area">
+    <div class="access-header">Access</div>
+    <div class="access-list">
+      <li *ngFor="let permission of user.permissions">{{permission.permissionTitle}}</li>
+    </div>
+  </div>
+  <div class="au-buttons" *ngIf="!user.isOwner">
+    <button class="outlined" (click)="onDeleteUser()">
+      <mat-icon class="material-icons-outlined">delete</mat-icon>
+      <span>Delete User</span>
+    </button>
+    <button  (click)="onEditUser()">
+      <mat-icon>edit</mat-icon>
+      <span>Edit User</span>
+    </button>
+  </div>
+</div>

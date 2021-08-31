@@ -1,0 +1,29 @@
+<div class="row top-row" *ngIf="list.length > 0">
+  <div class="card" [class.active]="expended === requirement.requirementId" *ngFor="let requirement of list">
+    <div class="list-top">
+      <div class="tag blue" style="color: #{{requirement.colorCode}};background-color: #{{requirement.colorCode}}1a" *ngIf="requirement.stateName">{{requirement.stateName}}</div>
+      <div class="row title" (click)="OnExpend(requirement.requirementId)">{{requirement.title}}</div>
+      <div class="tags-area">
+        <div class="tag" *ngFor="let tag of requirement.labels | slice:0:3">{{tag}}</div>
+      </div>
+      <div class="right-area">
+        <div class="critical-tag {{requirement.priorityName}}">
+          <span class="icon"></span>
+          <span class="text">{{requirement.priorityName}}</span>
+        </div>
+        <div class="activity-count">{{requirement.deliverableCount}}</div>
+        <div class="planned-icon {{requirement.plannedStatus == 1 ? 'planned' : (requirement.plannedStatus == 2 ? 'warning' : (requirement.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+        <div class="actual-icon {{requirement.actualStatus == 1 || requirement.actualStatus==0 ? 'completed' : (requirement.actualStatus == 2 || requirement.actualStatus==4 ? 'warning' : '')}}"></div>
+        <div class="percentage-tag">{{ requirement.deliverablePercentage}}</div>
+        <div class="drop-icon" (click)="OnExpend(requirement.requirementId)">
+          <mat-icon>expand_more</mat-icon>
+        </div>
+      </div>
+    </div>
+    <div class="gr-cards" *ngIf="expended === requirement.requirementId">
+      <app-requirement-detail-view
+        [id]="requirement.requirementId"
+      ></app-requirement-detail-view>
+    </div>
+  </div>
+</div>

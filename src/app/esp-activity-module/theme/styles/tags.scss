@@ -1,0 +1,32 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+
+
+.tags-area {
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+
+  .tag {
+    max-width: 160px;
+    @include text-ellipsis;
+    display: inline-block;
+    padding: 2px 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    color: $sub-title-color;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+  }
+
+  .tag-counter {
+    //display: inline-block;
+    padding: 2px 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-size: $f14;
+    color: var(--primary-color);
+    background-color: transparent !important;
+  }
+}

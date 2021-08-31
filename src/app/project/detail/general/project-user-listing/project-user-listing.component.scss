@@ -1,0 +1,21 @@
+
+.user-row{padding:12px 16px;display: flex;align-items: center;color:var(--grey-color);margin:0;background: #fff;flex-direction: row;border-bottom: 1px solid #f6f7f9;
+  .picture{width:36px;margin-right:12px;
+    img{width:36px;height:36px;border-radius: 100%;vertical-align: middle;}
+  }
+  .name-area{font-size: 16px;color:var(--black-color);flex:1;
+    .name{font-weight: bold;line-height: 20px;}
+    .position{font-size: 14px;line-height: 16px;color: #94959c;}
+  }
+
+  .actions{width:30px;
+    button{color:var(--grey-color);background: none;padding:0;
+      .mat-icon{vertical-align: middle;}
+    }
+  }
+}
+
+.add-row{display: flex;cursor: pointer;padding:12px 16px 10px;margin:0;flex-direction: row;
+  .icon{color: #6cb33f;margin-right:7px;}
+  .text{color: #6cb33f;font-size: 14px;line-height:20px;font-weight: 600;padding-top: 2px;}
+}

@@ -1,0 +1,71 @@
+<div class="pd-requirement-container">
+  <div class="header">
+    <div class="text">Requirements</div>
+    <a href="{{'project/' + projectDetail.projectId + '/requirements'}}">View all ({{total}})</a>
+  </div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="no-sprint" *ngIf="!loading && total===0">
+    <img src="/assets/images/empty_requirements_icon.svg" />
+    <div class="text">Ops! There are no requirement created.</div>
+    <a class="link" href="{{'project/' + projectDetail.projectId + '/requirements'}}">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span>Create Requirement</span>
+    </a>
+  </div>
+  <div class="requirement-body" *ngIf="!loading && total > 0">
+    <div class="revenue-counts" *ngIf="isManager">
+      <div class="title">Revenue</div>
+      <div class="row">
+        <div class="sc-item">
+          <div class="toper textContinue">Projected: <span class="value">{{requirement.revenue | amountWords: 1}}</span></div>
+          <div class="percent">{{requirement.cost | amountWords: 1}}</div>
+          <div class="bottom">cost</div>
+        </div>
+        <div class="sc-item">
+          <div class="toper textContinue">Planned: <span class="value">{{requirement.plannedRevenue | amountWords: 1}}</span></div>
+          <div class="percent">{{requirement.plannedCost | amountWords: 1}}</div>
+          <div class="bottom">cost</div>
+        </div>
+        <div class="sc-item">
+          <div class="toper textContinue">Actual: <span class="value">{{requirement.actualRevenue | amountWords: 1}}</span></div>
+          <div class="percent red">{{requirement.actualCost | amountWords: 1}}</div>
+          <div class="bottom">cost</div>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stats-item">
+        <div class="stats-count">
+          <div class="icon"><mat-icon>panorama_fish_eye</mat-icon></div>
+          <div class="count">{{requirement.openCount}}</div>
+        </div>
+        <div class="stats-text">
+          <div class="text">Opened</div>
+          <mat-icon>navigate_next</mat-icon>
+        </div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-count">
+          <div class="icon"><mat-icon>incomplete_circle</mat-icon></div>
+          <div class="count">{{requirement.inProgressCount}}</div>
+        </div>
+        <div class="stats-text">
+          <div class="text">In Progress</div>
+          <mat-icon>navigate_next</mat-icon>
+        </div>
+      </div>
+      <div class="stats-item">
+        <div class="stats-count">
+          <div class="icon"><mat-icon>check_circle</mat-icon></div>
+          <div class="count">{{requirement.completedCount}}</div>
+        </div>
+        <div class="stats-text">
+          <div class="text">Completed</div>
+          <mat-icon>navigate_next</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

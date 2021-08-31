@@ -1,0 +1,321 @@
+
+<div *ngIf="loading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+<div class="row requirementTabs" *ngIf="!loading">
+  <nav mat-tab-nav-bar>
+    <a mat-tab-link *ngFor="let link of tabs"
+        (click)="activeLink = link.link"
+        [active]="activeLink == link.link">{{link.name}} </a>
+  </nav>
+</div>
+<div class="content" *ngIf="!loading">
+  <div class="tab-content" [class.active]="activeLink === 'detail'">
+    <div class="row">
+      <div class="col3">
+        <div class="description card {{(detail.describeValue==='' && !showdescription) ? 'not-found' : ''}}">
+          <div class="header">Description</div>
+          <div *ngIf="showdescription" class="description-form">
+            <div class="df-inputs">
+              <mat-form-field>
+                <mat-label>Description</mat-label>
+                <textarea matInput type="text" color="xui" class="xui" [formControl]="description"></textarea>
+              </mat-form-field>
+            </div>
+            <div class="df-buttons">
+              <button (click)="toggleDescription()" class="defaultButton outlined">Discard</button>
+              <button (click)="submitDescription()">Save</button>
+            </div>
+          </div>
+          <pre class="text" (click)="toggleDescription()" *ngIf="!showdescription && detail.describeValue!==''">{{detail.describeValue}}</pre>
+          <div class="no-des" (click)="toggleDescription()" *ngIf="!showdescription && detail.describeValue===''">
+            <a class="link no-link">
+              <mat-icon>add_circle_outline</mat-icon>
+              <span>Add Description</span>
+            </a>
+          </div>
+        </div>
+        <div class="card acceptance-criteria">
+          <app-requirement-acceptance-criteria
+            [entityid]="detail.requirementId"
+          ></app-requirement-acceptance-criteria>
+        </div>
+        <div class="card extra-info">
+          <div class="tl-item">
+            <label>Requirement ID</label>
+            <div class="value">{{detail.requirementId}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Owner</label>
+            <div class="value">{{detail.ownerName}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Deliverables</label>
+            <div class="value">{{detail.deliverableCounts.doneTotalCount}}/{{detail.deliverableCount}} completed</div>
+          </div>
+          <div class="tl-item progress">
+            <label>Progress</label>
+            <div class="value percentage">
+              <div class="percentage-value">{{detail.progress}}%</div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width:{{detail.progress}}%;"></div>
+                <div class="target" style="left:{{detail.progressTarget}}%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item progress">
+            <label>Overall Progress</label>
+            <div class="value percentage">
+              <div class="percentage-value">{{detail.overallProgress}}%</div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width:{{detail.overallProgress}};"></div>
+                <div class="target" style="left:{{detail.overallProgressTarget}}%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <label>Start Date</label>
+            <div class="value">{{detail.start_date}}</div>
+          </div>
+          <div class="tl-item">
+            <label>End Date</label>
+            <div class="value">{{detail.end_date}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col3">
+        <div class="tags card {{detail.labels.length===0 ? 'not-found' : ''}}">
+          <div class="header">
+            <div class="text">Categories</div>
+            <div class="icon" (click)="onCategoryClick()"><mat-icon>east</mat-icon></div>
+          </div>
+          <div class="no-tags" (click)="onCategoryClick()" *ngIf="detail.labels.length===0">
+            <a class="link no-link">
+              <mat-icon>add_circle_outline</mat-icon>
+              <span>Add Category</span>
+            </a>
+          </div>
+          <div class="tag-list" *ngIf="detail.labels.length!==0">
+            <li *ngFor="let tag of detail.labels">{{tag}}</li>
+          </div>
+        </div>
+        <div class="card signature-list {{loading ? '' : 'count'+detail.signedByUsers.length}}">
+          <div class="grey-header">
+            <div class="text">Signature ({{detail.signedByUsers.length}})</div>
+          </div>
+          <div class="text no-text">No Signature</div>
+          <div class="no-attachment" *ngIf="!loading && detail.signedByUsers.length===0">
+            Currently, No one signed this requirement.
+          </div>
+          <div class="signature-body" *ngIf="!loading && detail.signedByUsers.length>0">
+            <div class="signature-box" *ngFor="let sign of detail.signatureList">
+              <div class="signature-area">
+                <div class="signature-by">Signed by {{sign.userName}}</div>
+                <div class="signature-style">{{sign.userName}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tags attachments card">
+          <app-project-attachments
+            [entity]="module"
+            [entityid]="detail.requirementId"
+            class="small"
+          ></app-project-attachments>
+        </div>
+      </div>
+      <div class="col3">
+        <div class="tags card {{detail.tags.length===0 ? 'not-found' : ''}}">
+          <div class="header">
+            <div class="text">Tags</div>
+            <div class="icon" (click)="onTagClick()"><mat-icon>east</mat-icon></div>
+          </div>
+          <div class="no-tags" (click)="onTagClick()" *ngIf="detail.tags.length===0">
+            <a class="link no-link">
+              <mat-icon>add_circle_outline</mat-icon>
+              <span>Add Tag</span>
+            </a>
+          </div>
+          <div class="tag-list" *ngIf="detail.tags.length!==0">
+            <li *ngFor="let tag of detail.tags">{{tag}}</li>
+          </div>
+        </div>
+        <div class="tags Comments card">
+          <app-generic-comments
+            [entity]="module"
+            [entityid]="detail.requirementId"
+            (update)="updateDetail()"
+            type="small"
+            top="3"
+          ></app-generic-comments>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" [class.active]="activeLink === 'deliverable'">
+    <div class="row">
+      <div class="col3 del-left-side">
+        <div class="card section deliverable-counts">
+          <div class="header">Deliverables</div>
+          <div class="tl-item">
+            <label>Open</label>
+            <div class="value dt-counts row">
+              <div class="col3">
+                <div class="planned-icon"></div>
+                <div class="text">{{detail.deliverableCounts.openPlannedCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="actual-icon"></div>
+                <div class="text">{{detail.deliverableCounts.openActualCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="text">{{detail.deliverableCounts.openTotalCount}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <label>Done</label>
+            <div class="value dt-counts row">
+              <div class="col3">
+                <div class="planned-icon"></div>
+                <div class="text">{{detail.deliverableCounts.donePlannedCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="actual-icon"></div>
+                <div class="text">{{detail.deliverableCounts.doneActualCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="text">{{detail.deliverableCounts.doneTotalCount}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <label>Missed</label>
+            <div class="value dt-counts row">
+              <div class="col3">
+                <div class="planned-icon"></div>
+                <div class="text">{{detail.deliverableCounts.missedPlannedCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="actual-icon"></div>
+                <div class="text">{{detail.deliverableCounts.missedActualCount}}</div>
+              </div>
+              <div class="col3">
+                <div class="text">{{detail.deliverableCounts.missedTotalCount}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-item progress">
+            <label>Progress</label>
+            <div class="value percentage">
+              <div class="percentage-value">{{detail.deliverablePercentage}}%</div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width:{{detail.deliverablePercentage}}%;"></div>
+                <div class="target" style="left:{{detail.deliverablePercentage}}%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-flex1 deliverable-view">
+        <div class="card" *ngFor="let backlog of detail.deliverables">
+          <div class="row top-title-area">
+            <div class="row title">{{backlog.title}}</div>
+            <div class="icon">
+              <mat-icon aria-hidden="false">east</mat-icon>
+            </div>
+          </div>
+          <div class="row bottom-row">
+            <div class="status">
+              <div class="tag blue" style="color: #{{backlog.statusColor}};background-color: #{{backlog.statusColor}}1a">{{backlog.deliverableStatus}}</div>
+              <div class="sp-div" *ngIf="backlog.stageName !== 'Default'">
+                <div class="sp-icon">
+                  <img src="/assets/images/stage-icon.svg" />
+                </div>
+                <div class="sp-name">{{backlog.stageName}}</div>
+              </div>
+              <div class="sp-div" *ngIf="backlog.platformName !== 'Default'">
+                <div class="sp-icon">
+                  <img src="/assets/images/stage-req-icon.svg" />
+                </div>
+                <div class="sp-name">{{backlog.platformName}}</div>
+              </div>
+            </div>
+            <div class="percentage-row">
+              <div class="percentage-tag">{{ backlog.percentage }}%</div>
+              <div class="planned-icon {{backlog.plannedStatus == 1 ? 'planned' : (backlog.plannedStatus == 2 ? 'warning' : (backlog.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+              <div class="actual-icon {{backlog.actualStatus == 1 ? 'completed' : (backlog.actualStatus == 2 || backlog.actualStatus==4 ? 'warning' : '')}}"></div>
+              <div class="completed-icon {{backlog.isCompleted ? 'completed' : ''}}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" [class.active]="activeLink === 'additional'">
+    <div class="row">
+      <div class="col3">
+        <div class="card section financial">
+          <div class="header underline">Financials & Costs</div>
+          <div class="small-header">Revenue</div>
+          <div class="tl-item">
+            <label>Projected</label>
+            <div class="value">$ {{detail.revenue}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Planned</label>
+            <div class="value">$ {{detail.plannedRevenue}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Actual</label>
+            <div class="value">$ {{detail.actualRevenue}}</div>
+          </div>
+          <div class="small-header">Cost</div>
+          <div class="tl-item">
+            <label>budgeted</label>
+            <div class="value">$ {{detail.budgetedCost}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Planned</label>
+            <div class="value">$ {{detail.plannedCost}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Actual</label>
+            <div class="value">$ {{detail.actualCost}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col3">
+        <div class="card section dates">
+          <div class="tl-item">
+            <label>Created on</label>
+            <div class="value">{{detail.created_on}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Created by</label>
+            <div class="value">{{detail.created_by}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Last modified</label>
+            <div class="value">{{detail.modified_on}}</div>
+          </div>
+          <div class="tl-item">
+            <label>Modified by</label>
+            <div class="value">{{detail.modified_by}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col3">
+        <div class="row history">
+          <div class="col1">
+            <div class="card not-found">
+              <img src="/assets/images/history-empty.svg" />
+              <div class="text">No history available</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content" [class.active]="activeLink === 'activities'">activities</div>
+</div>

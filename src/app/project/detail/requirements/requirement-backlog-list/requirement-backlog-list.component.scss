@@ -1,0 +1,56 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.gird-view{display: flex; justify-content: space-between;align-items: stretch;padding-bottom: 18px;
+  @include respond-to(mobile){flex-direction: column;padding: 8px;}
+  .column{width:calc(33% - 5px);
+    @include respond-to(mobile){width: 100%;}
+  }
+
+  .planned-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Planned_Not Planned.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Planned_Started.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Planned_Planned with Issues.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Planned_Completed Successfully.svg');}
+    &.warning.completed{background-image: url('/assets/images/Indicator_Planned_Completed with Issues.svg');}
+  }
+  .actual-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Actual_Not Started.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Actual_Activities Started.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Actual_Completed Successfully.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Actual_Completed with Issues.svg');}
+  }
+  .completed-icon{width: 20px;height: 16px;background-image: url('/assets/images/requirement-tick.svg');margin:0 3px;background-size:cover;background-repeat: no-repeat;
+    &.completed{background-image: url('/assets/images/requirement-tick-completed.svg');}
+  }
+
+  .card{display: flex;padding: 16px 24px;
+    .top-title-area{height: 24px;display:flex; justify-content: space-between;
+      .title{font-size: 16px;color: var(--black-grey-color);line-height: 22px;}
+      .requirement-actions{width: 36px;margin-top: -8px;
+        button{color:var(--grey-color);background: transparent;@include border-radius(4px);padding:0 6px;
+          &:hover, &[aria-expanded="true"]{background: rgba(203, 210, 213, 0.25);}
+          .mat-icon{vertical-align: middle;}
+        }
+        .defaultButton{line-height:18px;padding: 5px 10px;}
+        label{vertical-align: super;cursor: pointer;}
+      }
+    }
+    .status{margin-top:4px;display: flex;align-items:center;
+      .tag{padding:5px 8px 6px;display:inline-block;@include border-radius(2px);margin-right: 8px;text-transform:capitalize;
+        &.blue{font-size:14px;line-height: 14px;}
+      }
+      .sp-div{display: flex;margin-right: 12px;align-items:center;}
+      .sp-icon{width:16px; height:16px;margin-right: 6px;
+        img{width:16px; height:16px;}
+      }
+      .sp-name{font-size: 13px;color: var(--black-grey-color);}
+    }
+    .percentage-row{display: flex;align-items:center;margin:12px 0;
+      .percentage-tag{color: var(--black-color);font-size: 16px;line-height: 16px;margin-right:6px;}
+    }
+    .requirement-row{height: 24px;display:flex; justify-content: space-between;
+      .requirement-title{font-size: 14px;color: var(--black-grey-color);line-height: 22px;display:flex;
+        .title{color: var(--grish-color);margin-right:6px;}
+      }
+      .icon{color: var(--light-blue-grey);}
+    }
+  }
+}

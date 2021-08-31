@@ -1,0 +1,345 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="dataLoaded" >
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <mat-header-cell
+        *matHeaderCellDef
+        class="description"
+      >
+        Activity
+      </mat-header-cell>
+      <mat-cell
+        *matCellDef="let element"
+        class="description"
+      
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <!-- <span *ngIf="!element.isHover"> -->
+        <span fxFlex>{{ element.description | textTruncate: 25 }}</span>
+        <!-- </span>
+        <span *ngIf="element.isHover"> {{ element.description }} </span> -->
+  
+      </mat-cell>
+    </ng-container>
+    
+    <!-- Due Date Column -->
+    <ng-container matColumnDef="dueDate" *ngIf="activeTab != StemeXeListType.Backlog ">
+          <mat-header-cell *matHeaderCellDef class="dueDate"
+            >Due Date</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element" class="dueDate">
+            <span *ngIf="element.dueDateLabel == 'Overdue'" class="over-due">{{
+              element.dueDate
+            }}</span>
+            <span *ngIf="element.dueDateLabel != 'Overdue'">{{
+              element.dueDate
+            }}</span>
+          </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="effortSum" *ngIf="activeTab != StemeXeListType.Backlog ">
+      <mat-header-cell *matHeaderCellDef class="dueDate">Efforts</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="dueDate">
+        <span *ngIf="!element.effortSum">None</span>
+        <span *ngIf="element.effortSum">{{element.effortInHour}}h {{element.effortInMinute}}min</span>
+      </mat-cell>
+    </ng-container>
+
+        <!-- Assigned To Column-->
+        <ng-container matColumnDef="assignedTo" *ngIf="(isESPcomponent && activeTab == StemeXeListType.Mine)">
+          <mat-header-cell *matHeaderCellDef class="assignedTo"
+            >Assigned To</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element" class="assignedTo">
+            {{
+                element.userOwner.UserFirstName +
+                  " " +
+                  element.userOwner.UserLastName
+              }}
+          </mat-cell>
+        </ng-container>
+
+    <!-- status Column-->
+    <ng-container matColumnDef="status" *ngIf="activeTab != StemeXeListType.Backlog && activeTab !=StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="status">Status</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="status">
+            <span
+              [ngStyle]="{
+                color: element.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+            >
+              <span>{{ element.progressStatus }}</span>
+            </span>
+          </mat-cell>
+    </ng-container>
+      
+    <!-- progress Column-->
+    <ng-container matColumnDef="progress" *ngIf="!isESPcomponent && activeTab != StemeXeListType.Backlog  && activeTab !=StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="progress"></mat-header-cell>
+          <mat-cell *matCellDef="let element" class="progress">
+            <span
+              *ngIf="
+                element.score != null && element.status != 4 
+              "
+              [ngClass]="{
+                done: element.status == 2 
+              }"
+              [ngStyle]="{
+                color:
+                  element.status == 2 
+                    ? '#AAADB8'
+                    : element.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+              >{{ element.score }} %</span
+            >
+          </mat-cell>
+    </ng-container>
+      
+    <!-- progress bar Column-->
+    <ng-container matColumnDef="progressBar" *ngIf="!isESPcomponent && activeTab != StemeXeListType.Backlog && activeTab !=StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="progressBar"></mat-header-cell>
+          <mat-cell *matCellDef="let element" class="progressBar">
+            <mat-progress-bar
+              *ngIf="element.score != null && element.status != 4"
+              class="activity-progress"
+              [ngClass]="{ done: element.status == 2 }"
+              [value]="element.score"
+            ></mat-progress-bar>
+          </mat-cell>
+    </ng-container>
+
+
+    <!-- linked to Column-->
+    <ng-container matColumnDef="linkedTo" *ngIf="!isESPcomponent && activeTab != StemeXeListType.Backlog && activeTab !=StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="linkedTo">Linked To</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="linkedTo">
+            <span [ngSwitch]="element.appType">
+            <span *ngSwitchCase="1">
+            EngagementPro
+            </span>
+            <span *ngSwitchCase="2">
+            OpportunityPro
+            </span>
+            <span *ngSwitchCase="3">
+            MS Project Online            
+            </span>
+            <span *ngSwitchCase="4">
+            Requests
+            </span>
+            <span *ngSwitchDefault>
+            SimpleStrata
+            </span>
+            </span>
+          </mat-cell>
+    </ng-container>
+ 
+  
+    <!-- Assigned By Column-->
+    <div *ngIf="!isAllAssignedByLoggedIn && activeTab == StemeXeListType.Mine">
+      <ng-container matColumnDef="assignedBy">
+        <mat-header-cell *matHeaderCellDef class="assignedBy"
+          >Assigned By</mat-header-cell
+        >
+        <mat-cell *matCellDef="let element" class="assignedBy">
+          <span
+            *ngIf="
+              !!element.createdBy && loggedInUserId != element.createdBy.UserId
+            "
+            >{{
+              element.createdBy.UserFirstName +
+                " " +
+                element.createdBy.UserLastName
+            }}</span
+          >
+        </mat-cell>
+      </ng-container>
+    </div>
+
+    <!-- Assigned To Column-->
+    <ng-container matColumnDef="assignedTo" *ngIf="activeTab == StemeXeListType.Following">
+      <mat-header-cell *matHeaderCellDef class="assignedTo"
+        >Assigned To</mat-header-cell
+      >
+      <mat-cell *matCellDef="let element" class="assignedTo">
+        {{
+            element.userOwner.UserFirstName +
+              " " +
+              element.userOwner.UserLastName
+          }}
+      </mat-cell>
+    </ng-container>
+
+
+   <!-- efforts Column-->
+   <ng-container matColumnDef="efforts" *ngIf="isESPcomponent && activeTab == StemeXeListType.Mine">
+    <mat-header-cell *matHeaderCellDef class="efforts"
+      >Efforts</mat-header-cell
+    >
+    <mat-cell *matCellDef="let element" class="efforts">
+     <span *ngIf="element.effortInHour!=null && element.effortInHour!=0 ">{{element.effortInHour}}h&nbsp;</span><span *ngIf="element.effortInMinute!=null &&element.effortInMinute!=0 ">{{element.effortInMinute}}m</span> 
+    </mat-cell>
+  </ng-container>
+
+    <!-- claimed Column-->
+    <ng-container matColumnDef="claimed" *ngIf="activeTab ==StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="claimed">Claimed</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="claimed">
+            <span class="claimed-lbl">{{ element.totalClaims }} <span *ngIf="element.maxClaims !=null">/ {{element.maxClaims}}</span></span>
+          </mat-cell>
+    </ng-container>
+
+    <!-- started Column-->
+    <ng-container matColumnDef="started" *ngIf="activeTab ==StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="started">Open</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="started">
+            <span class="started-lbl">{{element.sharedStats.StartedCount + element.sharedStats.NotStartedCount	}}</span>
+          </mat-cell>
+    </ng-container>
+
+    
+    <!-- completed Column-->
+    <ng-container matColumnDef="completed" *ngIf="activeTab ==StemeXeListType.Shared">
+          <mat-header-cell *matHeaderCellDef class="completed">Closed</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="completed">
+            <span class="completed-lbl">{{element.sharedStats.CompletedCount + element.sharedStats.CancelledCount}}</span>
+          </mat-cell>
+    </ng-container>
+
+    <!-- actions column-->
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef class="actions"></mat-header-cell>
+      <mat-cell *matCellDef="let element" class="actions">
+
+        <svg
+          class="clickable"
+          (click)="$event.stopPropagation();doFollow(element)"
+          *ngIf="element.isFollowed && activeTab !=StemeXeListType.Mine && activeTab != StemeXeListType.Backlog"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#6CB33F"
+              d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zM8.26 14.105c-.903 0-1.635.732-1.635 1.635s.732 1.635 1.635 1.635 1.635-.732 1.635-1.635-.732-1.635-1.635-1.635zM7 5.33v2.122l.272.004c5.147.144 9.276 4.362 9.276 9.544h2.122l-.004-.296C18.51 10.398 13.343 5.33 7 5.33zm0 4.245v2.123l.218.004c2.824.115 5.085 2.446 5.085 5.298h2.122l-.004-.245c-.13-3.99-3.4-7.18-7.421-7.18z"
+            />
+          </g>
+        </svg>
+
+        <svg
+          class="clickable"
+          (click)="$event.stopPropagation();doFollow(element)"
+          *ngIf="!element.isFollowed && activeTab !=StemeXeListType.Mine && activeTab != StemeXeListType.Backlog"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#6CB33F"
+              d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zM8.26 14.105c.903 0 1.635.732 1.635 1.635s-.732 1.635-1.635 1.635-1.635-.732-1.635-1.635.732-1.635 1.635-1.635zM7 5.33c6.343 0 11.509 5.068 11.666 11.374l.004.296h-2.123c0-5.182-4.128-9.4-9.275-9.544L7 7.452V5.33zm0 4.245c4.02 0 7.292 3.19 7.421 7.18l.004.245h-2.123c0-2.852-2.26-5.183-5.084-5.298L7 11.697V9.575z"
+            />
+          </g>
+        </svg>
+
+        <svg
+          class="clickable"
+          (click)="$event.stopPropagation();toggleImportant(element)"
+          *ngIf="element.isImportant && element.appType !=3"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#6CB33F"
+              d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm.21 6H7.705C7.318 6 7 6.318 7 6.706v10.588c0 .388.318.706.706.706.388 0 .706-.318.706-.706V13.06h3.53l.507 1.023c.12.24.367.389.629.389h3.804c.389 0 .706-.318.706-.706V8.118c0-.389-.317-.706-.706-.706h-3.53l-.507-1.024c-.12-.24-.367-.388-.636-.388z"
+            />
+          </g>
+        </svg>
+
+        <svg
+          class="clickable"
+          (click)="$event.stopPropagation();toggleImportant(element)"
+          *ngIf="!element.isImportant && element.appType !=3"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#6CB33F"
+              d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zm.21 4.5c.268 0 .515.148.635.388l.508 1.024h3.53c.388 0 .705.317.705.706v5.647c0 .388-.317.706-.706.706h-3.804c-.262 0-.509-.149-.629-.389l-.508-1.023h-3.53v4.235c0 .388-.317.706-.705.706-.388 0-.706-.318-.706-.706V6.706C7 6.318 7.318 6 7.706 6z"
+            />
+          </g>
+        </svg>
+
+
+
+        <xcdrs-activities-actions 
+        [actions]="element.allowedActions" 
+        [activity]="element"
+        [engProLoggedInUserId]="engProLoggedInUserId"
+        [loggedInUserId]="loggedInUserId"
+        [size]="size"
+        [oppProData]="oppProData"
+        [espAddon]="espAddon"
+        [activeTab]="activeTab == 0 ? 'Mine' : activeTab == 1 ? 'Following': activeTab == 2 ? 'Backlog' : activeTab == 3 ? 'User' : activeTab == 4 ? 'Shared' :'Details' "
+        (reload)="onReload()"
+        [isESPcomponent]="isESPcomponent"
+        [isMyspace]="isMyspace">
+        </xcdrs-activities-actions>
+      </mat-cell>
+    </ng-container>
+
+    <!-- actions column-->
+    <ng-container matColumnDef="review" *ngIf="activeTab ==StemeXeListType.User || activeTab == StemeXeListType.Following">
+      <mat-header-cell *matHeaderCellDef class="review">Review</mat-header-cell>
+      <mat-cell *matCellDef="let element" class="review">
+        <span *ngIf="(element.status == 2 || element.status == 4 ) && !element.isRejected && element.isApproved">Accepted</span>
+        <span *ngIf="(element.status == 2 || element.status == 4 ) && element.isRejected">Rejected</span>
+        <span *ngIf="element.status != 2 && element.status != 4  && element.isReopened">Reopened</span>
+      </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="hover">
+      <mat-header-cell *matHeaderCellDef class="hover"></mat-header-cell>
+      <mat-cell *matCellDef="let element" class="hover">
+        {{ element.isHover }}</mat-cell
+      >
+    </ng-container>
+
+      <mat-header-row
+        *matHeaderRowDef="displayedColumnsHeaders"
+        [ngClass]="{ 'first-row': isFirstRow == true }"
+      ></mat-header-row>
+      <mat-row
+        *matRowDef="
+          let row;
+          columns: displayedColumns
+        "
+        class="clickable table-row"
+        (click)="openActivityDetails(row)"
+        [ngClass]="{ 'row-before': row.isRowBefore == true }"
+        (mouseover)="changePreStyle(row.id,dataSource)"
+        (mouseout)="resetPreStyle(dataSource)"
+      ></mat-row>
+   
+  </mat-table>
+
+<mat-paginator  *ngIf="dataLoaded" [hidePageSize]="true" [pageSize]="pageSize" [pageIndex]="pageNo" [length]="totalCount" (page)="pageEvents($event)"></mat-paginator>
+

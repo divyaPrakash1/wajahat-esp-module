@@ -1,0 +1,88 @@
+<div class="row gird-view" *ngIf="list.length > 0 && expended === 0">
+  <div class="column" *ngFor="let stating of [0,1,2]">
+    <div class="card" *ngFor="let requirement of list | slice:stating | skip:3;">
+      <div class="req-icon">
+        <img src="assets/images/requirements-approved.svg" />
+      </div>
+      <div class="wrap-area">
+        <div class="row top-title-area">
+          <div class="row title" (click)="OnExpend(requirement.requirementId)">{{requirement.title}}</div>
+          <div class="icon" (click)="OnExpend(requirement.requirementId)">
+            <mat-icon aria-hidden="false">east</mat-icon>
+          </div>
+        </div>
+        <div class="row status">
+          <div class="tag blue" style="color: #{{requirement.colorCode}};background-color: #{{requirement.colorCode}}1a" *ngIf="requirement.stateName">{{requirement.stateName}}</div>
+        </div>
+        <div class="info deliverable">
+          <label>Deliverables:</label>
+          <div class="value">{{requirement.completedDeliverableCount}}/{{requirement.deliverableCount}}</div>
+        </div>
+        <div class="row tags-area" *ngIf="requirement.labels.length > 0">
+          <div class="tag" *ngFor="let tag of requirement.labels | slice:0:3">{{tag}}</div>
+        </div>
+        <div class="row bottom-line">
+          <div class="critical-tag {{requirement.priorityName}}">
+            <span class="icon"></span>
+            <span class="text">{{requirement.priorityName}}</span>
+          </div>
+          <div class="info">
+            <div class="activity-count">{{requirement.deliverableCount}}</div>
+            <div class="planned-icon {{requirement.plannedStatus == 1 ? 'planned' : (requirement.plannedStatus == 2 ? 'warning' : (requirement.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+            <div class="actual-icon {{requirement.actualStatus == 1 || requirement.actualStatus==0 ? 'completed' : (requirement.actualStatus == 2 || requirement.actualStatus==4 ? 'warning' : '')}}"></div>
+            <div class="percentage-tag">{{ requirement.deliverablePercentage}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="gr-cards" *ngIf="expended !== 0">
+  <div class="back-button" (click)="OnExpend(selected.requirementId)">
+    <div class="back-icon"><mat-icon>keyboard_backspace</mat-icon></div>
+    <div class="back-text">Requirements</div>
+  </div>
+  <div class="requirement-row">
+    <div class="requirement-tag">
+      <div class="tag blue" style="color: #{{selected.colorCode}};background-color: #{{selected.colorCode}}1a" *ngIf="selected.stateName">{{selected.stateName}}</div>
+    </div>
+    <div class="requirement-title">{{selected.title}}</div>
+    <div class="requirement-actions">
+      <button mat-icon-button [matMenuTriggerFor]="menu" >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="onEditClick(selected)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="onSignClick()" *ngIf="!selected.signedByMe">
+          <mat-icon>border_color</mat-icon>
+          <span>Sign</span>
+        </button>
+        <button mat-menu-item (click)="onRevokeClick()" *ngIf="selected.signedByMe">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Revoke</span>
+        </button>
+        <button mat-menu-item (click)="onStateClick()">
+          <mat-icon>sync</mat-icon>
+          <span>Change State</span>
+        </button>
+        <button mat-menu-item (click)="onCloseClick()">
+          <mat-icon>close</mat-icon>
+          <span>Close</span>
+        </button>
+        <button mat-menu-item (click)="onDeleteClick()">
+          <mat-icon>delete_outline</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="card detail-card">
+    <app-requirement-detail-view
+      [id]="selected.requirementId"
+    ></app-requirement-detail-view>
+  </div>
+</div>
+

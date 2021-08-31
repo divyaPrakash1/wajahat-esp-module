@@ -1,0 +1,52 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around stretch"
+  *ngIf="!isLoading && !dataLoaded"
+  class="request-activities-container main-container"
+>
+  <xcdrs-activities-counter
+    [requestId]="requestId"
+    [showActivitiesTabs]="showActivitiesTabs"
+  ></xcdrs-activities-counter>
+  <mat-tab-group
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="space-around stretch"
+    [selectedIndex]="tabIndex"
+  >
+    <mat-tab label="All">
+      <ng-template matTabContent>
+        <xcdrs-all-activities
+          [requestId]="requestId"
+          [requestModuleName]="requestModuleName"
+          [requestName]="requestName"
+          [isMyspace]="isMyspace"
+          (onReload)="reload($event)"
+        ></xcdrs-all-activities>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Backlog">
+      <ng-template matTabContent>
+        <xcdrs-backlog-activities
+          [requestId]="requestId"
+          [requestModuleName]="requestModuleName"
+          [requestName]="requestName"
+          [isMyspace]="isMyspace"
+          (onReload)="reload($event)"
+        ></xcdrs-backlog-activities>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div
+  fxFlex
+  fxLayout="column"
+  *ngIf="isLoading"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,14 @@
+<div class="change-state">
+  <div class="header">Deliverable Missed</div>
+  <div class="icon">
+    <img src="/assets/images/sprint-icons/sign-sprint-icon.svg" />
+  </div>
+  <div class="text-info">Are you sure you want to mark this deliverable as Missed?</div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel()" class="outlined">Cancel</button>
+    <button (click)="change()">Missed</button>
+  </div>
+</div>

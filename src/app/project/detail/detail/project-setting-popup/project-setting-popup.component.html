@@ -1,0 +1,18 @@
+<div class="change-state">
+  <div class="header">Change Project Setting</div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="wrapper" *ngIf="!loading">
+    <div class="box-item" *ngFor="let setting of settingList">
+      <div class="text">{{setting.label}}</div>
+      <div class="checkbox" style="margin-left: 16px;">
+        <mat-slide-toggle [formControl]="setting.control"></mat-slide-toggle>
+      </div>
+    </div>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel($event)" class="outlined">Close</button>
+    <button (click)="change($event)">Save</button>
+  </div>
+</div>

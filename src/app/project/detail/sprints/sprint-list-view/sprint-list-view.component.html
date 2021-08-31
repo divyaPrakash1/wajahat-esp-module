@@ -1,0 +1,79 @@
+<div class="row top-row" *ngIf="list.length > 0">
+  <div class="card" [class.active]="expended === sprint.sprintId" *ngFor="let sprint of list">
+    <div class="list-top">
+      <div class="status-col">
+        <div class="tag blue {{sprint.sprintStatus}}" *ngIf="sprint.sprintStatus"  style="color: #{{sprint.colorCode}};background-color: #{{sprint.colorCode}}1a" >{{sprint.sprintStatus}}</div>
+      </div>
+      <div class="row title" (click)="OnExpend(sprint.sprintId)">
+        <img src="assets/images/sprint-flag-icon.svg" />
+        <div class="text">{{sprint.title}}</div>
+      </div>
+      <div class="info-area">
+        <div class="info deliverable">
+          <label>Deliverables:</label>
+          <div class="value">
+            <span *ngIf="sprint.sprintStatus !== 'Upcoming'">{{sprint.deliverableCompleted}}/</span>{{sprint.deliverableCount}}
+          </div>
+        </div>
+        <div class="info deliverable">
+          <label>Planned:</label>
+          <div class="value">{{sprint.plannedCompletion}}%</div>
+        </div>
+        <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+          <label>Actual:</label>
+          <div class="value">{{sprint.actualCompletion}}%</div>
+        </div>
+        <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+          <label>Satisfaction:</label>
+          <div class="value">{{sprint.customerSatisfaction}}%</div>
+        </div>
+        <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+          <label>Closed by:</label>
+          <div class="value">{{sprint.closedByName}}</div>
+        </div>
+      </div>
+      <div class="right-area">
+        <div class="sprint-actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu" >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+            <!-- <button mat-menu-item>
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button> -->
+            <button mat-menu-item *ngIf="!sprint.signedByMe" (click)="onSign(sprint)">
+              <mat-icon>border_color</mat-icon>
+              <span>Sign</span>
+            </button>
+            <button mat-menu-item *ngIf="sprint.signedByMe" (click)="onRevoke(sprint)">
+              <mat-icon>exit_to_app</mat-icon>
+              <span>Revoke</span>
+            </button>
+            <button mat-menu-item (click)="onCloseRequest(sprint)">
+              <mat-icon>swap_horiz</mat-icon>
+              <span>Send Close Request</span>
+            </button>
+            <button mat-menu-item (click)="onClose(sprint)">
+              <mat-icon>highlight_off</mat-icon>
+              <span>Close</span>
+            </button>
+            <button mat-menu-item (click)="onDelete(sprint)">
+              <mat-icon>delete_outline</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+        <div class="drop-icon" (click)="OnExpend(sprint.sprintId)">
+          <mat-icon>expand_more</mat-icon>
+        </div>
+      </div>
+    </div>
+    <div class="gr-cards" *ngIf="expended === sprint.sprintId">
+      <app-sprint-detail
+        [id]="expended"
+        [projectid]="sprint.projectId"
+      ></app-sprint-detail>
+    </div>
+  </div>
+</div>

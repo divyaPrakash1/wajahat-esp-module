@@ -1,0 +1,155 @@
+<!--
+  <div class="wrapper">
+    <div class="top-header">
+      <div class="project-area">
+        <div class="row card first-line">
+          <div class="date">
+            <label>Due date:</label>
+            <span>{{projectDetail.due_date}}</span>
+          </div>
+          <div class="revenuue">
+            <label>Revenue:</label>
+            <span>{{projectDetail.revenue}}</span>
+          </div>
+          <div class="cost">
+            <label>Cost:</label>
+            <span>{{projectDetail.cost}}</span>
+          </div>
+          <div class="percentage {{projectDetail.cost_percentage > 100 ? 'issue' : ''}}">{{projectDetail.cost_percentage}}%</div>
+        </div>
+        <div class="row card">
+          <div class="row second-line">
+            <div class="requirement">
+              <label>Requirements total:</label>
+              <span>{{projectDetail.requirementsCompletedCount}} of {{projectDetail.requirementCount}}</span>
+            </div>
+            <div class="revenuue">
+              <label>Planned:</label>
+              <span>{{projectDetail.plannedRevenue}}</span>
+            </div>
+            <div class="cost">
+              <label>Planned:</label>
+              <span>{{projectDetail.plannedCost}}</span>
+            </div>
+            <div class="percentage">{{projectDetail.planned_cost_percentage}}</div>
+          </div>
+          <div class="row second-line">
+            <div class="signed">
+              <label>Last signed:</label>
+              <span>{{projectDetail.last_signed}}</span>
+            </div>
+            <div class="revenuue">
+              <label>Actual:</label>
+              <span>{{projectDetail.actualRevenue}}</span>
+            </div>
+            <div class="cost">
+              <label>Actual:</label>
+              <span>{{projectDetail.actualCost}}
+                <div class="triangle" *ngIf="projectDetail.actualCost > projectDetail.plannedCost"></div>
+              </span>
+            </div>
+            <div class="percentage">{{projectDetail.actual_cost_percentage}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="platform-area">
+        <div class="text">Platforms</div>
+        <div class="table-head">
+          <div class="th-item" *ngFor="let platform of projectDetail.projectPlatforms">{{platform.platformName}}</div>
+        </div>
+      </div>
+      <div class="options-area">
+        <div class="text"></div>
+        <div class="table-head">
+          <div class="th-item req">Req. %</div>
+          <div class="th-item effort">Effort</div>
+          <div class="th-item options"></div>
+        </div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="accordion-row add-row" *ngIf="requirements.length===0" (click)="onAddRequirement()">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Add New Requirement</span>
+      </div>
+      <div class="accordion-row" *ngFor="let requirement of requirements">
+        <div class="requirement-row">
+          <div class="project-area">
+            <div class="tr-icon">
+              <div class="arrow-icon" (click)="onArrowClick($event)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0H20V20H0z" transform="translate(-324 -81) translate(124 80) translate(0 2) translate(200.439) matrix(-1 0 0 1 20 0)"/>
+                    <path fill="#97a3a9" d="M6.529 7.511L10 10.975l3.471-3.464c.196-.195.512-.195.707 0l.468.469c.196.195.196.512 0 .707l-4.292 4.293c-.196.195-.512.195-.708 0L5.354 8.687c-.196-.195-.196-.512 0-.707l.468-.468c.195-.196.511-.196.707 0z" transform="translate(-324 -81) translate(124 80) translate(0 2) translate(200.439) rotate(-90 10 10.246)"/>
+                  </g>
+              </svg>
+              </div>
+              <div class="stats-icon"></div>
+              <div class="planned-icon {{requirement.plannedStatus == 1 ? 'planned' : (requirement.plannedStatus == 2 ? 'warning' : (requirement.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+              <div class="actual-icon {{requirement.requirementId == 1 || requirement.requirementId==0 ? 'completed' : (requirement.requirementId == 2 || requirement.requirementId==4 ? 'warning' : '')}}"></div>
+              <img class="requirement-icon" src="assets/images/requirement-icon.svg" />
+            </div>
+            <div class="tr-text textContinue">{{requirement.title}}</div>
+            <div class="tr-info">
+              <div class="budget">{{requirement.revenue}}</div>
+              <div class="cost">
+                <div class="planned">
+                  <label>P:</label>
+                  <span>{{requirement.plannedCost}}</span>
+                </div>
+                <div class="actual">
+                  <label>A:</label>
+                  <span>
+                    {{requirement.actualCost}}
+                    <div class="triangle" *ngIf="requirement.requirementId == 3 || requirement.requirementId==5"></div>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="platform-area">
+            <div class="pa-item" *ngFor="let platform of projectDetail.projectPlatforms">{{getPlatformPercentage(requirement.requirementId, platform.platformName)}}</div>
+          </div>
+          <div class="options-area">
+            <div class="pa-req">
+              {{requirement.totalEffortPercentage}}
+              <div class="triangle" *ngIf="requirement.requirementId == 0 || requirement.requirementId==3"></div>
+            </div>
+            <div class="pa-efforts">
+              {{requirement.totalReqPercentage}} hrs
+              <div class="triangle" *ngIf="requirement.requirementId == 2 || requirement.requirementId==5"></div>
+            </div>
+            <div class="pa-options">
+              <img src="assets/images/icon-more-details.svg" />
+            </div>
+          </div>
+        </div>
+        <div class="deliverable-row" *ngFor="let deliverable of requirement.deliverableList">
+          <div class="project-area">
+            <div class="tr-icon"></div>
+            <div class="tr-text textContinue">
+              <img src="assets/images/stage-icon.svg" />
+              <span>{{deliverable.stageName}}</span>
+            </div>
+          </div>
+          <div class="platform-area">
+            <div class="pa-item with-icons" *ngFor="let platform of projectDetail.projectPlatforms">
+              <div class="per">{{getDeliverablePlatformPercentage(requirement.requirementId, deliverable.stageId, platform.platformName)}}</div>
+              <div class="planned-icon"
+                [class.planned]="deliverable.planned==1"
+                [class.warning]="deliverable.planned==2"
+                [class.completed]="deliverable.planned==3"
+              ></div>
+              <div class="actual-icon"
+                [class.planned]="deliverable.actual==1"
+                [class.warning]="deliverable.actual==2"
+                [class.completed]="deliverable.actual==3"
+              ></div>
+              <div class="tick-icon" [class.completed]="deliverable.isCompleted"></div>
+            </div>
+          </div>
+          <div class="options-area"></div>
+        </div>
+      </div>
+    </div>
+  </div> -->

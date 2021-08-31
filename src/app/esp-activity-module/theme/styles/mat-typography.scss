@@ -1,0 +1,16 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+.mat-typography {
+  h1 {
+    font-size: $f24;
+    line-height: 32px;
+    font-weight: 900;
+    margin-top: 32px;
+    padding: 0;
+
+    &.section-title {
+      color: $main-color;
+      margin-bottom: 32px;
+    }
+  }
+}

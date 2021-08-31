@@ -1,0 +1,51 @@
+@import "./variables";
+@import "./mixins";
+
+
+.blog-item-details {
+  .inner-wrapper {
+    padding: 0 16px;
+    .blog-content {
+      font-size: $f16;
+      line-height: 1.5;
+
+      h1, p {
+        margin-bottom: 24px;
+        padding: 0;
+      }
+
+      ol, ul {
+        padding-left: 14px;
+      }
+
+      h3 {
+        font-weight: 800;
+        margin: 0;
+      }
+
+      code {
+        white-space: pre-wrap;
+      }
+
+      img {
+        display: block;
+        margin: 40px auto 0;
+        max-width: 640px;
+        max-height: 360px;
+      }
+    }
+  }
+}
+
+
+@media only screen and (max-width: 768px) {
+  .blog-item-details {
+    .inner-wrapper {
+      .blog-content {
+        img {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

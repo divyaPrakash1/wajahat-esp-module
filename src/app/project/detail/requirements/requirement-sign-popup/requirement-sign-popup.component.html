@@ -1,0 +1,14 @@
+<div class="change-state">
+  <div class="header">Sign Requirement</div>
+  <div class="icon">
+    <img src="/assets/images/Sign_Project_Icon.svg" />
+  </div>
+  <div class="text-info">Are you sure you want to sign the Requirement?</div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel($event)" class="outlined">Cancel</button>
+    <button (click)="change($event)">Sign</button>
+  </div>
+</div>

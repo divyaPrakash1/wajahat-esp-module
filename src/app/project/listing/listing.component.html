@@ -1,0 +1,403 @@
+<div class="listing-wrapper">
+  <div class="top-header">
+    <h1>Projects</h1>
+    <a routerLink="/project/add" class="defaultButton cp-button">Create Project</a>
+  </div>
+  <div *ngIf="loading" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="listing-area" *ngIf="!loading">
+    <div class="row">
+      <div class="card project-dashboard">
+        <div class="toggle-area">
+          <div class="toggle-item open {{activeTab=='All' ? 'active' : ''}}" (click)="onTabChange('All')">
+            <div class="icon">
+              <img src="/assets/images/open_activities.svg" />
+            </div>
+            <div class="text-area">
+              <div class="text">All</div>
+              <div class="value">({{totalProjects}})</div>
+            </div>
+          </div>
+          <div class="toggle-item overdue {{activeTab=='overdue' ? 'active' : ''}}" (click)="onTabChange('overdue')">
+            <div class="icon">
+              <img src="/assets/images/overdue_activities.svg" />
+            </div>
+            <div class="text-area">
+              <div class="text">Overdue</div>
+              <div class="value">({{totalOverdue}})</div>
+            </div>
+          </div>
+          <div class="toggle-item unhealthy {{activeTab=='unhealthy' ? 'active' : ''}}" (click)="onTabChange('unhealthy')">
+            <div class="icon">
+              <img src="/assets/images/unhealthy_activities.svg" />
+            </div>
+            <div class="text-area">
+              <div class="text">Unhealthy</div>
+              <div class="value">({{totalUnhealthy}})</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row filter-area">
+      <div class="search">
+        <input placeholder="Search" (keyup)="onKeyUp($event)" [value]="searchKey" />
+        <div class="icon"><img src="/assets/images/search.svg" /></div>
+      </div>
+      <div class="outside-filter">
+        <div class="state-filter">
+          <mat-form-field class="xfilter">
+            <mat-label>Status</mat-label>
+            <mat-select placeholder="Status" panelClass="status-filter-panel" [formControl]="statusFilter" (selectionChange)="statusSelect($event)">
+              <mat-option *ngFor="let status of statusList" [value]="status.id">{{status.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="pm-filter">
+          <app-searchable-select
+            [options]="ownerList"
+            placeholder="Project Owner"
+            [selected]="ownerFilter.value"
+            (update)="ownerSelected($event)"
+          ></app-searchable-select>
+        </div>
+      </div>
+      <div class="filters-icons">
+        <div class="filter {{isFilterApplied ? 'applied' : ''}}" (click)="openFilter($event)">
+          <mat-icon aria-hidden="false">filter_alt</mat-icon>
+        </div>
+        <div class="actions {{listView!=='Default' ? 'active' : ''}}">
+          <div *ngIf="listView!=='Default'" class="action-text">
+            View by {{ViewDisplayByName(listView)}}
+          </div>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu class="view-groups" #menu="matMenu" xPosition="before">
+            <div class="view-head">View by</div>
+            <div class="view-row" (click)="viewChange('Default')">
+              <div class="view-checkbox"><mat-radio-button class="example-radio-button" disableRipple="true" [checked]="listView==='Default'"></mat-radio-button></div>
+              <div class="view-text">Project</div>
+            </div>
+            <div class="view-row" (click)="viewChange('Group')">
+              <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='Group'"></mat-radio-button></div>
+              <div class="view-text">Group</div>
+            </div>
+            <div class="view-row" (click)="viewChange('DueMonth')">
+              <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='DueMonth'"></mat-radio-button></div>
+              <div class="view-text">Due Month</div>
+            </div>
+            <div class="view-row" (click)="viewChange('ProjectManager')">
+              <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='ProjectManager'"></mat-radio-button></div>
+              <div class="view-text">Project Manager</div>
+            </div>
+            <div class="view-row" (click)="viewChange('State')">
+              <div class="view-checkbox"><mat-radio-button class="example-radio-button" [checked]="listView==='State'"></mat-radio-button></div>
+              <div class="view-text">State</div>
+            </div>
+          </mat-menu>
+        </div>
+        <div class="list-sytle {{listView === 'Default' ? '' : 'disabled'}}">
+          <div class="ls-item {{activeStyle=='list' ? 'active' : ''}}" (click)="changeStyle('list')">
+            <div class="icon">
+              <img src="/assets/images/list.svg" />
+            </div>
+          </div>
+          <div class="ls-item {{activeStyle=='gird' ? 'active' : ''}}" (click)="changeStyle('gird')">
+            <div class="icon">
+              <img src="/assets/images/grid.svg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="listingLoading && activeGroupId===0" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <div *ngIf="!(listingLoading && activeGroupId===0)">
+      <div class="row projectcounts" *ngIf="totalProjects>0">
+        <div *ngIf="listView=='Default'">{{totalProjects}} Project{{totalProjects>1 ? 's' : ''}}</div>
+        <div *ngIf="listView!='Default'">View by <strong style="color:#2b3443;">{{ViewDisplayByName(listView)}}</strong></div>
+      </div>
+      <div class="row" *ngIf="totalProjects>0 && activeStyle=='list' && listView=='Default'">
+        <div class="card" *ngFor="let Project of projectListing">
+          <div class="row top-title-area">
+            <div class="row title" (click)="onCardClick(Project.projectId)">{{Project.projectName}}</div>
+            <div class="right-area">
+              <div class="planned-icon {{Project.plannedStatus == 1 ? 'planned' : (Project.plannedStatus == 2 ? 'warning' : (Project.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+              <div class="actual-icon {{Project.actualStatus == 1 ? 'completed' : (Project.actualStatus == 2 || Project.actualStatus==4 ? 'warning' : '')}}"></div>
+              <div class="status">
+                <div class="tag blue" style="color: #{{Project.statusColor}};background-color: #{{Project.statusColor}}1a" *ngIf="Project.projectStatusName">{{Project.projectStatusName}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="row bottom-line">
+            <div class="bl-item">
+              <div class="icon"><mat-icon aria-hidden="false">person_outline</mat-icon></div>
+              <label>Owner</label>
+              <div class="value textContinue">{{Project.projectOwnerName}}</div>
+            </div>
+            <div class="bl-item">
+              <div class="icon"><mat-icon aria-hidden="false">check_circle_outline</mat-icon></div>
+              <label>Completed</label>
+              <div class="value textContinue">{{Project.requirementsCompletedCount}} /{{Project.requirementCount}}</div>
+            </div>
+            <!-- <div class="bl-item" *ngIf="activeTab !== 'overdue'">
+              <div class="icon"><mat-icon aria-hidden="false">calendar_today</mat-icon></div>
+              <label>Last Signed:</label>
+              <div class="value textContinue">{{Project.last_signed}}</div>
+            </div> -->
+            <div class="bl-item" *ngIf="Project.due_date!=='--'">
+              <div class="icon"><mat-icon aria-hidden="false">calendar_today</mat-icon></div>
+              <label>Due Date:</label>
+              <div class="value textContinue">{{Project.due_date}}</div>
+            </div>
+          </div>
+          <div class="row bottom-line" *ngIf="Project.linearProgress > 0">
+            <div class="bl-item progress">
+              <div class="icon"><mat-icon aria-hidden="false">bar_chart</mat-icon></div>
+              <label>Linear Progress</label>
+              <div class="value percentage">
+                <div class="percentage-value">{{Project.linearProgress}}%</div>
+                <div class="percentage-bar">
+                  <div class="percentage-bar-fill" [ngStyle]="{'width': Project.linearProgress + '%'}"></div>
+                  <div class="target" [ngStyle]="{'left': Project.linearProgressTarget + '%'}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row bottom-line" *ngIf="Project.tags.length > 0">
+            <div class="bl-item tags-area">
+              <div class="tag" *ngFor="let tag of Project.tags | slice:0:6">{{tag}}</div>
+              <div class="tag additional" *ngIf="Project.tags.length > 6">+{{Project.tags.length - 6}} labels</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row gird-view" *ngIf="totalProjects>0 && activeStyle=='gird' && listView=='Default'">
+        <div class="column" *ngFor="let stating of [0,1,2]">
+          <div class="card" *ngFor="let Project of projectListing | slice:stating | skip:3;">
+            <div class="row top-title-area">
+              <div class="row title" (click)="onCardClick(Project.projectId)">{{Project.projectName}}</div>
+              <div class="icon">
+                <mat-icon aria-hidden="false">east</mat-icon>
+              </div>
+            </div>
+            <div class="owner-area">{{Project.projectOwnerName}}</div>
+            <div class="right-area">
+              <div class="status">
+                <div class="tag blue" style="color: #{{Project.statusColor}};background-color: #{{Project.statusColor}}1a" *ngIf="Project.projectStatusName">{{Project.projectStatusName}}</div>
+              </div>
+              <div class="planned-icon {{Project.plannedStatus == 1 ? 'planned' : (Project.plannedStatus == 2 ? 'warning' : (Project.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+              <div class="actual-icon {{Project.actualStatus == 1 ? 'completed' : (Project.actualStatus == 2 || Project.actualStatus==4 ? 'warning' : '')}}"></div>
+            </div>
+            <div class="row bottom-line">
+              <div class="bl-item">
+                <label>Completed</label>
+                <div class="value textContinue">{{Project.requirementsCompletedCount}}/{{Project.requirementCount}}</div>
+              </div>
+              <!-- <div class="bl-item" *ngIf="activeTab !== 'overdue' && Project.last_signed!=='--'">
+                <label>Last Signed:</label>
+                <div class="value textContinue">{{Project.last_signed}}</div>
+              </div> -->
+              <div class="bl-item meduim" *ngIf="Project.due_date!=='--'">
+                <label>Due Date</label>
+                <div class="value textContinue">{{Project.due_date}}</div>
+              </div>
+            </div>
+            <div class="row bottom-line" *ngIf="Project.linearProgress > 0">
+              <div class="bl-item progress">
+                <div class="value percentage">
+                  <div class="percentage-value">{{Project.linearProgress}}%</div>
+                  <div class="percentage-bar">
+                    <div class="percentage-bar-fill" [ngStyle]="{'width': Project.linearProgress + '%'}"></div>
+                    <div class="target" [ngStyle]="{'left': Project.linearProgressTarget + '%'}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row bottom-line" *ngIf="Project.tags.length > 0">
+              <div class="bl-item tags-area">
+                <div class="tag" *ngFor="let tag of Project.tags | slice:0:5">{{tag}}</div>
+                <div class="tag additional" *ngIf="Project.tags.length > 5">...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row group-view" *ngIf="totalProjects>0 && listView!='Default'">
+        <div class="row group-row {{activeGroupId==group.id ? 'active' : ''}}" *ngFor="let group of groupListing">
+          <div class="gr-top">
+            <div class="gr-text" (click)="onGroupClick(group)">{{group.title}}</div>
+            <div class="gr-stats">
+              <div class="gr-total">
+                <div class="grs-text">{{group.totalCount}}</div>
+              </div>
+              <div class="gr-overdue">
+                <div class="grs-text">{{group.overdueCount}}</div>
+              </div>
+              <div class="gr-unhealthy">
+                <div class="grs-text">{{group.unHealthyCount}}</div>
+              </div>
+              <div class="icon-down"><mat-icon>expand_more</mat-icon></div>
+            </div>
+          </div>
+          <div *ngIf="listingLoading && activeGroupId!==0 && activeGroupId==group.id" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+          </div>
+          <div class="gr-cards">
+            <div class="card" *ngFor="let Project of projectListing">
+              <div class="row top-title-area">
+                <div class="row title" (click)="onCardClick(Project.projectId)">{{Project.projectName}}</div>
+                <div class="right-area">
+                  <div class="planned-icon {{Project.plannedStatus == 1 ? 'planned' : (Project.plannedStatus == 2 ? 'warning' : (Project.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+                  <div class="actual-icon {{Project.actualStatus == 1 ? 'completed' : (Project.actualStatus == 2 || Project.actualStatus==4 ? 'warning' : '')}}"></div>
+                  <div class="status">
+                    <div class="tag blue" style="color: #{{Project.statusColor}};background-color: #{{Project.statusColor}}1a" *ngIf="Project.projectStatusName">{{Project.projectStatusName}}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="row bottom-line">
+                <div class="bl-item">
+                  <div class="icon"><mat-icon aria-hidden="false">person_outline</mat-icon></div>
+                  <label>Owner</label>
+                  <div class="value textContinue">{{Project.projectOwnerName}}</div>
+                </div>
+                <div class="bl-item">
+                  <div class="icon"><mat-icon aria-hidden="false">check_circle_outline</mat-icon></div>
+                  <label>Completed</label>
+                  <div class="value textContinue">{{Project.requirementsCompletedCount}} /{{Project.requirementCount}}</div>
+                </div>
+                <!-- <div class="bl-item" *ngIf="activeTab !== 'overdue'">
+                  <div class="icon"><mat-icon aria-hidden="false">calendar_today</mat-icon></div>
+                  <label>Last Signed</label>
+                  <div class="value textContinue">{{Project.last_signed}}</div>
+                </div> -->
+                <div class="bl-item meduim" *ngIf="Project.due_date!=='--'">
+                  <div class="icon"><mat-icon aria-hidden="false">calendar_today</mat-icon></div>
+                  <label>Due Date</label>
+                  <div class="value textContinue">{{Project.due_date}}</div>
+                </div>
+              </div>
+              <div class="row bottom-line" *ngIf="Project.linearProgress > 0">
+                <div class="bl-item progress">
+                  <div class="icon"><mat-icon aria-hidden="false">bar_chart</mat-icon></div>
+                  <label>Linear Progress</label>
+                  <div class="value percentage">
+                    <div class="percentage-value">{{Project.linearProgress}}%</div>
+                    <div class="percentage-bar">
+                      <div class="percentage-bar-fill" [ngStyle]="{'width': Project.linearProgress + '%'}"></div>
+                      <div class="target" [ngStyle]="{'left': Project.linearProgressTarget + '%'}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row bottom-line" *ngIf="Project.tags.length > 0">
+                <div class="bl-item tags-area">
+                  <div class="tag" *ngFor="let tag of Project.tags | slice:0:6">{{tag}}</div>
+                  <div class="tag additional" *ngIf="Project.tags.length > 6">+{{Project.tags.length - 6}} labels</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row projectcounts" *ngIf="(listView=='Default' && projectListing.length===0) || (listView!='Default' && groupListing.length===0)">
+        <div class="notFound">
+          <img src="/assets/images/projectlist-all.svg" />
+          <div></div>
+          <div class="text">Ops! There are no projects. <br /> Create your first project.</div>
+          <a class="link" *ngIf="searchKey=='' && !isFilterApplied">
+            <mat-icon>add_circle_outline</mat-icon>
+            <span>Create Project</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isFilterOpen" class="filterOpenArea">
+  <div class="fo-area">
+    <div class="fo-header">
+      <div class="fo-close" (click)="closeFilter($event)"><mat-icon aria-hidden="false">close</mat-icon></div>
+      <div class="fo-title">Filter</div>
+    </div>
+    <div class="fo-body">
+      <div class="left-area">
+        <div class="type-filter">
+          <div class="tf-title">Scope</div>
+          <div class="tf-checkboxes">
+            <mat-radio-group name="typefilter" (change)="tempFilter($event, 'type')">
+              <mat-radio-button [checked]="typeFilter.value == 0" value="0">All</mat-radio-button>
+              <mat-radio-button [checked]="typeFilter.value == 1" value="1">Open</mat-radio-button>
+              <mat-radio-button [checked]="typeFilter.value == 2" value="2">Fixed</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+        <div class="filter-row">
+          <app-searchable-select
+            [selected]="stateFilter.value"
+            [options]="stateList"
+            placeholder="State"
+            (update)="tempFilter($event, 'state')"
+          ></app-searchable-select>
+        </div>
+        <div class="filter-row">
+          <app-searchable-select
+            [selected]="labelFilter.value"
+            [options]="labelList"
+            placeholder="Label"
+            (update)="tempFilter($event, 'label')"
+          ></app-searchable-select>
+        </div>
+        <div class="filter-row">
+          <app-searchable-select
+            [selected]="groupFilter.value"
+            [options]="groupList"
+            placeholder="Group"
+            (update)="tempFilter($event, 'group')"
+          ></app-searchable-select>
+        </div>
+        <div class="filter-row">
+          <mat-form-field class="ofilter">
+            <mat-label>Due Date</mat-label>
+            <mat-date-range-input [rangePicker]="picker"  (click)="picker.open()">
+              <input matStartDate [formControl]="dueDateStartFilter" placeholder="Start date">
+              <input matEndDate [formControl]="dueDateEndFilter" placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="right-area">
+        <div class="slider-range">
+          <mat-label>Progress Index</mat-label>
+          <ngx-slider
+            [(value)]="progressFilter.indexStart"
+            [(highValue)]="progressFilter.indexEnd"
+            [options]="options"
+            (userChangeEnd)="sliderChange($event, 'progress')"
+          ></ngx-slider>
+        </div>
+        <div class="slider-range">
+          <mat-label>Satisfaction Index</mat-label>
+          <ngx-slider [(value)]="satisfactionFilter.indexStart" [(highValue)]="satisfactionFilter.indexEnd" [options]="options" (userChangeEnd)="sliderChange($event, 'satisfaction')"></ngx-slider>
+        </div>
+        <div class="slider-range">
+          <mat-label>Overall index</mat-label>
+          <ngx-slider [(value)]="overallFilter.indexStart" [(highValue)]="overallFilter.indexEnd" [options]="options" (userChangeEnd)="sliderChange($event, 'overall')"></ngx-slider>
+        </div>
+      </div>
+    </div>
+    <div class="fo-footer">
+      <div class="filter-buttons">
+        <button (click)="resetFilter($event)" class="outlined">Clear Filter</button>
+        <button (click)="applyFilter($event)">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+</div>

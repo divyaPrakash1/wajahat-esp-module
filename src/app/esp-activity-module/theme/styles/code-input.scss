@@ -1,0 +1,16 @@
+@import "./variables";
+
+code-input {
+  --item-height: 56px!important;
+  --item-spacing: 15px!important;
+  & > span {
+    width: 68px;
+  }
+
+  input {
+    font-size: $f16 !important;
+    font-family: 'Lato', serif;
+    font-weight: bold;
+    color: $main-color;
+  }
+}

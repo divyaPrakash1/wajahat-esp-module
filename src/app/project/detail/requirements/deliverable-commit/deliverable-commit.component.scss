@@ -1,0 +1,39 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.sprint-listing{width:700px;box-sizing:border-box;
+  @include respond-to(mobile){width: 100%;padding:0px;}
+  .header{font-size: 20px;font-weight: bold;margin:2px 0 12px;padding:20px 24px 12px;}
+  .icon{padding:32px;text-align:center;
+    img{width: 128px;height: 128px;}
+  }
+  .text-info{font-size: 16px;color: var(--black-grey-color);line-height: 22px;padding:12px 42px;text-align: center;
+    @include respond-to(mobile){padding:12px}
+  }
+  .state-options{padding:24px 0;width: 100%;
+    .mat-radio-group{width: 420px;display: flex;margin: 0 auto;    justify-content: space-between;}
+    .mat-radio-button{padding:8px 12px;
+      @include respond-to(mobile){width: 100%;}
+    }
+    .mat-form-field{padding-top:15px;padding-bottom: 13px;width:100%;}
+    .mat-input-element{font-size: 16px;line-height: 1.5;font-weight: bold;}
+  }
+}
+
+.sprint-list{list-style: none;display: flex;flex-direction: column;overflow-y: auto;overflow-x: hidden;max-height: 420px;padding:12px 24px;
+  li{margin:6px 0;border: 1px solid #f3f5f6;padding:10px 12px;display: flex;@include border-radius(4px);box-shadow: 0 10px 20px 0 rgba(198,201,210,.25); align-items: center;}
+  li.active{border-color: #8dc63f;}
+}
+.title{font-size:16px;line-height: 18px;color: #303030;font-weight: 600;cursor: pointer;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;text-transform: capitalize;display: flex;margin-right: 12px;align-items: center;
+  img{margin-right: 6px;width: 16px;height: 16px;}
+  .text{color: #2b3443;font-size: 16px;line-height: 18px;font-weight: bold;}
+}
+.status-col{overflow: hidden;margin-right: 8px;}
+.tag{padding:4px 8px;background-color: #f3f5f6;color:#97a3a9;@include border-radius(2px);margin-right: 10px;font-size: 12px;display: inline-block;}
+
+.state-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: flex-end;padding: 16px 24px;border-top: 1px solid #f3f5f6;
+  button{line-height: 36px;padding:0 58px;font-weight: 400;background:#86C04F;
+    @include respond-to(mobile){padding:0 24px;}
+  }
+  button.outlined{padding:0 32px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

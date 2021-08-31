@@ -1,0 +1,45 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.pd-requirement-container{margin:0;}
+.header{color: var(--grish-color);display: flex;justify-content: space-between;border-bottom: 1px solid #f6f7f9;padding:18px 20px 14px;align-items: center;
+  .text{font-size: 16px;text-transform: uppercase;line-height:22px;}
+  a{color: var(--primary-color);cursor: pointer;font-size: 14px;
+    @include respond-to(tablet){font-size: 12px;}
+  }
+}
+.no-sprint{display: flex;align-items: center;justify-content: center;flex-direction: column;padding:32px;background:#fff;@include border-radius(3px);
+  img{width: 80px;height: 80px;}
+  .text{font-size: 16px;line-height: 20px;font-weight: normal;color: var(--grish-color);padding:20px 0;text-align: center;text-transform:none;}
+  .link{display: flex;align-items: center;font-size: 14px;font-weight: bold;
+    mat-icon{margin-right:6px;font-size:22px;width:22px;height:22px;}
+  }
+}
+
+.revenue-counts{padding:12px 20px 15px;border-bottom: 1px solid #f6f7f9;color: var(--grish-color);
+  .title{font-size: 12px;text-transform: uppercase;}
+  .row{display: flex;justify-content: space-between;align-items: stretch;}
+  .sc-item{width:calc(33% - 6px);margin:6px 0px;
+    @include respond-to(tablet){width:100%;}
+  }
+  .toper{font-size: 12px;padding:0px;
+    .value{color: #2b3443;}
+  }
+  .percent{font-size: 30px;line-height:42px;font-weight: bold;color: var(--primary2-color);
+    &.red{color: var(--danger2-color);}
+  }
+  .bottom{font-size: 12px;}
+}
+.stats{display: flex;justify-content: space-between;align-items: stretch;padding:12px 20px 15px;
+  @include respond-to(tablet){flex-direction: column;}
+  .stats-item{width:calc(33% - 6px);margin:6px 0px;
+    @include respond-to(tablet){width:100%;}
+  }
+  .stats-count{display: flex;align-items: center;}
+  .icon{color:var(--primary-color);margin-right: 3px;width: 26px;height: 26px;font-size: 26px;}
+  .count{color: var(--black-grey-color);font-size: 18px;line-height: 20px;}
+  .stats-text{color: var(--grish-color); display: flex;margin-top: 8px;align-items: stretch;
+    .mat-icon{width: 20px;height: 20px;font-size: 20px;}
+  }
+  .text{font-size: 16px;line-height: 18px;text-transform: capitalize;color: var(--grish-color);}
+}
+

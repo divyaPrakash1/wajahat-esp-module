@@ -1,0 +1,20 @@
+<div class="change-state">
+  <div class="header">Close Sprint Request</div>
+  <div class="icon">
+    <img src="/assets/images/sprint-icons/close-request-icon.svg" />
+  </div>
+  <div class="text-info">Are you sure you want to send close sprint request? </div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="state-options" *ngIf="!loading">
+    <mat-form-field class="example-form-field">
+      <mat-label>User Email</mat-label>
+      <input matInput type="text" [formControl]="email">
+    </mat-form-field>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel($event)" class="outlined">Cancel</button>
+    <button (click)="change($event)" [disabled]="email.invalid">Send Request</button>
+  </div>
+</div>

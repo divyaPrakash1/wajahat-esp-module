@@ -1,0 +1,23 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.change-state{width:550px;padding:16px 24px;box-sizing:border-box;
+  @include respond-to(mobile){width: 100%;padding:0px;}
+  .header{font-size: 18px;font-weight: bold;line-height: 24px;}
+  .icon{padding:32px;text-align:center;
+    img{width: 128px;height: 128px;}
+  }
+  .text-info{font-size: 16px;color: var(--black-grey-color);line-height: 22px;padding:12px 42px;text-align: center;
+    @include respond-to(mobile){padding:12px}
+  }
+  .wrapper{padding:16px 0;
+    .box-item{display: flex;justify-content: space-between;margin:12px 0;align-items: center;}
+    .text{font-size: 16px;text-transform: capitalize;}
+  }
+}
+.state-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: flex-end;padding:12px 0 8px;
+  button{line-height: 36px;padding:0 64px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';
+    @include respond-to(mobile){padding:0 24px;}
+  }
+  button.outlined{padding:0 32px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

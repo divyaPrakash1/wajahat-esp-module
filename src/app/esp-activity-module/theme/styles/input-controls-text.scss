@@ -1,0 +1,23 @@
+﻿@import "src/app/esp-activity-module/theme/styles/variables";
+
+.mat-select-value {
+    font-size: $f16 !important;
+    color: $main-color !important;
+    font-weight: bold !important;
+    line-height: normal;
+}
+
+.mat-input-element {
+    font-size: $f16 !important;
+    font-family: 'Lato', serif !important;
+    font-weight: bold !important;
+    color: $main-color !important;
+}
+
+textarea {
+    &.mat-input-element {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 18px;
+    }
+}

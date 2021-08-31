@@ -1,0 +1,21 @@
+@import './variables.scss';
+
+.requests-count {
+  font-size: $f14;
+  color: $sub-title-color;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+
+.no-application-tab {
+  height: 300px;
+}
+
+.filter-controls-container {
+  margin-top: 17px;
+
+  .esp-text-search-input {
+    max-width: 360px;
+  }
+}

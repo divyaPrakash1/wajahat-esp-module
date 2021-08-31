@@ -1,0 +1,46 @@
+<button
+  class="close-btn"
+  mat-button
+  mat-icon-button
+  mat-dialog-close>
+  <mat-icon>close</mat-icon>
+</button>
+<div mat-dialog-content>
+  <picture class="exceeders-icon"></picture>
+  <h2 class="title">Exceeders</h2>
+  <div class="description">
+    <p><strong>In order to proceed using Exceeder's App please register</strong></p>
+    <p>After registering you will have access to the following features:</p>
+  </div>
+  <ul class="features-list">
+    <li class="feature-list-item like-item-icon">Liking posts</li>
+    <li class="feature-list-item comment-item-icon">Leaving comments</li>
+    <li class="feature-list-item share-item-icon">Sharing announcements</li>
+    <li class="feature-list-item event-item-icon">Attending events</li>
+    <li class="feature-list-item request-item-icon">Requesting services</li>
+  </ul>
+</div>
+<div mat-dialog-actions>
+  <button
+    mat-flat-button color="primary"
+    type="button"
+    class="gradient-btn register-btn"
+    (click)="proceed('/auth/register')">
+    Register
+  </button>
+  <button
+    mat-stroked-button type="button"
+    class="gradient-btn sign-in-btn"
+    color="primary"
+    (click)="proceed('/auth/login')">
+    Sign In
+  </button>
+  <button
+    class="skip-btn"
+    type="button"
+    mat-button
+    color="primary"
+    (click)="skip()">
+    Skip Registration For Now
+  </button>
+</div>

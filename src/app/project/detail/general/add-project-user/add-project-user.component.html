@@ -1,0 +1,58 @@
+<div class="add-user-popup">
+  <div class="header">
+    <div class="text">{{editMode ? 'Update' : 'Add'}} Users</div>
+    <div class="fo-close" (click)="onCancel()">
+      <img src="/assets/images/close_black_24dp.svg" />
+    </div>
+  </div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="au-body" *ngIf="!loading">
+    <div class="row">
+      <div class="col2">
+        <app-searchable-select
+          [disabled] = "editMode"
+          [options]="ownerList"
+          placeholder="Team Member"
+          [multi]="falseValue"
+          [selected]="owner.value"
+          (update)="ownerSelected($event)"
+        ></app-searchable-select>
+      </div>
+      <div class="col2">
+        <app-searchable-select
+          [options]="roleList"
+          placeholder="Role"
+          [multi]="falseValue"
+          [selected]="role.value"
+          (update)="roleSelected($event)"
+        ></app-searchable-select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col1 df-inputs">
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <textarea matInput type="text" color="xui" class="xui" [formControl]="description"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="permission-wrapper" *ngIf="permissionList.length > 0">
+      <div class="row-header">Access</div>
+      <div class="permission-list">
+        <div class="checkbox-row" *ngFor="let permission of permissionList">
+          <mat-checkbox
+            [checked] = "permissions.includes(permission.id)"
+            [value]="permission.id"
+            (change)="permissionChange(permission, $event)"
+          >{{permission.name}}</mat-checkbox>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="au-buttons" *ngIf="!loading">
+    <button (click)="onCancel()" class="outlined">Cancel</button>
+    <button (click)="onSubmit()" [disabled]="isFormValid()" >{{editMode ? 'Update' : 'Add'}}</button>
+  </div>
+</div>

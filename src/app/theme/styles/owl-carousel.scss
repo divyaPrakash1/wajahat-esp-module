@@ -1,0 +1,16 @@
+@import "src/app/theme/styles/variables";
+@import "src/app/theme/styles/mixins";
+
+.owl-theme {
+  .owl-nav {
+    .owl-next, .owl-prev {
+      height: 32px;
+      background: var(--primary-color);
+
+      &:hover {
+        background: var(--primary-color);
+      }
+    }
+  }
+}
+

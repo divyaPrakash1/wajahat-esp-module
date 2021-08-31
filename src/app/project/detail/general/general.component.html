@@ -1,0 +1,198 @@
+<div class="tab-area">
+  <div class="tab-left">
+    <div class="card">
+      <div class="tl-item">
+        <label>Start Date</label>
+        <div class="value">{{projectDetail.start_date}}</div>
+      </div>
+      <div class="tl-item" *ngIf="projectDetail.dueDate">
+        <label>Due Date</label>
+        <div class="value">{{projectDetail.due_date}}</div>
+      </div>
+      <div class="tl-item progress">
+        <label>Cost Percentage</label>
+        <div class="value percentage">
+          <div class="percentage-value">{{projectDetail.costPercentage}}%</div>
+          <div class="percentage-bar">
+            <div class="percentage-bar-fill" style="width:{{projectDetail.costPercentage}}%;"></div>
+            <div class="target" style="left:{{projectDetail.costPercentageTarget}}%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-item progress">
+        <label>Planned Progress</label>
+        <div class="value percentage">
+          <div class="percentage-value">{{projectDetail.plannedProgress}}%</div>
+          <div class="percentage-bar">
+            <div class="percentage-bar-fill" style="width:{{projectDetail.plannedProgress}};"></div>
+            <div class="target" style="left:{{projectDetail.plannedProgressTarget}}%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-item progress">
+        <label>Satisfaction</label>
+        <div class="value percentage">
+          <div class="percentage-value">{{projectDetail.satisfaction}}%</div>
+          <div class="percentage-bar">
+            <div class="percentage-bar-fill" style="width:{{projectDetail.satisfaction}}%;"></div>
+            <div class="target" style="left:{{projectDetail.satisfactionTarget}}%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card section information">
+      <div class="header">Info</div>
+      <div class="tl-item in-expension">
+        <label>Stages</label>
+        <div class="value">
+          <span>{{projectDetail.stages}}</span></div>
+      </div>
+      <div class="tl-item in-expension">
+        <label>Platforms</label>
+        <div class="value">{{projectDetail.platform}}</div>
+      </div>
+    </div>
+    <div class="card section financial">
+      <div class="header underline">Financials & Costs</div>
+      <div class="small-header">Revenue</div>
+      <div class="tl-item">
+        <label>Recognized</label>
+        <div class="value">$ {{projectDetail.revenue}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Planned</label>
+        <div class="value">$ {{projectDetail.plannedRevenue}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Actual</label>
+        <div class="value">$ {{projectDetail.actualRevenue}}</div>
+      </div>
+      <div class="small-header">Cost</div>
+      <div class="tl-item">
+        <label>Recognized</label>
+        <div class="value">$ {{projectDetail.cost}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Planned</label>
+        <div class="value">$ {{projectDetail.plannedCost}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Actual</label>
+        <div class="value">$ {{projectDetail.actualCost}}</div>
+      </div>
+    </div>
+    <div class="card section dates">
+      <div class="tl-item">
+        <label>Created on</label>
+        <div class="value">{{projectDetail.created_on}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Created by</label>
+        <div class="value">{{projectDetail.created_by}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Last modified</label>
+        <div class="value">{{projectDetail.modified_on}}</div>
+      </div>
+      <div class="tl-item">
+        <label>Modified by</label>
+        <div class="value">{{projectDetail.modified_by}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-right">
+    <app-project-users></app-project-users>
+    <div class="card attachment">
+      <app-project-attachments
+        [entity]="module"
+        [entityid]="projectDetail.projectId"
+        class="full"
+        type="private"
+      ></app-project-attachments>
+    </div>
+    <div class="row fnc">
+      <div class="col2">
+        <div class="card contracts">
+          <div class="header">
+            <div class="text">Resources & Contracts</div>
+            <div class="icon"><mat-icon>east</mat-icon></div>
+          </div>
+          <div class="row-container">
+            <div class="row-item">
+              <div class="top">
+                <div class="title">Budgeted Value</div>
+                <div class="name">$500K</div>
+              </div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width: 50%"></div>
+              </div>
+            </div>
+            <div class="row-item">
+              <div class="top">
+                <div class="title">Contracts Values</div>
+                <div class="name empty">-</div>
+              </div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="row-item">
+              <div class="top">
+                <div class="title">Billed</div>
+                <div class="name empty">-</div>
+              </div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width: 0%"></div>
+              </div>
+            </div>
+            <div class="row-item">
+              <div class="top">
+                <div class="title">Paid</div>
+                <div class="name empty">-</div>
+              </div>
+              <div class="percentage-bar">
+                <div class="percentage-bar-fill" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col2 feedback">
+        <div class="card not-found">
+          <img src="/assets/images/feedback-empty.svg" />
+          <div class="text">Currently no feedback provided</div>
+        </div>
+      </div>
+    </div>
+    <div class="card tags">
+      <div class="grey-header">
+        <div class="text">Tags</div>
+      </div>
+      <div *ngIf="tagsLoading" style="display:flex;height:96px;justify-content: center; align-items: center;">
+        <mat-progress-spinner mode="indeterminate" diameter="64"></mat-progress-spinner>
+      </div>
+      <div class="no-tags" *ngIf="!tagsLoading && tagList.length===0">
+        <img src="/assets/images/manage-tag-icon.svg" />
+        <div class="text">Ops! There are no tags.</div>
+        <a class="link" (click)="addTags()">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add Tag</span>
+        </a>
+      </div>
+      <div class="tags-list" *ngIf="!tagsLoading && tagList.length > 0">
+        <li *ngFor="let tag of tagList">
+          <div class="text">{{tag.tagText}}</div>
+          <div class="icon" (click)="onDeleteTag(tag)"><mat-icon>close</mat-icon></div>
+        </li>
+      </div>
+      <div class="add-row" (click)="addTags()" *ngIf="!tagsLoading && tagList.length > 0">
+        <div class="icon"><mat-icon>add_circle_outline</mat-icon></div>
+        <div class="text">Add Tag</div>
+      </div>
+    </div>
+    <app-history
+      [entity]="module"
+      [entityid]="projectDetail.projectId"
+    ></app-history>
+  </div>
+</div>

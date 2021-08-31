@@ -1,0 +1,50 @@
+<div class="container {{viewType}}">
+  <div class="header-row">
+    <a routerLink="/" class="header-logo">
+      <img src="assets/images/logo-sm.png" alt="Exceeders"/>
+      <img class="small" src="assets/images/logo-sm.png" alt="Exceeders"/>
+    </a>
+    <div class="title textContinue">{{projectDetail.projectName}}</div>
+    <div class="switch">
+      <li class="active">ALL</li>
+      <li>WITH ISSUES</li>
+    </div>
+    <div class="filter">
+      <img src="assets/images/filter-icon.svg"/>
+      <span>ADVANCED FILTER</span>
+    </div>
+    <div class="advance-icon" [class.active]="viewType=='advance'" (click)="switchAdvanceView()">
+      <img src="assets/images/icon-menu-measures.svg"/>
+    </div>
+    <div class="search">
+      <img src="assets/images/search.svg" />
+      <input type="text" placeholder="Search" (keyup)="onKeyUp($event)" [value]="searchKey"/>
+    </div>
+  </div>
+  <div *ngIf="loading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <app-requirement-normal-view
+    (addClick)="onAddRequirement()"
+    (onedit)="onEditRequirement($event)"
+    *ngIf="viewType==='normal' && !loading"
+    [searchKey] = 'searchKey'
+    [time] = 'time'
+  >
+  </app-requirement-normal-view>
+  <app-requirement-advance-view
+    (addClick)="onAddRequirement()"
+    *ngIf="viewType==='advance' && !loading"
+    [searchKey] = 'searchKey'
+    [time] = 'time'
+  >
+  </app-requirement-advance-view>
+  <!-- <button class="fab left-bottom" mat-fab color="primary" (click)="onAddRequirement()">+</button> -->
+</div>
+
+
+<app-add-requirements
+  *ngIf="createRequirement"
+  [selected]="selected"
+  (closeForm)="onCloseRequirement()"
+></app-add-requirements>

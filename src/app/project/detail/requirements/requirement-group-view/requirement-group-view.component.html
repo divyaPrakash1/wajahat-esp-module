@@ -1,0 +1,24 @@
+<div class="row group-row {{activeGroupId==group.id ? 'active' : ''}}" *ngFor="let group of groups">
+  <div class="gr-top">
+    <div class="critical-tag {{group.title}}" *ngIf="type==='Priority'" (click)="onGroupClick(group)">
+      <span class="icon"></span>
+      <span class="text">{{group.title}}</span>
+    </div>
+    <div class="tag-area" *ngIf="type==='State'" (click)="onGroupClick(group)">
+      <div class="tag blue {{group.title}}">{{group.title}}</div>
+    </div>
+    <div class="gr-stats">
+      <!-- <div class="activity-count">{{group.deliverableCount}}</div> -->
+      <div class="icon-down" (click)="onGroupClick(group)"><mat-icon>expand_more</mat-icon></div>
+    </div>
+  </div>
+  <div *ngIf="listingLoading && activeGroupId!==0 && activeGroupId==group.id" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="gr-cards">
+    <app-requirement-list-view
+      *ngIf="!listingLoading && requirementList.length > 0 && activeGroupId!==0 && activeGroupId==group.id"
+      [list]="requirementList"
+    ></app-requirement-list-view>
+  </div>
+</div>

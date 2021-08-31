@@ -1,0 +1,23 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.tag-popup{width:700px;padding:0px;box-sizing:border-box;
+  @include respond-to(mobile){width: 100%;padding:0px;}
+  .header{font-size: 18px;font-weight: bold;display: flex; justify-content:space-between;padding: 12px 24px;align-items: center;border-bottom: 1px solid #f3f5f6;}
+  .fo-close{color:var(--grey-color);top: 8px;right: 26px;padding: 8px;cursor: pointer;
+    img, svg{color: var(--grey-color);}
+  }
+  .icon{padding:32px;text-align:center;
+    img{width: 128px;height: 128px;}
+  }
+  .tag-input{padding:12px 32px;
+    .mat-form-field{padding-top:15px;padding-bottom: 13px;width:100%;}
+    .mat-input-element{font-size: 16px;line-height: 1.5;font-weight: bold;}
+  }
+}
+.tags-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: flex-end;padding:16px 32px 12px;border-top: 1px solid #f3f5f6;
+  button{line-height: 36px;padding:0 64px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';
+    @include respond-to(mobile){padding:0 24px;}
+  }
+  button.outlined{padding:0 32px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

@@ -1,0 +1,114 @@
+@import 'variables';
+@import 'mixins';
+
+
+// .mat-select-arrow-wrapper {
+//   transform: translateY(25%) !important;
+
+//   .mat-select-arrow {
+//     width : unset;
+//     height: unset;
+//     border: none;
+//     margin: 0;
+
+//     &::before {
+//       font-size  : 24px;
+//       font-family: "Material Icons";
+//       content    : "keyboard_arrow_down";
+//       line-height: 0;
+//       color      : $main-color;
+//     }
+//   }
+// }
+
+.mat-select-value-text {
+  font-size  : 16px !important;
+  font-weight: bold !important;
+  color      : $main-color !important;
+}
+
+.mat-select-panel {
+  min-width: calc(100% + 22px) !important;
+
+  margin-top : 30px !important;
+  margin-left: 5px !important;
+}
+
+@media (min-width: 600px) {
+  .esp-multi-select {
+    transform: translateX(24px) !important;
+    &.mat-select-search-panel{
+      transform: translateX(24px) !important;
+    }
+  }
+}
+
+.mat-select-panel .mat-option {
+  border-top: 1px solid #f6f8f8 !important;
+  height    : 40px !important;
+}
+
+
+.mat-option {
+  &.option-two-lines {
+    height        : auto !important;
+    line-height   : 1.2em !important;
+    padding-top   : 11px;
+    padding-bottom: 11px;
+
+    .primary-text {
+      color      : $main-color;
+      font-size  : $f16;
+      font-weight: bold;
+      @include text-ellipsis;
+      &.esp-multiselect {
+        margin-top: -2px;
+      }
+    }
+
+    .secondry-text {
+      color    : $sub-title-color;
+      font-size: $f14;
+      @include text-ellipsis;
+    }
+  }
+}
+
+
+.mat-select-panel:not([class*=mat-elevation-z]) {
+  border-radius: 4px !important;
+  box-shadow   : 0 2px 10px 0 rgba(37, 47, 76, 0.15) !important;
+}
+
+.esp-select {
+  min-width     : calc(100% + 45px) !important;
+  // margin-top : 30px !important;
+  // margin-left: 5px !important;
+}
+
+.mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background: rgb(108 179 63 / 11%) !important;
+  color     : $primary-color !important;
+
+}
+
+
+.mat-option.mat-selected:not(.mat-option-multiple):not(.mat-option-disabled) {
+  background: rgb(108 179 63 / 11%) !important;
+  color     : $primary-color !important;
+}
+
+.mat-autocomplete-panel:not([class*=mat-elevation-z]) {
+  border-radius: 4px !important;
+  box-shadow   : 0 2px 10px 0 rgba(37, 47, 76, 0.15) !important;
+}
+
+.mat-autocomplete-panel .mat-option {
+  border-top: 1px solid #f6f8f8 !important;
+  height    : 40px !important;
+}
+
+.mat-option-text {
+  font-size: 14px !important;
+  width: 0;
+}

@@ -1,0 +1,63 @@
+
+
+<div
+fxFlex="nogrow"
+fxLayout="row"
+fxLayoutAlign="end center"
+class="actions-menu-container clickable"
+*ngIf="
+  !!activity &&
+ actions?.length > 0 &&
+ activity.appType !=2  && activity.appType !=3 
+"
+>
+<button
+  color="primary"
+  [matMenuTriggerFor]="menu"
+  class="actions-btn clickable"
+  (click)="$event.stopPropagation();"
+>
+  <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu" class="actions-menu">
+  <span *ngFor="let action of actions; let last=last">
+    <button
+      mat-menu-item
+      (click)="doAction(action)"
+      [class.last]="last"
+      *ngIf="action.isShow && action.name != 'logActual'"
+    >
+      {{ action.label }} 
+    </button>
+  </span>
+</mat-menu>
+</div>
+
+<div
+fxFlex="nogrow"
+fxLayout="row"
+fxLayoutAlign="end center"
+class="actions-menu-container clickable"
+*ngIf="(activity.appType == 2 &&
+  !activity.isCompleted &&
+  !activity.isCancelled) || activity.appType == 3
+"
+>
+<button
+  color="primary"
+  [matMenuTriggerFor]="menu"
+  class="actions-btn clickable"
+  (click)="$event.stopPropagation();"
+>
+  <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu="matMenu" class="actions-menu">
+  <span>
+    <button mat-menu-item (click)="doAction(editAction)" class="last">
+      {{editAction.label}}
+    </button>
+  </span>
+</mat-menu>
+</div>
+
+

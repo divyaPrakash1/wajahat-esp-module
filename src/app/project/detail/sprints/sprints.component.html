@@ -1,0 +1,101 @@
+<div class="top-header">
+  <h1>Sprints</h1>
+  <a *ngIf="showAddButton" (click)="onAddClick()" class="defaultButton cp-button">Create Sprint</a>
+</div>
+<div *ngIf="dashboardLoading" style="display: flex;height: 128px;justify-content: center; align-items: center;">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+<div class="flex-row mart10 sprint-head" *ngIf="!dashboardLoading">
+  <div class="col3">
+    <div class="card sprint-info">
+      <div class="left-side" *ngIf="dashboardStats.plannedCount > 0 || dashboardStats.actualCount > 0">
+        <div class="planned" *ngIf="dashboardStats.plannedCount > 0">
+          <div class="planned-icon"></div>
+          <div class="text">{{dashboardStats.plannedCount}}</div>
+        </div>
+        <div class="activities" *ngIf="dashboardStats.actualCount > 0">
+          <div class="actual-icon"></div>
+          <div class="text">{{dashboardStats.actualCount}}</div>
+        </div>
+        <div class="issues">You have issues!</div>
+      </div>
+      <div class="left-side" *ngIf="dashboardStats.plannedCount === 0 && dashboardStats.actualCount === 0">
+        <img src="assets/images/good-work-icon.svg" />
+        <div class="issues">Good Work! <br> No Issues</div>
+      </div>
+      <div class="right-side">
+        <div class="sign">
+          <div class="sign-date">
+            <img src="assets/images/requirements-approved.svg" />
+            <div class="text">{{dashboardStats.lastSignedBy ? dashboardStats.lastSignedDate : '--'}}</div>
+          </div>
+          <div class="sign-name">{{dashboardStats.lastSignedBy || '--'}}</div>
+        </div>
+        <div class="satisfaction">
+          <div class="header">
+            <div>Satisfaction</div>
+            <mat-icon *ngIf="dashboardStats.satisfaction > 0">trending_up</mat-icon>
+          </div>
+          <div class="value">{{dashboardStats.satisfaction}}%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col3">
+    <div class="card current-sprint" *ngIf="dashboardStats.currentSprintTitle">
+      <div class="header">
+        <img src="assets/images/sprint-flag-icon.svg" />
+        <div class="text">{{dashboardStats.currentSprintTitle}}</div>
+      </div>
+      <div class="tag purple">Current</div>
+      <div class="deliverable">
+        <label>Deliverables</label>
+        <div class="value">{{dashboardStats.currentSprintDeliverableTotal}}/{{dashboardStats.currentSprintDeliverableCompleted}}</div>
+      </div>
+      <div class="planned">
+        <label>Planned</label>
+        <div class="value">{{dashboardStats.currentSprintPlanned}}%</div>
+      </div>
+    </div>
+    <div class="card current-sprint no-sprint" *ngIf="!dashboardStats.currentSprintTitle">
+      <img src="/assets/images/sprint_icon.svg" />
+      <div class="text">Ops! There are no active sprint.</div>
+    </div>
+  </div>
+  <div class="col3">
+    <div class="card sprint-stats">
+      <div class="header">Stats</div>
+      <div class="stat-list">
+        <div class="stat-item">
+          <div class="value" *ngIf="dashboardStats.totalSprints > 0">{{dashboardStats.openedPercentage}}</div>
+          <div class="value" *ngIf="dashboardStats.totalSprints == 0">--</div>
+          <div class="name">
+            <img src="assets/images/icon-event-time.svg">
+            <div>Opened</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="value" *ngIf="dashboardStats.totalSprints > 0">{{dashboardStats.closedPercentage}}</div>
+          <div class="value" *ngIf="dashboardStats.totalSprints == 0">--</div>
+          <div class="name">
+            <img src="assets/images/icon-action-save.svg">
+            <div>Closed</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="value" *ngIf="dashboardStats.totalSprints > 0">{{dashboardStats.signedPercentage}}</div>
+          <div class="value" *ngIf="dashboardStats.totalSprints == 0">--</div>
+          <div class="name">
+            <img src="assets/images/requirements-approved.svg">
+            <div>Signed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-sprint-listing
+ [time]="time"
+ [projectid]="projectID"
+ (onexpend)="onExpend($event)"
+></app-sprint-listing>

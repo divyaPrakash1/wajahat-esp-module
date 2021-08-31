@@ -1,0 +1,117 @@
+<!-- <xcdrs-size-detector></xcdrs-size-detector> -->
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="center stretch"
+  class="activities-counters-container"
+>
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    class="counters-container"
+    *ngIf="!isLoading && dataLoaded"
+  >
+    <div fxFlex="30"><b class="title">Activities</b></div>
+    <div fxFlex>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-between start"
+        class="counter"
+      >
+        <span class="lbl">{{ counters.open.name }}</span>
+        <span
+          ><b>{{ counters.open?.value }}</b></span
+        >
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-between start"
+        class="counter"
+      >
+        <span class="lbl">{{ counters.overdue.name }}</span>
+        <span class="val overdue"
+          ><b>{{ counters.overdue?.value }}</b></span
+        >
+      </div>
+      <!-- <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+                <span class="lbl">{{counters.planned.name}}</span>
+                <span class="val"><b>{{counters.planned.value}}</b></span>
+              </div> -->
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-between start"
+        class="counter"
+      >
+        <span class="lbl">{{ counters.closed.name }}</span>
+        <span
+          ><b>{{ counters.closed?.value }}</b></span
+        >
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-between start"
+        class="counter"
+      >
+        <span class="lbl">{{ counters.backlog.name }}</span>
+        <span
+          ><b>{{ counters.backlog?.value }}</b></span
+        >
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-between start"
+        class="counter"
+      >
+        <span class="lbl">{{ counters.totalTime.name }}</span>
+        <span
+          ><b
+            ><span
+              class="counter-col"
+              *ngIf="counters.totalTime?.value.hrs != null"
+              >{{ counters.totalTime.value.hrs }}h&nbsp;</span
+            ><span
+              class="counter-col"
+              *ngIf="counters.totalTime?.value.mins != null"
+              >{{ counters.totalTime?.value.mins }}m</span
+            ></b
+          ></span
+        >
+      </div>
+    </div>
+    <div fxFlex="nogrow" fxLayoutAlign="end start" *ngIf="!showActivitiesTabs">
+      <svg
+        xmlns="http//www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+      >
+        <g fill="none" fill-rule="evenodd">
+          <g>
+            <g>
+              <g>
+                <path
+                  d="M0 0H24V24H0z"
+                  transform="translate(-1236 -1130) translate(156 1106) translate(1080 24) matrix(-1 0 0 1 24 0)"
+                />
+                <path
+                  fill="#AAADB8"
+                  d="M7.764 8.943L12 13.17l4.236-4.227c.196-.195.512-.195.707 0l.703.703c.196.196.196.512 0 .708l-5.292 5.292c-.196.196-.512.196-.708 0l-5.292-5.292c-.196-.196-.196-.512 0-.708l.703-.703c.195-.195.511-.195.707 0z"
+                  transform="translate(-1236 -1130) translate(156 1106) translate(1080 24) rotate(-90 12 12.295)"
+                />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner [diameter]="24"></mat-spinner>
+  </div>
+</div>

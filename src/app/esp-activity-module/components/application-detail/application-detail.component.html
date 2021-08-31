@@ -1,0 +1,89 @@
+<!-- <xcdrs-breadcrumbs *ngIf="applicationDetails" [ngClass]="{'p-t-40' : !viewInDailog}">
+  <ng-container>
+    <ng-container *ngIf="!viewInDailog">
+      <a *ngIf="!isCallFromMySpace; else linkToMySpace"
+        routerLink="/pages/applications">{{labelService.labels?.applications | translateToLocale}}</a>
+      <ng-template #linkToMySpace>
+        <a routerLink="/pages/applications">{{labelService.labels?.applications | translateToLocale}}</a>
+        <a routerLink="/pages/applications/myspace/1" [translate]="'Common.Action-Center'"></a>
+      </ng-template>
+    </ng-container>
+    <a *ngIf="isSubmissionRequest" class="pointer"
+      (click)="gotoParentApplication()">{{applicationDetails?.parentApplicationName | translateToLocale}}</a>
+    <span *ngIf="!selectedStageId && !showActivitiesTabs">{{applicationDetails?.name}}</span>
+
+    <a *ngIf="showActivitiesTabs" class="pointer" (click)="hideActivitiesTabs()">{{applicationDetails?.name}}</a>
+    <span *ngIf="showActivitiesTabs">Activities</span>
+
+    <ng-container *ngIf="selectedStageId">
+      <a class="pointer" (click)="unsetSelectedStage()">{{applicationDetails?.name}}</a>
+      <span *ngIf="!askQuestion else askQeustionBreadcrumb">{{selectedStageName | translateToLocale}}</span>
+
+      <ng-template #askQeustionBreadcrumb>
+        <a class="pointer" (click)="askQuestion = false">{{selectedStageName | translateToLocale}}</a>
+        <span>Ask a Question</span>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</xcdrs-breadcrumbs> -->
+<!-- <div class="detail-main-spinner" *ngIf="!applicationDetails || detailsLoading">
+  <mat-spinner></mat-spinner>
+</div> -->
+<!-- <div [dir]="(dataSharingService.isRtl)?'rtl':'ltr'" [ngClass]="{'p-b-40' : !viewInDailog}" fxLayout="column"
+  *ngIf="applicationDetails"> -->
+  <!-- <ng-container *ngIf="!selectedStageId && !showActivitiesTabs">
+    <xcdrs-appliation-details-card *ngIf="!isSubmissionRequest; else submissionDetailCard"
+      [applicationDetails]="applicationDetails" [showMenu]="true" [showMore]="true" (reload)="refreshApplication()">
+    </xcdrs-appliation-details-card>
+    <ng-template #submissionDetailCard>
+      <xcdrs-submission-details-card [applicationDetails]="applicationDetails" [detailView]="true">
+      </xcdrs-submission-details-card>
+    </ng-template>
+
+    <div *ngIf="parentApplicationInfo" class="exceeders-card m-b-16">
+      <xcdrs-form-sections-details [form]="parentApplicationInfo.form" [expanded]="false">
+      </xcdrs-form-sections-details>
+    </div>
+
+    <div class="exceeders-card m-b-16" *ngIf="applicationDetails.form.sections.length > 0">
+      <xcdrs-form-sections-details [form]="applicationDetails.form">
+      </xcdrs-form-sections-details>
+    </div>
+
+    <xcdrs-submissions-tabs *ngIf="linkStage?.linkDefinitionId > 0" [applicationId]="applicationId"
+      [permissions]="applicationDetails.permissions" (reloadApplicationDetail)="getApplicationDetails($event)"
+      class="m-b-16">
+    </xcdrs-submissions-tabs>
+  </ng-container>
+
+  <app-application-stages-details *ngIf="applicationDetailsLoaded && !showActivitiesTabs"
+    [callFrom]="ComponentName.ApplicationDetailComponent" [applicationDetails]="applicationDetails"
+    (reloadApplicationDetail)="getApplicationDetails($event)" [selectedStage]="selectedStage"
+    (selectedStageId)="selectedStageChange($event)"
+    (setAskQuestion)="askQuestionChange($event)"
+    (gotoDetails)="unsetSelectedStage()"
+    [askQuestion]="askQuestion"
+    [anonymous]="anonymous">
+  </app-application-stages-details> -->
+
+  <!-- <xcdrs-activities-counter *ngIf="!showActivitiesTabs && !selectedStageId && !anonymous" [requestId]="applicationId"   [showActivitiesTabs]="showActivitiesTabs"
+    (click)="openActivitiesTabs()" class="pointer"></xcdrs-activities-counter> -->
+
+  <xcdrs-request-activities-main  [requestId]="applicationId"
+  [requestModuleName]="labelService.labels?.applications"
+  [requestName]="applicationDetails?.name"
+  [showActivitiesTabs]="showActivitiesTabs"
+  [isMyspace]="isCallFromMySpace">
+  </xcdrs-request-activities-main>
+
+  <!-- <ng-container *ngIf="!selectedStageId && !showActivitiesTabs">
+    <div *ngIf="applicationDetails.permissions?.length > 0" fxLayoutAlign="row">
+      <xcdrs-btn-close-app-as [applicationDetails]="applicationDetails" [permissions]="applicationDetails.permissions"
+        (success)="onCloseApplication($event)"></xcdrs-btn-close-app-as>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!showActivitiesTabs && !askQuestion && !anonymous">
+    <br />
+    <br />
+  </ng-container> -->
+<!-- </div> -->

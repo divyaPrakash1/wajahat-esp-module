@@ -1,0 +1,36 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.user-detail{width:700px;padding:0 0 36px;box-sizing:border-box;}
+.header{height:84px;background: linear-gradient(91deg, #a0da6c 0%, #6cb33f 100%);border-bottom-left-radius: 70% 40%;border-bottom-right-radius: 70% 40%;display: flex;align-items:center;justify-content:flex-end;
+
+  .fo-close{color:var(--white-color);margin:-12px 8px 0;padding: 8px;cursor: pointer;
+    img, svg{color: var(--white-color);}
+  }
+}
+.user-info{display: flex;flex-direction: column;align-items: center;margin-top: -24px;margin-bottom: 8px;
+  .image{width:64px;height:64px;@include border-radius(64px);margin-bottom:12px;
+    img{width:64px;height:64px;@include border-radius(64px);}
+  }
+  .name{color:var(--black-color);font-size: 16px;font-weight: bold;line-height: 24px;}
+  .position{font-size: 14px;color:var(--grey-color);line-height: 20px;}
+}
+.desciption-area{display: flex;justify-content: center;padding: 16px;
+  .desciption{font-size:16px;width:290px;text-align:center;line-height:18px;color: var(--black-grey-color);}
+}
+
+.access-area{margin:8px auto;width: 290px;display: flex;flex-direction: column;
+  .access-header{font-size: 18px;color:var(--black-color);line-height: 20px;margin-bottom:8px;}
+  .access-list{list-style: none;
+    li{font-size: 16px;color: var(--black-grey-color);padding-left: 28px;position: relative;height: 24px;display: flex;align-items: center;margin:8px 0;
+      &:before{content: "";width:24px;height:24px;background: url('/assets/images/icon-other-success.svg');position: absolute;left: 0;}
+    }
+  }
+}
+.au-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: center;padding:24px 32px 6px;
+  button{line-height: 36px;padding:0 54px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';align-items: center;display: flex;
+    @include respond-to(mobile){padding:0 24px;}
+    mat-icon{font-size: 18px;margin-right:6px;width:18px; height:18px;}
+  }
+  button.outlined{padding:0 36px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

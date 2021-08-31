@@ -1,0 +1,307 @@
+@import './variables.scss';
+
+@mixin padding-all($v) {
+    padding: $v+px !important;
+}
+
+@mixin padding-top($v) {
+    padding-top: $v+px !important;
+}
+
+@mixin padding-left($v) {
+    padding-left: $v+px !important;
+}
+
+@mixin padding-right($v) {
+    padding-right: $v+px !important;
+}
+
+@mixin padding-bottom($v) {
+    padding-bottom: $v+px !important;
+}
+
+@mixin margin-all($v) {
+    margin: $v+px !important;
+}
+
+@mixin margin-top($v) {
+    margin-top: $v+px !important;
+}
+
+@mixin margin-left($v) {
+    margin-left: $v+px !important;
+}
+
+@mixin margin-right($v) {
+    margin-right: $v+px !important;
+}
+
+@mixin margin-bottom($v) {
+    margin-bottom: $v+px !important;
+}
+
+@mixin font-size($s) {
+    font-size: $s+px !important;
+}
+
+@mixin font-weight($w) {
+    font-weight: $w !important;
+}
+
+@mixin paper-size($size: 76) {
+    width           : $size + mm !important;
+    margin          : 0 !important;
+    padding         : 0 !important;
+    display         : block !important;
+    page-break-after: always !important;
+    break-after     : always !important;
+}
+
+@mixin max-height-offset($h) {
+    max-height: calc(100vh - #{$h}px) !important;
+}
+
+@for $i from 0 through 20 {
+    .pa-#{$i*5} {
+        @include padding-all($i*5);
+    }
+
+    .pt-#{$i*5} {
+        @include padding-top($i*5);
+    }
+
+    .pl-#{$i*5} {
+        @include padding-left($i*5);
+    }
+
+    .pr-#{$i*5} {
+        @include padding-right($i*5);
+    }
+
+    .pb-#{$i*5} {
+        @include padding-bottom($i*5);
+    }
+
+    // margin
+    .ma-#{$i*5} {
+        @include margin-all($i*5);
+    }
+
+    .mt-#{$i*5} {
+        @include margin-top($i*5);
+    }
+
+    .ml-#{$i*5} {
+        @include margin-left($i*5);
+    }
+
+    .mr-#{$i*5} {
+        @include margin-right($i*5);
+    }
+
+    .mb-#{$i*5} {
+        @include margin-bottom($i*5);
+    }
+
+    // negative margin
+    .mna-#{$i*5} {
+        @include margin-all($i*-5);
+    }
+
+    .mnt-#{$i*5} {
+        @include margin-top($i*-5);
+    }
+
+    .mnl-#{$i*5} {
+        @include margin-left($i*-5);
+    }
+
+    .mnr-#{$i*5} {
+        @include margin-right($i*-5);
+    }
+
+    .mnb-#{$i*5} {
+        @include margin-bottom($i*-5);
+    }
+}
+
+.mlr-auto {
+    margin-left : auto;
+    margin-right: auto;
+}
+
+.img-responsive {
+    width: 100%;
+}
+
+.centered {
+    text-align: center;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.full-height {
+    height: 100% !important;
+}
+
+.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top     : 0;
+}
+
+.hidden-overflow {
+    overflow: hidden;
+}
+
+.scroll-overflow {
+    overflow-y: auto;
+}
+
+.pull-right {
+    float: right;
+}
+
+.pull-left {
+    float: left;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.vertically-middle {
+    vertical-align: middle !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.no-text-decoration {
+    text-decoration: none;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.input-error {
+    font-size: 14px;
+    color    : #d63939;
+    margin   : 0px;
+}
+
+.task-calender-date {
+    font-size: 1em;
+}
+
+.color-dark {
+    color: $color-dark !important;
+}
+
+.color-light {
+    color: $color-light !important;
+}
+
+.color-grey {
+    color: $color-grey !important;
+}
+
+.color-primary {
+    color: $primary-color !important
+}
+
+.pointer {
+    cursor: pointer !important;
+}
+
+.width-20 {
+    width: 20% !important;
+}
+
+.width-30 {
+    width: 30% !important;
+}
+
+.width-40 {
+    width: 40% !important;
+}
+
+.width-50 {
+    width: 50% !important;
+}
+
+.width-60 {
+    width: 60% !important;
+}
+
+.width-70 {
+    width: 70% !important;
+}
+
+.width-80 {
+    width: 80% !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.pre-wrap {
+    white-space  : pre-wrap;
+    word-break   : break-word;
+    overflow-wrap: break-word;
+    word-wrap    : break-word;
+
+}
+
+.content-center {
+    justify-content: center !important;
+}
+
+@for $i from 10 through 30 {
+    .f-#{$i} {
+        @include font-size($i);
+    }
+
+    .fb-#{$i} {
+        @include font-size($i);
+        font-weight: bold !important;
+
+    }
+
+
+}
+
+.fb {
+    font-weight: bold !important;
+}
+
+.f-600 {
+    font-weight: 600 !important;
+}
+
+.f-800 {
+    font-weight: 800 !important;
+}
+
+.bg-white {
+    background-color: white !important;
+}
+
+@for $i from 1 through 25 {
+    .max-height-offset-#{180 + ($i*10)} {
+        @include max-height-offset(180 + ($i*10));
+    }
+}

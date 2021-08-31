@@ -1,0 +1,208 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+      "engage": {
+        "projectType": "application",
+        "schematics": {
+          "@schematics/angular:component": {
+            "style": "scss"
+          },
+          "@schematics/angular:application": {
+            "strict": true
+          }
+        },
+        "root": "",
+        "sourceRoot": "src",
+        "prefix": "app",
+        "architect": {
+          "build": {
+            "builder": "ngx-build-plus:browser",
+            "options": {
+              "outputPath": "dist/engage",
+              "index": "src/index.html",
+              "main": "src/main.ts",
+              "polyfills": "src/polyfills.ts",
+              "tsConfig": "tsconfig.app.json",
+              "aot": true,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                "src/manifest.webmanifest",
+                "src/baseurl.txt",
+                "src/Web.config"
+              ],
+              "styles": [
+                "src/app/esp-activity-module/theme/styles/xcdrs-material-theme.scss",
+                "src/app/esp-activity-module/theme/styles/styles.scss",
+                "src/assets/styles/material-theme.scss",
+                "src/assets/styles/styles.scss"
+              ],
+              "scripts": [],
+              "allowedCommonJsDependencies": [
+                "lodash",
+                "rxjs"
+              ],
+              "webWorkerTsConfig": "tsconfig.worker.json"
+            },
+            "configurations": {
+              "stage": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.stage.ts"
+                  }
+                ],
+                "optimization": true,
+                "outputHashing": "all",
+                "sourceMap": true,
+                "namedChunks": true,
+                "extractLicenses": false,
+                "vendorChunk": false,
+                "buildOptimizer": true,
+                "budgets": [
+                  {
+                    "type": "initial",
+                    "maximumWarning": "3mb",
+                    "maximumError": "7mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "75kb",
+                    "maximumError": "150kb"
+                  }
+                ],
+                "serviceWorker": true,
+                "ngswConfigPath": "ngsw-config.json"
+              },
+              "production": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.prod.ts"
+                  }
+                ],
+                "optimization": true,
+                "outputHashing": "all",
+                "sourceMap": false,
+                "namedChunks": false,
+                "extractLicenses": true,
+                "vendorChunk": false,
+                "buildOptimizer": true,
+                "budgets": [
+                  {
+                    "type": "initial",
+                    "maximumWarning": "800kb",
+                    "maximumError": "3mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "10kb",
+                    "maximumError": "40kb"
+                  }
+                ],
+                "serviceWorker": true,
+                "ngswConfigPath": "ngsw-config.json"
+              },
+              "stemexe": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/environments/environment.ts",
+                    "with": "src/environments/environment.stemexe.ts"
+                  }
+                ],
+                "optimization": true,
+                "outputHashing": "all",
+                "sourceMap": true,
+                "namedChunks": true,
+                "extractLicenses": false,
+                "vendorChunk": false,
+                "buildOptimizer": true,
+                "budgets": [
+                  {
+                    "type": "initial",
+                    "maximumWarning": "3mb",
+                    "maximumError": "7mb"
+                  },
+                  {
+                    "type": "anyComponentStyle",
+                    "maximumWarning": "75kb",
+                    "maximumError": "150kb"
+                  }
+                ],
+                "serviceWorker": true,
+                "ngswConfigPath": "ngsw-config.json"
+              }
+            }
+          },
+          "serve": {
+            "builder": "ngx-build-plus:dev-server",
+            "options": {
+              "browserTarget": "engage:build"
+            },
+            "configurations": {
+              "production": {
+                "browserTarget": "engage:build:production"
+              }
+            }
+          },
+          "extract-i18n": {
+            "builder": "@angular-devkit/build-angular:extract-i18n",
+            "options": {
+              "browserTarget": "engage:build"
+            }
+          },
+          "test": {
+            "builder": "ngx-build-plus:karma",
+            "options": {
+              "main": "src/test.ts",
+              "polyfills": "src/polyfills.ts",
+              "tsConfig": "tsconfig.spec.json",
+              "karmaConfig": "karma.conf.js",
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                "src/manifest.webmanifest"
+              ],
+              "styles": [
+                "src/assets/styles/material-theme.scss",
+                "src/styles.scss"
+              ],
+              "scripts": []
+            }
+          },
+          "lint": {
+            "builder": "@angular-devkit/build-angular:tslint",
+            "options": {
+              "tsConfig": [
+                "tsconfig.app.json",
+                "tsconfig.spec.json",
+                "e2e/tsconfig.json",
+                "tsconfig.worker.json"
+              ],
+              "exclude": [
+                "**/node_modules/**"
+              ]
+            }
+          },
+          "e2e": {
+            "builder": "@angular-devkit/build-angular:protractor",
+            "options": {
+              "protractorConfig": "e2e/protractor.conf.js",
+              "devServerTarget": "engage:serve"
+            },
+            "configurations": {
+              "production": {
+                "devServerTarget": "engage:serve:production"
+              }
+            }
+          }
+        }
+      }
+    },
+    "defaultProject": "engage",
+    "cli": {
+      "analytics": "e9a979c7-152a-4de1-9009-dd8664359588"
+    }
+  }

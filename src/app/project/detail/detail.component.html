@@ -1,0 +1,79 @@
+<div class="main-container product-detail-container">
+  <div class="breadcrumbs-row">
+    <div *ngIf="!projectLoading" class="breadcrumbs">
+      <a class="{{item.isActive ? 'active' : ''}}" [routerLink]="item.link" *ngFor="let item of activeBreadcrums" [class.disabled]="item.isActive ? true : null">{{item.text}}</a>
+    </div>
+  </div>
+  <div *ngIf="projectLoading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="row" *ngIf="!projectLoading">
+      <!-- <div class="card" >
+      <div class="heading-row">
+        <div class="heading">{{projectDetail.projectName | slice:0:70}}</div>
+        <div class="actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu" >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="onRequirementClick()">
+              <mat-icon>work_outline</mat-icon>
+              <span>Work Space (Requirements)</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>edit</mat-icon>
+              <span>Edit Project</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>close</mat-icon>
+              <span>Close</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="row stats-line">
+        <div class="bl-item">
+          <label>Project Manager:</label>
+          <div class="value">{{projectDetail.projectOwnerName}}</div>
+        </div>
+        <div class="bl-item w180">
+          <label>Completed:</label>
+          <div class="value">{{projectDetail.requirementsCompletedCount || 0}} / {{projectDetail.requirementCount || 0}}</div>
+        </div>
+        <div class="bl-item w180">
+          <label>Last Signed:</label>
+          <div class="value">{{projectDetail.last_signed || '--'}}</div>
+        </div>
+        <div class="bl-item">
+          <label>Linear Progress</label>
+          <div class="value percentage">
+            <div class="percentage-value">{{projectDetail.linearProgress}}%</div>
+            <div class="percentage-bar">
+              <div class="percentage-bar-fill" style="width:{{projectDetail.linearProgress}}%;"></div>
+              <div class="target" style="left:{{projectDetail.linearProgressTarget}}%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="bl-tag">
+          <div class="tag blue" style="color: #{{projectDetail.statusColor}};background-color: #{{projectDetail.statusColor}}1a" *ngIf="projectDetail.projectStatusName">{{projectDetail.projectStatusName}}</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <nav mat-tab-nav-bar>
+        <a href="/project/{{projectID}}/{{tab.link}}"
+          mat-tab-link
+          *ngFor="let tab of tabs"
+          [routerLink]="tab.link"
+          [active]="activeTab == tab.link"
+        > {{tab.name}} </a>
+      </nav>
+    </div> -->
+    <router-outlet></router-outlet>
+  </div>
+</div>

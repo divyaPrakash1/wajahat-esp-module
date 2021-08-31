@@ -1,0 +1,18 @@
+<div class="loginPage">
+  <div class="login-card">
+    <div *ngIf="!canlogin" style="display: flex;justify-content: center; align-items: center;height:350px;">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <div class="top-logo" *ngIf="canlogin">
+      <img src="/assets/images/logo-sm.webp" alt="Logo" />
+      <div class="text-green title">Engagement Pro</div>
+    </div>
+    <div class="orgtext" *ngIf="canlogin">Your organization has been created successfully. Please login now.</div>
+    <button class="defaultButton" *ngIf="canlogin" (click)="onLoginClicked($event)">Login with Idenedi</button>
+  </div>
+
+  <div class="bottomLine">
+    Engagement Pro © Copyright 2021 All Rights Reserved.
+    <span class="padl10">{{version}}</span>
+  </div>
+</div>

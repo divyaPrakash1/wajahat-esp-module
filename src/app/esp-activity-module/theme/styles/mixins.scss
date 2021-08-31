@@ -1,0 +1,68 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin clear-list() {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin box-sizing($box-model) {
+  -webkit-box-sizing: $box-model; // Safari <= 5
+  -moz-box-sizing: $box-model; // Firefox <= 19
+  box-sizing: $box-model;
+}
+
+@mixin calc($property, $expression) {
+  #{$property}: -moz-calc(#{$expression});
+  #{$property}: -webkit-calc(#{$expression});
+  #{$property}: calc(#{$expression});
+}
+
+@mixin text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin highlight-text {
+  color: var(--primary-color) !important;
+  font-weight: 1000 !important
+}
+
+@mixin media-mat-xs {
+  @media (max-width: 600px) {
+    @content;
+  }
+}
+
+@mixin media-mat-sm {
+  @media (min-width: 600px) and (max-width: 959px) {
+    @content;
+  }
+}
+
+@mixin fixed-centered-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, .7);
+}
+
+
+@mixin transition($x...){
+  -webkit-transition: $x;
+  -moz-transition: $x;
+  -ms-transition: $x;
+  -o-transition: $x;
+  transition: $x;
+}

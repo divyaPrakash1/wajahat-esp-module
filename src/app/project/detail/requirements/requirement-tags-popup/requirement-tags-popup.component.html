@@ -1,0 +1,17 @@
+<div class="tag-popup">
+  <div class="header">
+    <div class="text">Requirement Tags</div>
+    <div class="fo-close" (click)="cancel()">
+      <img src="/assets/images/close_black_24dp.svg" />
+    </div>
+  </div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="tag-list" *ngIf="!loading">
+    <li class="{{isSelected(tag.tagId) ? 'selected' : ''}}" (click)="onClick(tag)" *ngFor="let tag of tagList">{{tag.tagText}}</li>
+  </div>
+  <div class="tags-buttons">
+    <button (click)="onSubmit()" [disabled]="selected.length<=0">Select Tag</button>
+  </div>
+</div>

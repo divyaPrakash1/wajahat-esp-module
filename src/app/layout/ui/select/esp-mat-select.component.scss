@@ -1,0 +1,21 @@
+@import 'src/assets/styles/root.scss';
+
+:host{
+  display: flex;
+  flex-direction: column;
+}
+.no-border-h40 {
+  width: 100%;
+}
+
+// ::ng-deep .mat-form-field-suffix {
+//   top: 0.05em;
+// }
+
+.trigger-box{
+  background-color: #999;
+  color: #9e9e9e;
+  border-radius: 4px;
+  margin: 2px;
+  padding: 5px;
+}

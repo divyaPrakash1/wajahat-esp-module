@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Indicator_Planned_Completed with Issues</title>
+    <g id="Indicator_Planned_Completed-with-Issues" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M9,1 C4.581722,1 1,4.581722 1,9 C1,13.418278 4.581722,17 9,17 C13.418278,17 17,13.418278 17,9 C17,4.581722 13.418278,1 9,1 Z" id="Combined-Shape" fill="#FF005D" fill-rule="nonzero"></path>
+        <path d="M8.14,12.6652009 L8.14,10.13 L9.4,10.13 C9.97333333,10.13 10.4433333,10.0316667 10.81,9.835 C11.1766667,9.63833333 11.4433333,9.38333333 11.61,9.07 C11.7766667,8.75666667 11.86,8.42333333 11.86,8.07 C11.86,7.68333333 11.7683333,7.33333333 11.585,7.02 C11.4016667,6.70666667 11.125,6.45833333 10.755,6.275 C10.385,6.09166667 9.93333333,6 9.4,6 L7,6 L7,12.6652009 L8.14,12.6652009 Z M9.4,9.2 L8.14,9.2 L8.14,6.93 L9.4,6.93 C10.26,6.93 10.69,7.31 10.69,8.07 C10.69,8.43 10.5833333,8.70833333 10.37,8.905 C10.1566667,9.10166667 9.83333333,9.2 9.4,9.2 L9.4,9.2 Z" id="P" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+</svg>

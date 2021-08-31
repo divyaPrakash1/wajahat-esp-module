@@ -1,0 +1,23 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.change-state{width:700px;padding:12px 196px;box-sizing:border-box;
+  @include respond-to(mobile){width: 100%;padding:0px;}
+  .header{font-size: 18px;font-weight: bold;text-align: center;}
+  .icon{padding:32px;text-align:center;
+    img{width: 128px;height: 128px;}
+  }
+  .text-info{font-size: 16px;color: var(--black-grey-color);line-height: 22px;padding:12px 42px;text-align: center;
+    @include respond-to(mobile){padding:12px}
+  }
+  .state-options{
+    .mat-radio-group{width: 100%;display: block;}
+    .mat-radio-button{width: calc(50% - 5px);margin:8px 0;}
+  }
+}
+.state-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: flex-end;padding:24px 0 12px;
+  button{line-height: 36px;padding:0 64px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';
+    @include respond-to(mobile){padding:0 24px;}
+  }
+  button.outlined{padding:0 32px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

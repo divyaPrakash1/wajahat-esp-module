@@ -1,0 +1,96 @@
+@import './css3-mixins.scss';
+
+.mat-option.mat-selected:not(.mat-option-disabled){background: rgba(0, 0, 0, 0.08) !important;}
+.mat-form-field.xfilter{width: 100%;margin:0;background-color: #ffffff;
+  .mat-select{padding:0;}
+  .mat-select-empty{padding:2px 0;}
+  .mat-select-value-text{font-size: 16px;font-weight: 700;color: var(--black-color);}
+  .mat-form-field-wrapper{box-sizing: border-box;}
+  .mat-form-field-label-wrapper{ padding-top: 22px;margin-top: -21px;}
+  input.mat-input-element{font-size: 16px;font-weight: 700;color: var(--black-color);}
+
+  &.mat-focused .mat-form-field-label:not(.mat-form-field-empty),
+  &.mat-form-field-should-float .mat-form-field-label:not(.mat-form-field-empty){display: none;}
+  &.mat-focused .mat-select .mat-form-field-label{display: block;}
+
+
+  &.mat-form-field-disabled .mat-select-value-text{color:var(--grey-color);}
+
+  &.small{
+    .mat-form-field-wrapper .mat-form-field-flex{padding:10px 14px;background: #f3f5f6;border:none;}
+    .mat-select{background: #f3f5f6;}
+  }
+}
+.on-white{
+  .mat-form-field.xfilter{background-color: #f3f5f6;@include border-radius(3px);}
+  .mat-form-field-appearance-legacy .mat-form-field-wrapper .mat-form-field-flex{border:none;}
+  .mat-select{background-color: #f3f5f6;}
+}
+.filter-row{
+  .mat-form-field.xfilter{
+    .mat-select{padding: 5px 0;}
+    .mat-form-field-label-wrapper{top: 4px;}
+    &.mat-focused .mat-form-field-label:not(.mat-form-field-empty), &.mat-form-field-should-float .mat-form-field-label:not(.mat-form-field-empty){display: block;}
+  }
+  .mat-form-field-appearance-legacy .mat-form-field-prefix .mat-datepicker-toggle-default-icon, .mat-form-field-appearance-legacy .mat-form-field-suffix .mat-datepicker-toggle-default-icon{width:20px;}
+  .mat-date-range-input-mirror{font-size: 16px;}
+}
+
+.searchable-panel{/*margin-left: 24px;*/margin-top: -14px;
+  .mat-select-search-inner{top: -14px !important;}
+  .mat-select-search-clear{line-height: 36px;width: 36px;top: 2px;height: 36px;
+    .mat-icon{font-size: 21px;}
+  }
+}
+.status-filter-panel{margin-top: 42px;}
+.PO-panel{min-height: 36px !important;
+  .mat-menu-content{padding:0 !important;
+    button {border-bottom: 1px solid var(--light-blue-grey);@include border-radius(0px);text-transform: uppercase;font-size: 16px;}
+    button:last-child{border-bottom:none;}
+  }
+}
+
+
+.mat-radio-group[name="project-state-change"]{
+  .mat-radio-label-content{font-size: 16px;color: var(--black-grey-color);}
+}
+
+.date-field-icon{
+  button{position: absolute;top:-12px;right: 0;}
+  mat-icon{font-size: 22px !important;color: var(--grey-color);}
+}
+
+.snackbar-xerror{background: #d3302f;color: #fff;}
+.tag-popup-dailog, .sprint-add-dailog{
+  .mat-dialog-container{padding: 0;}
+}
+
+.mat-checkbox.right-align{
+  .mat-checkbox-layout{flex-direction: row-reverse;width: 100%;}
+  &.bold .mat-checkbox-layout .mat-checkbox-label{font-weight: bold;}
+  .mat-checkbox-inner-container{margin-right: 0;}
+}
+
+
+.ng2-tag-input{border: 1px solid #dadadb;padding:4px 15px !important;border-radius: 4px;
+  &.ng2-tag-input--focused{border: 1px solid #dadadb !important;}
+  &.ng2-tag-input--invalid{border: 1px solid #d3302f !important;}
+  .ng2-tag-input__text-input{padding: 0 !important;font-size: 16px !important;line-height: 1.5;color: var(--black-color) !important;font-family: Lato !important;height: 32px !important;}
+
+}
+tag-input p.error-message{
+  margin-left: 16px !important;color: #e21d26 !important;font-size: 14px !important;
+}
+.ng2-tags-container{
+  tag{color: var(--black-color) !important;font-size: 16px !important;font-family: 'Lato' !important;background: #e7ecef !important;border-radius: 4px !important;height:30px !important;line-height: 24px !important;
+    &:hover{box-shadow: none !important;}
+  }
+  delete-icon svg{height: 26px !important;vertical-align: top !important;}
+}
+
+.requirementTabs{
+  .mat-tab-links {border-bottom: 1px solid #dadadb;padding: 10px 0 0 15px;}
+  .mat-ink-bar {height: 2px !important;bottom: 1px;}
+  .mat-tab-link{color:var(--grish-color);font-weight:500;font-size: 16px;}
+  .mat-tab-label-active{color:var(--black-color);}
+}

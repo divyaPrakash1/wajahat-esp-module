@@ -1,0 +1,92 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.wrapper{display: flex;overflow: hidden;flex-direction: column;position: relative;padding:0;max-width: var(--container-width);margin: 0 auto;margin-top: 74px;
+  @include respond-to('max-width: '$screen-lg){padding:0 10px;}
+}
+
+.top-header{display: flex;justify-content:space-between;margin-top:8px;
+  h1{font-size: 20px;margin:0;font-weight: 700;line-height: 48px;flex:1;}
+  .cp-button{background:#86C04F;line-height: 48px;padding:0 42px;font-size: 16px;font-weight: 400;}
+}
+
+.project-area{min-width:680px;width:680px;padding:12px 0px;font-size: 16px;line-height: 20px;color: var(--black2-color);
+  .card{margin-top:4px;padding:10px 15px;box-shadow: none;}
+  .first-line,.second-line{display: flex;align-items: center;flex-direction: row;}
+  .second-line{padding-bottom:8px;}
+
+  .date{flex:1;box-sizing: border-box;display:flex;
+    label{color: var(--grish-color);margin-right:5px;}
+  }
+  .revenuue{box-sizing: border-box;width:148px;display:flex;
+    label{color: var(--grish-color);text-align: right;flex:1;margin-right:5px;}
+    span{width:42px;min-width:48px;}
+  }
+  .cost{box-sizing: border-box;width:148px;display:flex;
+    label{color: var(--grish-color);text-align: right;flex:1;margin-right:5px;}
+    span{width:64px;
+      .triangle{position: relative;display: inline;
+        &:before{content:"\A";border-style: solid;border-width: 4px 6px 4px 0;border-color: transparent #ff005d transparent transparent;position: absolute;transform: rotate(90deg);top: 4px;left: 4px;
+        }
+      }
+    }
+  }
+  .percentage{width:40px;box-sizing: border-box;padding-left:6px;
+    &.issue{color:#ff005d;}
+  }
+  .requirement{flex:1;box-sizing: border-box;display:flex;
+    label{color: var(--grish-color);margin-right:5px;}
+  }
+  .signed{flex:1;box-sizing: border-box;display:flex;
+    label{color: var(--grish-color);margin-right:5px;}
+  }
+}
+
+.header-wrapper{display: flex;background: var(--white-color);height:60px;@include border-radius(2px);padding:0 6px;box-sizing:border-box;align-items: center;
+  .back-requirement{display: flex; align-items: center;margin:0 6px;cursor: pointer;
+    .br-button{display: flex;color: #aaadb8;align-items: center;padding:0 8px;}
+    .text{padding-left:6px;font-size: 14px;line-height: 16px;}
+  }
+  .backlog-button{display: flex; align-items: center;margin:0 6px;padding-right: 16px;border-right:1px solid #f3f5f6;
+    .bb-button{display: flex;color: #aaadb8;align-items: center;cursor: pointer; padding:6px 10px;@include border-radius(4px);
+      &.active{background-color: rgba(203, 210, 213, .2);cursor: default;}
+    }
+    .text{padding-left:6px;font-size: 14px;line-height: 16px;}
+  }
+  .tags-filter{flex:1;
+    .tag-filter{width:250px;margin-left: 8px;}
+  }
+
+  .filters-icons{display:flex;justify-content: flex-end;}
+  .actions{color:#AAADB8;@include border-radius(4px);background:transparent;@include transition();
+    .action-text{display: inline-block;padding: 0 0 0 15px;font-size: 14px;font-weight: bold;}
+    .mat-icon-button{border-radius: 4px;}
+    button.mat-menu-trigger[aria-expanded="true"]{
+      background: rgba(203, 210, 213, .2);
+    }
+    &.active{background: rgba(203, 210, 213, .2);
+      button.mat-menu-trigger{background: transparent;}
+    }
+  }
+
+  .list-sytle{display: flex;flex-direction:row;margin-left: 6px;
+    .ls-item{width:40px;height:40px;margin-right:5px;padding:8px;box-sizing:border-box;cursor: pointer;
+      &.active{background-color: rgba(203, 210, 213, .2);@include border-radius();}
+    }
+    .icon{width:16px;height:16px; color:#AAADB8;}
+    &.disabled{
+      .ls-item{cursor: default;
+        &.active{background-color:transparent;}
+      }
+      .icon{opacity: 0.65;}
+    }
+    @include respond-to(mobile){display: none;}
+  }
+}
+
+.notFound{display: flex;align-items: center;justify-content: center;flex-direction: column;padding:64px;background:#fff;@include border-radius(3px);margin-top:16px;
+  img{width: 80px;height: 80px;}
+  .text{font-size: 16px;line-height: 20px;font-weight: normal;color: var(--grish-color);padding:20px 0;text-align: center;}
+  .link{display: flex;align-items: center;font-size: 14px;font-weight: bold;
+    mat-icon{margin-right:6px;font-size:22px;width:22px;height:22px;}
+  }
+}

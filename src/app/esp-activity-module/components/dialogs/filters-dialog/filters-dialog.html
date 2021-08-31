@@ -1,0 +1,234 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="Filters-dialog-container"
+  *ngIf="dataLoaded"
+>
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">Filter</h1>
+
+    <form
+      [formGroup]="form"
+      class="Filters-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <mat-form-field
+        *ngIf="!isBacklog"
+        class="custom mat-form-field-should-float due-date-field"
+      >
+        <input
+          matInput
+          [matDatepicker]="dueDateValue"
+          formControlName="dueDate"
+          placeholder="Due Date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          (click)="clearSelectedDate()"
+          *ngIf="form.get('dueDate')?.value !=null"
+        >
+          <mat-icon matDatepickerToggleIcon class="date-clear-btn"
+            >clear</mat-icon
+          >
+        </mat-datepicker-toggle>
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="dueDateValue"
+        ></mat-datepicker-toggle>
+
+        <mat-datepicker #dueDateValue></mat-datepicker>
+      </mat-form-field>
+
+      <p class="sub-title" *ngIf="!isBacklog">Status</p>
+      <div
+        fxFlex
+        fxLayout="row wrap"
+        fxLayoutAlign="start center"
+        *ngIf="!isBacklog"
+        class="status-container"
+      >
+        <button
+          class="mat-button filter-btn"
+          *ngFor="let status of statusFilter"
+          (click)="status.selected=!status.selected"
+          [ngClass]="{'active': status.selected}"
+        >
+          <span class="btn-lbl"> {{status.name}}</span>
+        </button>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        class="checkbox-container"
+        [ngClass]="{'backlog-important': isBacklog}"
+      >
+        <mat-checkbox formControlName="isImportant" [(ngModel)]="isImportant"
+          >Only important activities</mat-checkbox
+        >
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        class="checkbox-container following-checkbox"
+        *ngIf="!isBacklog"
+      >
+        <mat-checkbox formControlName="isFollowing" [(ngModel)]="isFollowing"
+          >Only following activities</mat-checkbox
+        >
+      </div>
+
+      <mat-form-field
+        class="custom mat-form-field-should-float select-with-chips"
+        *ngIf="!!assignors && !!assignors?.length"
+      >
+        <mat-label>Assigned By</mat-label>
+        <mat-select
+          [formControl]="assignorsControl"
+          multiple
+          panelClass="custom-options-list"
+          disableOptionCentering
+        >
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let assignor of assignorsControl?.value"
+                [ngClass]="{'hidden': allAssignorsSelected && assignor.id != -2}"
+              >
+                {{ assignor.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option
+            class="opt"
+            (click)="toggleSelection('assignors', assignor.id)"
+            *ngFor="let assignor of assignors"
+            [value]="assignor"
+            >{{assignor.name}}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        class="custom mat-form-field-should-float select-with-chips"
+        *ngIf="!!teams && !!teams?.length && data.type !=4 && !isESPcomponent"
+      >
+        <mat-label>Project</mat-label>
+        <mat-select
+          [formControl]="projectsControl"
+          multiple
+          panelClass="custom-options-list"
+          disableOptionCentering
+        >
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let team of projectsControl?.value"
+                [ngClass]="{'hidden': allProjectsSelected && team.id != -2}"
+              >
+                {{ team.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option
+            class="opt"
+            (click)="toggleSelection('teams', team.id)"
+            *ngFor="let team of teams"
+            [value]="team"
+            >{{team.name}}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        class="custom mat-form-field-should-float select-with-chips"
+        *ngIf="!!jobs && !!jobs?.length && data.type !=4 && !isESPcomponent"
+      >
+        <mat-label>Job</mat-label>
+        <mat-select
+          [formControl]="jobsControl"
+          multiple
+          panelClass="custom-options-list"
+          disableOptionCentering
+        >
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let job of jobsControl?.value"
+                [ngClass]="{'hidden': allJobsSelected && job.id != -2}"
+              >
+                {{ job.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option
+            class="opt"
+            (click)="toggleSelection('jobs', job.id)"
+            *ngFor="let job of jobs"
+            [value]="job"
+            >{{job.name}}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        Apply Filters
+      </button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

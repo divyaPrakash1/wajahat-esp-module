@@ -1,0 +1,67 @@
+@import '../../../assets/styles/css3-mixins.scss';
+
+.container{margin-top:74px;display: block;position: relative;}
+.project-add-wrapper{
+  h1{color: #303030;font-size: 24px;font-weight:800;margin:24px 0 16px;
+    @include respond-to(mobile){margin:16px 0 8px 12px;}
+  }
+
+  .card{margin-bottom:64px;padding:32px 48px;
+    @include respond-to(mobile){padding:32px;margin-bottom:32px;}
+  }
+  .section{margin-top:32px;
+    .header{font-weight: 600;font-size: 16px;color:var(--black-grey-color);text-transform: uppercase;padding-bottom:12px;}
+    .row{display: flex;justify-content: space-between;
+      @include respond-to(mobile){flex-direction: column;}
+      .col2{width: calc(50% - 10px);
+        @include respond-to(mobile){width:100%;}
+      }
+      .col3{width: calc(33% - 10px);
+        @include respond-to(mobile){width:100%;}
+      }
+    }
+    .total-count{display: block;margin:0px 0 12px;
+      .total{font-size: 14px;color:var(--black-grey-color);}
+      .count{font-size: 14px;color:var(--primary2-color);margin-left:5px;
+        &.error{color:var(--danger-color);}
+      }
+    }
+    .mat-form-field{padding-top:15px;padding-bottom: 13px;width:100%;}
+    .mat-input-element{font-size: 16px;line-height: 1.5;font-weight: bold;}
+    .ap-stagerow{display: flex;
+      .aps-input{margin-right:15px;}
+      .aps-percantage{margin-right:10px;}
+      .aps-delete{color:#aaadb8;padding-top: 26px;cursor: pointer;}
+      &:first-child{
+        .aps-delete{visibility: hidden;}
+      }
+    }
+    .aps-addrow{display: flex;margin:12px 0 24px;cursor: pointer;align-items: center;
+      .apa-icon{color: #6cb33f;margin-right:7px;}
+      .apa-text{color: #6cb33f;font-size: 16px;font-weight: 600;}
+    }
+
+    &.general{margin-top: 0px;}
+    &.list{
+      .row{width: 750px;display:block;
+        @include respond-to(mobile){width: 100%;}
+        .checkbox-row{width: calc(25% - 10px);display: inline-block;
+          @include respond-to(mobile){width: calc(50% - 10px);}
+        }
+      }
+    }
+    &.stagenplatforms{
+      .header{display: flex;align-items: center;text-transform: capitalize;font-weight: bold;}
+      .row{align-items: stretch;}
+    }
+  }
+
+  .ap-buttons{margin-top:32px;
+    button{line-height: 48px;padding:0 42px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';
+      @include respond-to(mobile){padding:0 36px;}
+    }
+    button.outlined{background: transparent;border-color: transparent;color: var(--grey-color);}
+    button:first-child{margin-left:0;}
+  }
+
+}

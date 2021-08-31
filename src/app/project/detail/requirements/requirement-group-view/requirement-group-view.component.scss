@@ -1,0 +1,42 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.group-row{display: flex;flex-direction:column;width:100%;margin:10px 0;
+  .gr-top{display: flex;align-items: center;height: 56px;@include border-radius();background-color: #fff;width:100%;box-sizing: border-box;padding:0 20px;z-index: 1;}
+  .critical-tag{display: flex;align-items:center; padding:0 10px;flex: 1; cursor: pointer;color: var(--black-color);font-size: 16px;font-weight: bold;
+    .icon{display: none;width: 42px;height:18px;background-image: url('/assets/images/requirement-high-icon.svg');background-repeat: space;background-size: 12px auto;vertical-align: middle;}
+    .text{padding-left: 6px;font-size: 14px;line-height: 14px;}
+
+    &.Low{
+      .icon{width: 16px;height:22px;background-image: url('/assets/images/requirement-low-icon.svg');}
+    }
+    &.Medium{
+      .icon{width: 16px;height:22px;background-image: url('/assets/images/requirement-medium-icon.svg');}
+    }
+    &.High{
+      .icon{width: 24px;background-image: url('/assets/images/requirement-high-icon.svg');}
+    }
+  }
+  .tag-area{display: flex;align-items:center;flex: 1;cursor: pointer;
+    .tag{padding:6px 12px;background-color: transparent;color:var(--black-color);@include border-radius(2px);font-weight: bold;font-size: 16px;display: inline-block;
+      // &.Open{background-color: rgba(29, 169, 231, 0.1);color: rgb(29, 169, 231);}
+      &.Open{background-color: transparent;color: var(--black-color);}
+    }
+  }
+  .activity-count{width:24px;height:24px;background-color: #f3f5f6;border: solid 1px #cbd2d5; @include border-radius(26px);display: flex;align-items:center; justify-content: center;font-size: 12px;font-weight: 700;margin:0 4px;color: var(--black-color);}
+
+  .gr-text{flex: 1;font-size: 16px;font-weight: bold;color: var(--black-color); cursor: pointer;}
+  .gr-stats{width:256px;display:flex;justify-content: flex-end;
+    .icon-down{height: 30px;display: flex;align-items: center;justify-content: center;margin-left: 6px;@include transition();cursor: pointer;}
+  }
+  .gr-cards{padding:0px;display:none;padding: 0 15px;background: #fff;
+    .card{margin: 1px 0;
+      &:first-child{margin-top:1px;}
+    }
+  }
+
+  &.active{
+    .gr-top{ @include box-shadow-alpha(0, 4px, 6px, 0, rgb(0 0 0 / 5%));}
+    .gr-cards{display: block;}
+    .icon-down{@include transform(rotate(180deg))}
+  }
+}

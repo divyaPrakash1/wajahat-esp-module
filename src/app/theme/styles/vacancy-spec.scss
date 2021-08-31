@@ -1,0 +1,229 @@
+
+body{
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+.vacancy-spec{
+  
+  @import "./vacancy-pagination.scss";
+  @import "./vacancy-avatar.scss";
+  @import "./vacancy-chips.scss";
+  @import "./variables.scss";
+  @import "./helpers.scss";
+
+    
+  .full-width{
+    width: 100% !important;
+  }
+  
+  .mnt-30{
+    margin-top: -30px !important;
+  }
+  .full-height {
+      height: 100% !important;
+  }
+
+  .color-primary{
+    color         :#6cb33f!important;
+  }
+
+  .color-grey{
+    color : #aaadb8 !important;
+  }
+
+  .page-title{
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #303030 !important;
+  }
+
+  .mat-menu-item   .menu-item-title {
+    color         : #303030 !important;
+    font-size: 16px!important;
+    font-weight: 700!important;
+    vertical-align: middle !important;
+  
+  }
+
+  .vacancy-card-box{
+    padding-right: 25px !important;
+    padding-left: 25px !important;
+    padding-bottom: 25px !important;
+    padding-top: 25px !important;
+  }
+ 
+  
+  
+  .full-width{
+    width: 100% !important;
+  }
+
+
+  .btn-shadow{
+    box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.5);
+  }
+
+  @mixin max-height-offset($h) {
+    max-height: calc(100vh - #{$h}px) !important;
+  }
+
+  .scrollbar-spacer {
+    --native-scrollbar-size: 10px !important;
+  }
+  @media (min-width: 600px) {
+    .copyVacancyLinkDialog{
+        .mat-dialog-container {
+            /* add your styles */
+            // padding-left : 57px !important;
+            // padding-right: 50px !important;
+            padding: 30px 50px 48px 57px !important;
+        }
+  }
+}
+
+  hr {
+    background-color: #eaeaf3;
+    border: none;
+    height: 1px;
+  }
+
+  .f-800 {
+    font-weight: 800!important;
+  }
+
+  .f-18, .fb-18 {
+    font-size: 18px!important;
+  }
+
+  .dot-icon-sm {
+    height: 4px!important;
+    width: 4px!important;
+    font-size: 4px!important;
+  }
+
+  .vertically-middle {
+    vertical-align: middle!important;
+  }
+
+  .content-center{justify-content: center!important;}
+  }
+
+  .date-value{
+    font-size: 13px !important;
+  }
+
+
+  .pre-wrap {
+    white-space  : pre-wrap;
+    word-break   : break-word;
+    overflow-wrap: break-word;
+    word-wrap    : break-word;
+
+  }
+
+  input{
+    background-color: white !important;
+  }
+
+
+  .icon-green {
+    color: #6cb33f !important;
+  }
+
+  .icon-blue {
+    color: #00aeef  !important;
+  }
+
+  .icon-red {
+    color: #ff1e78  !important;
+  }
+
+  .icon-orange {
+    color: #f8971d  !important;
+  }
+
+  .mat-menu-item .mat-icon {
+    margin-right: 10px !important;
+    vertical-align: middle;
+  }
+
+  .dot-icon-status{
+    font-size: 14px;
+    text-align: center;
+    line-height: 21px;
+    margin-right: 5px !important;
+  }
+  // .mat-dialog-container{
+  //   padding: 15px !important;
+  // }
+  .mat-menu-panel{
+    box-shadow: 0 2px 40px 0 rgba(18,21,27,0.11) !important;
+  }
+
+  @media (max-width: 768px) {
+    .mat-menu-item
+    {
+        line-height: 44px;
+        height: 44px;
+        padding: 0 13px;
+    }
+  }
+
+  .mat-tooltip {
+    color: #fff;
+    border-radius: 8px !important;
+    margin: 14px;
+    max-width: 250px;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px important;
+    font-weight:600;
+    font-family: Lato,Helvetica Neue,sans-serif;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
+  .mat-tooltip {
+    background: #021012 !important;
+  }
+
+  .mat-tooltip *
+  {
+    font-size: 13px important;
+    font-family: Lato,Helvetica Neue,sans-serif;
+  }
+
+  .menu-icon-img{
+    float: left;
+    margin-left: -2px;
+    margin-right: 12px;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 450px) {
+    ::ng-deep .full-width-dialog{
+      max-width: 95vw !important;
+    }
+
+    ::ng-deep .mat-dialog-container {
+      padding: 10px !important;
+      overflow-x: hidden;
+    }
+
+  }
+  // @media (min-width: 400px) {
+    ::ng-deep .cdk-global-overlay-wrapper{
+      top: 25px  ;
+    }
+    
+  // }
+
+  // ::ng-deep{
+  //   mat-dialog-container{
+  //     overflow-y: hidden !important;
+  //   }
+  // }
+  
+  

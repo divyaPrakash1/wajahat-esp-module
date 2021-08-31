@@ -1,0 +1,151 @@
+<div class="generic-comment-container {{type}}">
+  <div class="grey-header">Comments</div>
+  <div class="header count{{commentList.length}}">
+    <div class="text">Comments ({{totalrecord}})</div>
+    <div class="text no-text">No Comments</div>
+    <div class="icon" (click)="openCommentPopup()" *ngIf="totalrecord > 1"><mat-icon>east</mat-icon></div>
+  </div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="card not-found" *ngIf="!loading && commentList.length<=0">
+    <img src="/assets/images/comments_icon.svg" />
+  </div>
+  <div *ngIf="!loading && commentList.length>0">
+    <div class="card commented" *ngFor="let comment of commentList">
+      <div class="parent-comment">
+        <div class="user-image">
+          <img src="{{comment.pictureUri}}" />
+        </div>
+        <div class="comment-area">
+          <div class="comment-top">
+            <div class="comment-name textContinue">{{comment.userName}}</div>
+            <div class="comment-time-above">{{comment.timeago}}</div>
+            <div class="comment-options">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item (click)="onDelete(comment)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="comment-text" *ngIf="comment.commentType === '0'">{{comment.comment}}</div>
+          <div class="comment-text" *ngIf="comment.commentType === '1'">
+            <div class="name-contianer" (click)="onFileDownload(comment)">
+              <div class="name">{{comment.file.fileName}} <span class="size">({{comment.file.fileSize}})</span></div>
+            </div>
+          </div>
+          <div class="comment-bottom">
+            <div class="comment-time">{{comment.timeago}}</div>
+            <!-- <div class="comment-replay-button">Reply</div> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="parent-comment child-comment">
+        <div class="user-image">
+          <img src="/assets/images/default-user-image.png" />
+        </div>
+        <div class="comment-area">
+          <div class="comment-top">
+            <div class="comment-name">Wajahat Qasim</div>
+            <div class="comment-options">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu" xPosition="before">
+                <button mat-menu-item>
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="comment-text">Lorem ipsum dolor sit amet, consectetur adipis cing elit. Aliquam pretium pla cerat vulputate. Cras eget mauris vel lacus tincidunt consequat vitae ac magna.</div>
+          <div class="comment-bottom">
+            <div class="comment-time">2 days ago</div>
+            <div class="comment-replay-button">Reply</div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <div class="card comment-box" *ngIf="!loading">
+    <div class="attachment-icon" (click)="onAttachClick($event)">
+      <input type="file" id="commentFile" (change)="onUploadChange($event)" style="display: none;" />
+      <mat-icon>attachment</mat-icon>
+    </div>
+    <div class="text-box">
+      <input placeholder="Add comment here…" (keyup)="onKey($event)" />
+    </div>
+    <!-- <div class="mic-icon">
+      <mat-icon>mic</mat-icon>
+    </div> -->
+  </div>
+</div>
+
+<div class="comment-popup" *ngIf="commentPopup">
+  <div class="comment-overlay">
+    <div class="co-header">
+      <div class="co-close" (click)="closeCommentPopup($event)"><mat-icon aria-hidden="false">close</mat-icon></div>
+      <div class="co-title">Comments ({{totalrecord}})</div>
+    </div>
+    <div class="co-body {{type}}">
+      <div *ngIf="popupLoading" style="display:flex;height:128px;justify-content:center;align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <div class="comment-scrollable" *ngIf="!popupLoading && allCommentList.length>0">
+        <div class="card commented" *ngFor="let comment of allCommentList">
+          <div class="parent-comment">
+            <div class="user-image">
+              <img src="{{comment.pictureUri}}" />
+            </div>
+            <div class="comment-area">
+              <div class="comment-top">
+                <div class="comment-name textContinue">{{comment.userName}}</div>
+                <div class="comment-time-above">{{comment.timeago}}</div>
+                <div class="comment-options">
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu" xPosition="before">
+                    <button mat-menu-item (click)="onDelete(comment)">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                    </button>
+                  </mat-menu>
+                </div>
+              </div>
+              <div class="comment-text" *ngIf="comment.commentType === '0'">{{comment.comment}}</div>
+              <div class="comment-text" *ngIf="comment.commentType === '1'">
+                <div class="name-contianer" (click)="onFileDownload(comment)">
+                  <div class="name">{{comment.file.fileName}} <span class="size">({{comment.file.fileSize}})</span></div>
+                </div>
+              </div>
+              <div class="comment-bottom">
+                <div class="comment-time">{{comment.timeago}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card comment-box" *ngIf="!popupLoading">
+        <div class="attachment-icon" (click)="onAttachClick($event)">
+          <input type="file" id="commentFile" (change)="onUploadChange($event)" style="display: none;" />
+          <mat-icon>attachment</mat-icon>
+        </div>
+        <div class="text-box">
+          <input placeholder="Add comment here…" (keyup)="onKey($event)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

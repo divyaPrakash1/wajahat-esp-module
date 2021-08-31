@@ -1,0 +1,87 @@
+<div class="tag-popup">
+  <div class="header">
+    <div class="text">Create Sprint</div>
+    <div class="fo-close" (click)="cancel()">
+      <img src="/assets/images/close_black_24dp.svg" />
+    </div>
+  </div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="tag-input" *ngIf="!loading">
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Start Date *</mat-label>
+        <input matInput [matDatepicker]="startDate" (click)="startDate.open()" formControlName="startDate">
+        <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="startDate">
+          <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #startDate></mat-datepicker>
+        <mat-error *ngIf="form.hasError('required', 'startDate')">
+          Please enter start date.
+        </mat-error>
+        <mat-error *ngIf="form.hasError('matched', 'startDate')">
+          Start date should be less than due date.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>End Date *</mat-label>
+        <input matInput [matDatepicker]="endDate" (click)="endDate.open()" formControlName="endDate">
+        <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="endDate">
+          <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #endDate></mat-datepicker>
+        <mat-error *ngIf="form.hasError('required', 'endDate')">
+          Please enter End date.
+        </mat-error>
+        <mat-error *ngIf="form.hasError('matched', 'endDate')">
+          End Date Should be greater than Start Date.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Owner *</mat-label>
+        <input type="text" matInput formControlName="owner" [matAutocomplete]="ownerac">
+        <mat-autocomplete #ownerac="matAutocomplete" [displayWith]="displayOwner">
+          <mat-option *ngFor="let ownr of filteredOwner | async" [value]="ownr">
+            {{ownr.name}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="form.hasError('required', 'owner')">
+          Please enter owner of sprint.
+        </mat-error>
+      </mat-form-field>
+      <div class="release-checkbox">
+        <mat-checkbox
+          [checked]="false"
+          (change)="setRelease($event)"
+          class="right-align bold"
+        >Mark as release</mat-checkbox>
+      </div>
+      <div class="recurrence" *ngIf="dontShow">
+        <div class="text">Recurrence</div>
+        <div class="slider">
+          <mat-slide-toggle></mat-slide-toggle>
+        </div>
+      </div>
+      <div class="flex-row" style="margin:16px 0;" *ngIf="dontShow">
+        <div class="col1">
+          <tag-input
+            [(ngModel)]='emails'
+            [ngModelOptions]="{standalone: true}"
+            ngDefaultControl
+            placeholder = "Enter Meeting Attendees"
+            secondaryPlaceholder="Enter Meeting Attendees"
+            [errorMessages]="errorMessages"
+            [validators]="emailValidators"
+            inputClass="tagEmailInput"
+          >
+          </tag-input>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="tags-buttons">
+    <button (click)="cancel()" class="defaultButton outlined">Cancel</button>
+    <button (click)="onSubmit()" [disabled]="form.invalid">Create Sprint</button>
+  </div>
+</div>

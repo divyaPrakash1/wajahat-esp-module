@@ -1,0 +1,96 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+
+.reject-dialog-container {
+  max-width: 100%;
+  .content {
+    margin: 0px 168px;
+    &.xs,
+    .sm {
+      margin: 0px;
+    }
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .info-text {
+      border-radius: 4px;
+      background-color: #f6f7f9;
+      font-size: $f14;
+      padding: 16px;
+      line-height: 1.71;
+      margin: 24px 0px;
+      .activity-type {
+        color: #94959c;
+      }
+    }
+
+    .action-btns {
+      .action-btn {
+        height: 48px;
+      }
+      margin-bottom: 24px;
+      &.xs,
+      .sm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        background: #fff;
+        margin-bottom: 0px;
+      }
+    }
+    .reject-form {
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .due-date-field {
+        ::ng-deep .mat-form-field-wrapper {
+          ::ng-deep .mat-form-field-suffix {
+            mat-datepicker-toggle {
+              .mat-icon-button {
+                margin-right: $f14;
+                svg {
+                  width: 24px;
+                  height: 24px;
+                  fill: $main-color;
+                  margin-top: -14px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &.xs,
+      .sm {
+        margin: 20px 0px 70px 0px;
+      }
+
+      margin: 20px 0px 16px 0px;
+      mat-form-field {
+        margin-bottom: 24px;
+      }
+    }
+  }
+
+  mat-icon {
+    color: $gray;
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 30em;
+  height: 18em;
+  margin-top: -9em;
+  margin-left: -15em;
+}

@@ -1,0 +1,188 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+mat-table {
+  box-shadow: none !important;
+  mat-header-row {
+    margin: 0px 24px;
+    &.first-row {
+      border-bottom: 0px;
+    }
+  }
+
+  mat-row {
+    margin: 0px 24px;
+    max-height: 48px;
+    &:hover {
+      padding: 0px 24px;
+      margin: 0px;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.04);
+    }
+    &:last-of-type {
+      border-bottom: 0px;
+    }
+    .mat-cell:first-of-type,
+    .mat-footer-cell:first-of-type {
+      font-size: $f16;
+      font-weight: bold;
+    }
+    &.row-before {
+      border-bottom: 0px;
+    }
+  }
+
+  .mat-cell:first-of-type,
+  .mat-header-cell:first-of-type,
+  .mat-footer-cell:first-of-type {
+    padding-left: 0px;
+  }
+  .mat-header-cell {
+    color: $sub-title-color;
+    font-size: $f14;
+  }
+
+  // .mat-cell.description.backlog-description,
+  // .mat-header-cell.description.backlog-description {
+  //   // flex: 0 0 33% !important;
+  //   flex: 0 0 100% !important;
+  // }
+  .mat-cell.linkedTo,
+  .mat-header-cell.linkedTo {
+    // flex: 0 0 10% !important;
+    flex: 0 0 12% !important;
+  }
+  .mat-cell.assignedBy,
+  .mat-header-cell.assignedBy,
+  .mat-cell.assignedTo,
+  .mat-header-cell.assignedTo {
+    // flex: 0 0 10% !important;
+    flex: 0 0 12% !important;
+    max-width: 10%;
+  }
+
+  .mat-cell.dueDate,
+  .mat-header-cell.dueDate {
+    // flex: 0 0 10% !important;
+    flex: 0 0 12% !important;
+  }
+
+  .mat-cell.status,
+  .mat-header-cell.status {
+    // flex: 0 0 8% !important;
+    flex: 0 0 10% !important;
+  }
+
+  .mat-cell.review,
+  .mat-header-cell.review {
+    // flex: 0 0 8% !important;
+    flex: 0 0 14% !important;
+  }
+  .mat-cell.progress,
+  .mat-header-cell.progress {
+    flex: 0 0 5% !important;
+    justify-content: flex-end;
+    padding: 0px 5px;
+  }
+  .mat-cell.progressBar,
+  .mat-header-cell.progressBar {
+    flex: 0 0 10% !important;
+    padding-right: 20px;
+  }
+
+  .mat-cell.actions,
+  .mat-header-cell.actions {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+    justify-content: flex-end;
+    svg {
+      margin: 0 8px 0 4px;
+    }
+    xcdrs-activities-actions {
+      // margin-left: 20px;
+      min-width: 17px;
+    }
+  }
+  .mat-cell.efforts,
+  .mat-header-cell.efforts {
+    // flex: 0 0 2% !important;
+    flex: 0 0 7% !important;
+  }
+  .mat-cell.completed,
+  .mat-header-cell.completed {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.claimed,
+  .mat-header-cell.claimed {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.started,
+  .mat-header-cell.started {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.hover,
+  .mat-header-cell.hover {
+    flex: 0 0 0% !important;
+  }
+  .mat-cell {
+    padding: 16px 0px;
+  }
+}
+
+.more-duedate-icon-container {
+  margin-right: -15px;
+  color: $gray;
+}
+.activity-progress {
+  border-radius: 4px;
+  ::ng-deep .mat-progress-bar-background {
+    fill: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-buffer {
+    background-color: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-fill::after {
+    background-color: #00a3ff;
+  }
+  &.done {
+    ::ng-deep .mat-progress-bar-fill::after {
+      background-color: #aaadb8;
+    }
+  }
+}
+
+::ng-deep .schedule-menu.mat-menu-panel {
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .mat-menu-item {
+    font-weight: bold;
+    &:not(.last) {
+      border-bottom: 1px solid #dadadb;
+    }
+  }
+}
+
+.over-due {
+  font-size: $f14;
+  color: #e21d26;
+}
+
+::ng-deep .actions-menu-container .mat-icon {
+  margin-top: 16px !important;
+}
+::ng-deep button.mat-focus-indicator.mat-tooltip-trigger.mat-icon-button.mat-button-base.mat-button-disabled {
+  background: transparent !important;
+}
+::ng-deep .mat-tab-labels {
+  border-bottom: 1px solid #dfe3e9;
+}
+::ng-deep .mat-tab-header {
+  border-bottom: 1px solid transparent;
+  margin: 20px 0 7px;
+}

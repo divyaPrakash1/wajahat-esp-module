@@ -1,0 +1,322 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="log-dialog-container"
+  *ngIf="dataloaded"
+>
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+  >
+    <h1 mat-dialog-title class="title" *ngIf="!data.isForNew">Log Actuals</h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="data.isForNew">Log Efforts</h1>
+    <mat-card fxFlex class="progress" *ngIf="!data.isForNew">
+      <mat-card-content
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+      >
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >Target
+          </mat-label>
+          <span>
+            {{target}}
+            <span *ngIf="data.activity.tacticId != null"
+              >{{ data.activity.tactic?.unit }}</span
+            ></span
+          >
+        </p>
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >Logged Actuals
+          </mat-label>
+          <span *ngIf="data.activity.actualValue != null">
+            {{ loggedActuals }}
+            <span *ngIf="data.activity.tacticId != null"
+              >{{ data.activity.tactic?.unit }}</span
+            >
+          </span>
+        </p>
+
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >Logged Efforts
+          </mat-label>
+          <span
+            *ngIf="data.activity.effortInHour != null && data.activity.effortInHour != 0"
+            >{{ data.activity.effortInHour }}
+            <span *ngIf="data.activity.effortInHour == 1"> hr</span
+            ><span *ngIf="data.activity.effortInHour > 1"> hrs</span>
+          </span>
+          <span
+            *ngIf="data.activity.effortInMinute != null && data.activity.effortInMinute != 0"
+          >
+            &nbsp; {{ data.activity.effortInMinute }}
+            <span *ngIf="data.activity.effortInMinute == 1"> min</span
+            ><span *ngIf="data.activity.effortInMinute > 1"> mins</span>
+          </span>
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <form
+      [formGroup]="form"
+      class="log-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <p class="sub-title" *ngIf="!data.isForNew">Actuals</p>
+      <mat-form-field class="custom actual-value-field" *ngIf="!data.isForNew">
+        <input
+          fxFlex
+          type="number"
+          name="actualValue"
+          matInput
+          formControlName="actualValue"
+          id="actualValueInput"
+          autocomplete="numebr"
+          placeholder="Actual Value"
+          min="0"
+        />
+        <span
+          fxFlex="nogrow"
+          fxLayoutAlign="end center"
+          class="unit-box"
+          *ngIf="data.activity.tacticId != null"
+        >
+          {{data.activity.tactic?.unit}}
+        </span>
+      </mat-form-field>
+
+      <p class="sub-title" *ngIf="!data.isForNew">Efforts</p>
+      <mat-form-field
+        class="custom mat-form-field-should-float close-date-field"
+      >
+        <input
+          matInput
+          [matDatepicker]="logDateValue"
+          formControlName="logDate"
+          placeholder="Date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="logDateValue"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #logDateValue></mat-datepicker>
+      </mat-form-field>
+
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field
+          class="custom time-field"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            type="number"
+            name="effortInHour"
+            matInput
+            formControlName="effortInHour"
+            id="effortInHour"
+            autocomplete="numebr"
+            placeholder="Hours"
+            max="200"
+          />
+          <mat-error
+            *ngIf="form.get('effortInHour')?.errors?.max && form.get('effortInHour')?.touched"
+            class="invalid"
+          >
+            Hours must be less than or equal to 200!
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field
+          class="custom time-field"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            type="number"
+            name="effortInMinute"
+            matInput
+            formControlName="effortInMinute"
+            id="effortInMinute"
+            autocomplete="numebr"
+            placeholder="Minutes"
+            max="59"
+          />
+
+          <mat-error
+            *ngIf="form.get('effortInMinute')?.errors?.max && form.get('effortInMinute')?.touched"
+            class="invalid"
+          >
+            Minutes must be less 60!
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        class="divider-container"
+      >
+        <mat-divider></mat-divider><span class="or-span"> or </span
+        ><mat-divider></mat-divider>
+      </div>
+
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field
+          class="custom time-field timer"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            matInput
+            formControlName="startTime"
+            [owlDateTime]="dt1"
+            [owlDateTimeTrigger]="dt1"
+            placeholder="Start Time"
+            [required]="this.form.get('endTime')?.value != null &&
+            this.form.get('endTime')?.value != ''"
+          />
+          <span
+            fxFlex="nogrow"
+            [owlDateTimeTrigger]="dt1"
+            class="trigger material-icons"
+          >
+            access_time
+          </span>
+          <owl-date-time
+            [hour12Timer]="true"
+            pickerType="timer"
+            #dt1
+          ></owl-date-time>
+
+          <mat-error
+            *ngIf="form.get('startTime')?.errors?.required && form.get('startTime')?.touched"
+            class="invalid"
+          >
+            please fill efforts start time!
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field
+          class="custom time-field timer"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            matInput
+            formControlName="endTime"
+            [owlDateTime]="dt2"
+            [owlDateTimeTrigger]="dt2"
+            placeholder="End Time"
+            [required]="this.form.get('startTime')?.value != null &&
+            this.form.get('startTime')?.value != ''"
+          />
+          <span
+            fxFlex="nogrow"
+            [owlDateTimeTrigger]="dt2"
+            class="trigger material-icons"
+          >
+            access_time
+          </span>
+          <owl-date-time
+            [hour12Timer]="true"
+            pickerType="timer"
+            #dt2
+          ></owl-date-time>
+          <mat-error
+            *ngIf="form.get('endTime')?.errors?.incorrect && (form.get('endTime')?.touched || form.get('endTime')?.dirty)"
+            class="invalid"
+          >
+            End time must be after start time!
+          </mat-error>
+          <mat-error
+            *ngIf="form.get('endTime')?.errors?.required && form.get('endTime')?.touched"
+            class="invalid"
+          >
+            please fill efforts end time!
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="custom comment-field">
+        <input
+          type="text"
+          name="comment"
+          matInput
+          formControlName="comment"
+          id="comment"
+          placeholder="Add your comments here ..."
+        />
+      </mat-form-field>
+    </form>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        Cancel
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        Log
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

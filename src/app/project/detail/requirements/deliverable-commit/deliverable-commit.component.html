@@ -1,0 +1,21 @@
+<div class="sprint-listing">
+  <div class="header">Commit Deliverable</div>
+  <div *ngIf="loading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="sprint-list" *ngIf="!loading">
+    <li *ngFor="let sprint of list" (click)="onClick(sprint)" [class.active]="selected.sprintId == sprint.sprintId">
+      <div class="row title">
+        <img src="assets/images/sprint-flag-icon.svg" />
+        <div class="text">{{sprint.title}}</div>
+      </div>
+      <div class="status-col" *ngIf="sprint.status">
+        <div class="tag blue {{sprint.status}}"  style="color: #{{sprint.colorCode}};background-color: #{{sprint.colorCode}}1a" >{{sprint.status}}</div>
+      </div>
+    </li>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel()" class="outlined">Cancel</button>
+    <button (click)="change()" [disabled]="selected === 0">Move</button>
+  </div>
+</div>

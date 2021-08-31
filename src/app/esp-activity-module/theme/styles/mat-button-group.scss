@@ -1,0 +1,18 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+.mat-button-toggle-group {
+  border-color: var(--primary-color);
+
+  .mat-button-toggle {
+    &-checked {
+      background-color: var(--primary-color);
+      .mat-button-toggle-label-content {
+        color: #ffffff;
+      }
+    }
+    &-label-content {
+      font-size: $f16;
+      color: var(--primary-color);
+    }
+  }
+}

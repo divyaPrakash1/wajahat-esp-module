@@ -1,0 +1,4 @@
+<app-menu *ngIf="menuVisible"></app-menu>
+<div class="container" [class.without-menu]="!menuVisible">
+  <router-outlet></router-outlet>
+</div>

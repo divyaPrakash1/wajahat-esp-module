@@ -1,0 +1,196 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="close-dialog-container"
+>
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">Share Activity With</h1>
+    <xcdrs-search-field (search)="onSearch($event)"></xcdrs-search-field>
+    <div
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="space-around center"
+            class="inner-spinner"
+            *ngIf="isLoading"
+          >
+            <mat-spinner [diameter]="50"></mat-spinner>
+    </div>
+    <mat-card  fxFlex fxLayout="row"  fxLayoutAlign="start start" class="user-container" *ngIf="!isLoading && dataLoaded && users.length>0  && !isSearchMode()">
+        
+            <span fxFlex=90 class="name">{{shareWithAllOpt.UserName}}</span>
+            <span 
+            fxFlex="nogrow"
+            fxLayout="row"
+            fxLayoutAlign="end center" >
+            <mat-checkbox class="all-checkbox" [(ngModel)]="isShareWithAllSelected" (change)="toggleAllSelection($event)"></mat-checkbox>
+        </span>
+       
+    </mat-card>
+    <div class="users-container" 
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch" *ngIf="!isLoading && dataLoaded && !!users?.length" >
+        <mat-card *ngFor="let user of users"  fxFlex fxLayout="row"  fxLayoutAlign="start start" 
+        class="user-container">
+        <ngx-avatar
+        fxFlex="nogrow"
+        name="{{user.UserName}}"
+        [src]="user.UserPicture"
+        initialsSize="2"
+        bgColor="#00C853"
+        fgColor="#FFFFFF"
+        size="40"
+        [textSizeRatio]="textSizeRatio"
+        [round]="true"
+      ></ngx-avatar>
+    
+      <p class="user-info" 
+      fxFlex=75
+      fxLayout="column"
+      fxLayoutAlign="start stretch">
+        <span class="name" [ngClass]="{'has-no-postion': user.Position == null}">{{user.UserName}}</span>
+        <span *ngIf="user.Position!=null" class="position">{{user.Position}}</span>
+      </p>
+      <div 
+        fxFlex="nogrow"
+        fxLayout="row"
+        fxLayoutAlign="end center" >
+         <mat-checkbox [checked]="user.selected" [value]="user"(change)="toggleItem($event)" ></mat-checkbox>
+
+      </div>
+
+
+    </mat-card>
+    
+    </div>
+
+
+    <div
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    class="fill-bg"
+    *ngIf="
+      !isLoading &&
+      dataLoaded &&
+      !isError &&
+      users.length === 0 &&
+      !isSearchMode()
+    "
+  >
+    <xcdrs-detailed-panel-placeholder
+      [imagePath]="''"
+      [title]="'No users available'"
+      [subTitle]="'It seems no users that you can select to share this activity with.'"
+    >
+    </xcdrs-detailed-panel-placeholder>
+  </div>
+
+  <div
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    class="fill-bg"
+    *ngIf="
+      dataLoaded &&
+      !isLoading &&
+      isError &&
+      users.length == 0
+    "
+  >
+    <xcdrs-detailed-panel-placeholder
+      [imagePath]="'./assets/images/ic_error.png'"
+      [title]="'Oops, something went wrong!'"
+      [subTitle]="
+        'Please check your internet connect or reload the page to make sure its working.'
+      "
+    >
+    </xcdrs-detailed-panel-placeholder>
+  </div>
+
+  <div
+    class="fill-bg"
+    *ngIf="
+      dataLoaded &&
+      !isLoading &&
+      !isError &&
+      users.length === 0 &&
+      isSearchMode()
+    "
+  >
+    <xcdrs-detailed-panel-placeholder
+      [imagePath]="'./assets/images/news-item/no-items.svg'"
+      [title]="'User not found!'"
+      [subTitle]="
+        'Maybe your search was too specific, please try searching with another term.'
+      "
+    >
+    </xcdrs-detailed-panel-placeholder>
+  </div>
+  
+  </div>
+
+  
+  <div
+  class="action-btns"
+  fxFlex
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+  [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+>
+  <button
+    fxFlex="43"
+    (click)="cancel()"
+    class="action-btn cancel-btn"
+    mat-stroked-button
+    color="primary"
+  >
+    Cancel
+  </button>
+  <button
+    fxFlex="54"
+    (click)="submit()"
+    [disabled]="selectedUsers.length==0"
+    class="action-btn gradient-btn submit-btn"
+    mat-flat-button
+    color="primary"
+  >
+    Share
+  </button>
+</div>
+</div>
+
+<!-- <div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div> -->

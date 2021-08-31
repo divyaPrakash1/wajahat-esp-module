@@ -1,0 +1,90 @@
+<div class="row gird-view" *ngIf="list.length > 0 && expended === 0">
+  <div class="column" *ngFor="let stating of [0,1,2]">
+    <div class="card" *ngFor="let sprint of list | slice:stating | skip:3;">
+      <div class="wrap-area">
+        <div class="row top-title-area">
+          <div class="row title" (click)="OnExpend(sprint.sprintId)">
+            <img src="assets/images/sprint-flag-icon.svg" />
+            <div class="text">{{sprint.title}}</div>
+          </div>
+          <div class="sprint-actions">
+            <button mat-icon-button [matMenuTriggerFor]="menu" >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+              <!-- <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button> -->
+              <button mat-menu-item *ngIf="!sprint.signedByMe" (click)="onSign(sprint)">
+                <mat-icon>border_color</mat-icon>
+                <span>Sign</span>
+              </button>
+              <button mat-menu-item *ngIf="sprint.signedByMe" (click)="onRevoke(sprint)">
+                <mat-icon>exit_to_app</mat-icon>
+                <span>Revoke</span>
+              </button>
+              <button mat-menu-item (click)="onCloseRequest(sprint)">
+                <mat-icon>swap_horiz</mat-icon>
+                <span>Send Close Request</span>
+              </button>
+              <button mat-menu-item (click)="onClose(sprint)">
+                <mat-icon>highlight_off</mat-icon>
+                <span>Close</span>
+              </button>
+              <button mat-menu-item (click)="onDelete(sprint)">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+        <div class="tags-area">
+          <div class="tag blue {{sprint.sprintStatus}}" *ngIf="sprint.sprintStatus"  style="color: #{{sprint.colorCode}};background-color: #{{sprint.colorCode}}1a" >{{sprint.sprintStatus}}</div>
+        </div>
+        <div class="row info-area">
+          <div class="info deliverable">
+            <label>Deliverables:</label>
+            <div class="value">
+              <span *ngIf="sprint.sprintStatus !== 'Upcoming'">{{sprint.deliverableCompleted}}/</span>{{sprint.deliverableCount}}
+            </div>
+          </div>
+          <div class="info deliverable">
+            <label>Planned:</label>
+            <div class="value">{{sprint.plannedCompletion}}%</div>
+          </div>
+          <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+            <label>Actual:</label>
+            <div class="value">{{sprint.actualCompletion}}%</div>
+          </div>
+          <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+            <label>Satisfaction:</label>
+            <div class="value">{{sprint.customerSatisfaction}}%</div>
+          </div>
+          <div class="info deliverable" *ngIf="sprint.sprintStatus === 'Closed'">
+            <label>Closed by:</label>
+            <div class="value">{{sprint.closedByName}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="gr-cards" *ngIf="expended !== 0">
+  <div class="back-button" (click)="OnExpend(selected.sprintId)">
+    <div class="back-icon"><mat-icon>keyboard_backspace</mat-icon></div>
+    <div class="back-text">Sprints</div>
+  </div>
+  <div class="requirement-row">
+    <div class="requirement-tag">
+      <div class="tag blue" style="color: #{{selected.colorCode}};background-color: #{{selected.colorCode}}1a" *ngIf="selected.sprintStatus">{{selected.sprintStatus}}</div>
+    </div>
+    <div class="requirement-title">{{selected.title}}</div>
+  </div>
+  <div class="card detail-card">
+    <app-sprint-detail
+      [id]="expended"
+    ></app-sprint-detail>
+  </div>
+</div>
+

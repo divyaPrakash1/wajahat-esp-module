@@ -1,0 +1,53 @@
+<div *ngIf="loading" style="display:flex;height:256px;justify-content: center; align-items: center;">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+<div class="row gird-view" *ngIf="list.length > 0">
+  <div class="column" *ngFor="let stating of [0,1,2]">
+    <div class="card" *ngFor="let backlog of list | slice:stating | skip:3;">
+      <div class="row top-title-area">
+        <div class="row title">{{backlog.title}}</div>
+        <div class="requirement-actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu" >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="onCommit(backlog)">
+              <mat-icon>schedule</mat-icon>
+              <span>Commit</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="row status">
+        <div class="tag blue" style="color: #{{backlog.statusColor}};background-color: #{{backlog.statusColor}}1a">{{backlog.deliverableStatus}}</div>
+        <div class="sp-div">
+          <div class="sp-icon">
+            <img src="/assets/images/stage-icon.svg" />
+          </div>
+          <div class="sp-name">{{backlog.stageName}}</div>
+        </div>
+        <div class="sp-div">
+          <div class="sp-icon">
+            <img src="/assets/images/stage-req-icon.svg" />
+          </div>
+          <div class="sp-name">{{backlog.platformName}}</div>
+        </div>
+      </div>
+      <div class="row percentage-row">
+        <div class="percentage-tag">{{ backlog.percentage }}%</div>
+        <div class="planned-icon {{backlog.plannedStatus == 1 ? 'planned' : (backlog.plannedStatus == 2 ? 'warning' : (backlog.plannedStatus == 3 ? 'completed' : ''))}}"></div>
+        <div class="actual-icon {{backlog.actualStatus == 1 ? 'completed' : (backlog.actualStatus == 2 || backlog.actualStatus==4 ? 'warning' : '')}}"></div>
+        <div class="completed-icon {{backlog.isCompleted ? 'completed' : ''}}"></div>
+      </div>
+      <div class="row requirement-row">
+        <div class="requirement-title" *ngIf="backlog.requirementTitle">
+          <div class="title">Requirement:</div>
+          <div>{{backlog.requirementTitle}}</div>
+        </div>
+        <div class="icon" *ngIf="backlog.isFlaged">
+          <mat-icon aria-hidden="false">flag</mat-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

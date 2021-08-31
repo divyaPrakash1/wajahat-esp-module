@@ -1,0 +1,53 @@
+@import '../../../assets/styles/css3-mixins.scss';
+
+:host{position:fixed;display:block;width:100%;height:74px;top:0;background-color:#fff;box-shadow:0 5px 10px 0 rgba(198,201,210,.25);z-index:9999;}
+.header-container{height:100%;display:flex;padding:0 50px;justify-content:space-between;align-items:center;
+  .burger-menu-btn{position:absolute;right:16px;}
+}
+.header-logo{height:100%;
+  img{width:32px;height:32px;margin-top:20px;
+    &.small{display:none;width:30px;height:30px;}
+  }
+  .title{display:inline-block;vertical-align:top;margin:21px 12px;text-align:center;font-size:16px;line-height:32px;font-weight:900;color:#303030;}
+}
+.header-menu-icon{padding: 5px;border: 1px solid #94959c;border-radius: 4px;color: #94959c;display: none;
+  @include respond-to(mobile){display: block;}
+}
+.header-menu{height:100%;flex:1;justify-content:flex-end;display:flex;
+  .menu-item{height:100%;display:inline-flex;align-items:center;padding:0 24px;position:relative;margin-right:16px;vertical-align:top;text-decoration:none;cursor:pointer;flex-direction:column;align-items: center;justify-content: center;
+    &.disabled{opacity:.4;cursor:auto;}
+    svg{max-height:24px;}
+    span{font-size:14px;line-height: 22px;color:#94959c;}
+    &:hover, &.active{
+      svg{
+        path.icon-path{fill:#93c94b}
+      }
+      span{color:#93c94b}
+    }
+    &.active{
+      &::after{position:absolute;bottom:0;left:0;display:block;content:'';width:100%;height:2px;border-radius:1px;background-image:linear-gradient(to right,#93c94b 0%,#93c94b 100%)}
+    }
+    &:last-child{margin-right:0}
+  }
+  .menu-btn{height:100%;display:inline-flex;align-items:center;vertical-align:top;
+    &:first-of-type{margin-right:8px;margin-left:-10px}
+    a,button{font-size:16px;font-weight:700}
+    button{width:120px}
+  }
+
+  @include respond-to(mobile){
+    display: none;@include transition();
+    &.active{display: block;position: absolute;top: 80px;left:24px;justify-content: flex-start;width: calc(100% - 48px);height: auto;background: #fff;flex-direction: column;box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);}
+    .menu-item{height:auto;display:flex;flex-direction: row;padding:12px 18px;justify-content: flex-start;margin:2px 0;
+      svg{margin-right: 12px;}
+    }
+  }
+}
+@media only screen and (max-width:1100px){
+  .header-container{padding:0 15px}
+  .header-logo{
+    img{display:none;
+      &.small{display:inline-block}
+    }
+  }
+}

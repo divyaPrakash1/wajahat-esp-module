@@ -1,0 +1,451 @@
+<div class="project-header">
+  <div class="project-title">{{projectDetail.projectName}}</div>
+  <div class="project-option">
+    <button mat-icon-button [matMenuTriggerFor]="menu" >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+      <button mat-menu-item  (click)="onEditClick()">
+        <mat-icon>edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item (click)="onSignClick()" *ngIf="!projectDetail.signedByMe">
+        <mat-icon>border_color</mat-icon>
+        <span>Sign</span>
+      </button>
+      <button mat-menu-item (click)="onRevokeClick()" *ngIf="projectDetail.signedByMe">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Revoke</span>
+      </button>
+      <button mat-menu-item (click)="onStateClick()">
+        <mat-icon>sync</mat-icon>
+        <span>Change State</span>
+      </button>
+      <button mat-menu-item (click)="onCloseClick()">
+        <mat-icon>close</mat-icon>
+        <span>Close</span>
+      </button>
+      <button mat-menu-item (click)="onDeleteClick()">
+        <mat-icon>delete_outline</mat-icon>
+        <span>Delete</span>
+      </button>
+      <button mat-menu-item (click)="onProjectSetting()">
+        <mat-icon>settings</mat-icon>
+        <span>Setting</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>
+<div class="row card toper">
+  <div class="top">
+    <div class="bl-tag">
+      <div class="tag blue" style="color: #{{projectDetail.statusColor}};background-color: #{{projectDetail.statusColor}}1a">{{projectDetail.projectStatusName}}</div>
+    </div>
+    <div class="icon">
+      <a routerLink="/project/{{projectDetail.projectId}}/general">
+        <mat-icon>east</mat-icon>
+      </a>
+    </div>
+  </div>
+  <div class="detail-sec">
+    <div class="column">
+      <div class="bl-item">
+        <label>Completed</label>
+        <div class="value textContinue">{{projectDetail.requirementsCompletedCount}} /{{projectDetail.requirementCount}}</div>
+      </div>
+      <div class="bl-item">
+        <label>Due Date</label>
+        <div class="value textContinue" title="{{projectDetail.due_date}}">{{projectDetail.due_date}}</div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="bl-item">
+        <label>Owner</label>
+        <div class="value textContinue" title="{{projectDetail.projectOwnerName}}">{{projectDetail.projectOwnerName}}</div>
+      </div>
+      <div class="bl-item">
+        <label>Last Signed</label>
+        <div class="value textContinue" title="{{projectDetail.last_signed}}">{{projectDetail.last_signed}}</div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="bl-item">
+        <label>Type</label>
+        <div class="value textContinue" title="{{projectDetail.type_names}}">{{projectDetail.type_names}}</div>
+      </div>
+      <div class="bl-item">
+        <label>Signed by</label>
+        <div class="value textContinue" title="{{projectDetail.lastSignedBy}}">{{projectDetail.lastSignedBy}}</div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="bl-item progress">
+        <label>Linear Progress</label>
+        <div class="value percentage">
+          <div class="percentage-value">{{projectDetail.linearProgress}}%</div>
+          <div class="percentage-bar">
+            <div class="percentage-bar-fill" [ngStyle]="{'width': projectDetail.linearProgress + '%'}"></div>
+            <div class="target" [ngStyle]="{'left': projectDetail.linearProgressTarget + '%'}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="detail-layout">
+  <div class="column">
+    <div class="description card {{(projectDetail.describeValue==='' && !showdescription) ? 'not-found' : ''}}">
+      <div class="header">Description</div>
+      <div *ngIf="showdescription" class="description-form">
+        <div class="df-inputs">
+          <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput type="text" color="xui" class="xui" [formControl]="description"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="df-buttons">
+          <button (click)="toggleDescription()" class="defaultButton outlined">Discard</button>
+          <button (click)="submitDescription()">Save</button>
+        </div>
+      </div>
+      <pre class="text" (click)="toggleDescription()" *ngIf="!showdescription && projectDetail.describeValue!==''">{{projectDetail.describeValue}}</pre>
+      <div class="no-des" (click)="toggleDescription()" *ngIf="!showdescription && projectDetail.describeValue===''">
+        <a class="link no-link">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add Description</span>
+        </a>
+      </div>
+    </div>
+    <div class="tags card {{projectDetail.tags.length===0 ? 'not-found' : ''}}" *ngIf="setting.labels">
+      <div class="header">
+        <div class="text">Labels</div>
+        <div class="icon" (click)="onTagClick()"><mat-icon>east</mat-icon></div>
+      </div>
+      <div class="no-tags" (click)="onTagClick()" *ngIf="projectDetail.tags.length===0">
+        <a class="link no-link">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add Labels</span>
+        </a>
+      </div>
+      <div class="tag-list" *ngIf="projectDetail.tags.length!==0">
+        <li *ngFor="let tag of projectDetail.tags">{{tag}}</li>
+      </div>
+    </div>
+    <div class="card requirements" *ngIf="setting.requirements">
+      <app-project-requirement-stats
+        [entityid]="projectDetail.projectId"
+        (update)="updateDetail()"
+      ></app-project-requirement-stats>
+      <!-- <div class="header">
+        <div class="text">Requirements</div>
+        <a href="{{'project/' + projectDetail.projectID + '/requirements'}}">View all ({{projectDetail.requirementCount}})</a>
+      </div>
+      <div class="revenue-counts">
+        <div class="title">Revenue</div>
+        <div class="row">
+          <div class="sc-item">
+            <div class="toper">Projects: <span class="value">3MM</span></div>
+            <div class="percent">60%</div>
+            <div class="bottom">cost</div>
+          </div>
+          <div class="sc-item">
+            <div class="toper">Planned: <span class="value">3MM</span></div>
+            <div class="percent">60%</div>
+            <div class="bottom">cost</div>
+          </div>
+          <div class="sc-item">
+            <div class="toper">Actual: <span class="value">3MM</span></div>
+            <div class="percent red">60%</div>
+            <div class="bottom">cost</div>
+          </div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stats-item">
+          <div class="stats-count">
+            <div class="icon"><mat-icon>panorama_fish_eye</mat-icon></div>
+            <div class="count">{{projectDetail.requirementsTotal}}</div>
+          </div>
+          <div class="stats-text">
+            <div class="text">Opened</div>
+            <mat-icon>navigate_next</mat-icon>
+          </div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-count">
+            <div class="icon"><mat-icon>incomplete_circle</mat-icon></div>
+            <div class="count">{{projectDetail.requirementsTotal}}</div>
+          </div>
+          <div class="stats-text">
+            <div class="text">In Progress</div>
+            <mat-icon>navigate_next</mat-icon>
+          </div>
+        </div>
+        <div class="stats-item">
+          <div class="stats-count">
+            <div class="icon"><mat-icon>check_circle</mat-icon></div>
+            <div class="count">{{projectDetail.requirementsCompletedCount}}</div>
+          </div>
+          <div class="stats-text">
+            <div class="text">Completed</div>
+            <mat-icon>navigate_next</mat-icon>
+          </div>
+        </div>
+      </div> -->
+    </div>
+    <div class="card signature-list" *ngIf="setting.signatures">
+      <app-project-signatures
+        [entity]="module"
+        [entityid]="projectDetail.projectId"
+        (update)="updateDetail()"
+        class="small"
+      ></app-project-signatures>
+      <!-- <div class="header">
+        <div class="text">Signatures ({{projectDetail.signatureCount}})</div>
+      </div>
+      <div class="signature-body">
+        <div class="signature-box" *ngFor="let sign of projectDetail.signedByUsers">
+          <div class="signature-area">
+            <div class="signature-by">Signed by {{sign}}</div>
+            <div class="signature-style">{{sign}}</div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <div class="column">
+    <div class="workspace" (click)="onScopeClick()" *ngIf="setting.workspace">
+      <div class="b-row">
+        <div class="text">Access Workspace</div>
+        <div class="icon">
+          <mat-icon>east</mat-icon>
+        </div>
+      </div>
+    </div>
+    <div class="tags phases card {{true ? 'not-found' : ''}}" *ngIf="setting.phases">
+      <div class="header">
+        <div class="text">Phases</div>
+        <div class="icon"><mat-icon>east</mat-icon></div>
+      </div>
+      <div class="no-phase" *ngIf="true">
+        <a class="link no-link">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Add Phase</span>
+        </a>
+      </div>
+      <div class="phase-list" *ngIf="false">
+        <div class="phase-item open">
+          <div class="text">Open</div>
+          <div class="count">10</div>
+        </div>
+        <div class="phase-item close">
+          <div class="text">Closed</div>
+          <div class="count">10</div>
+        </div>
+      </div>
+    </div>
+    <div class="tags issues card {{true ? 'not-found' : ''}}" *ngIf="setting.issues">
+      <div class="header">
+        <div class="text">Issues</div>
+        <div class="icon"><mat-icon>east</mat-icon></div>
+      </div>
+      <div class="no-issue" *ngIf="true">
+        Currently, there is no issue.
+      </div>
+      <div class="issue-list">
+        <div class="issue-item open">
+          <div class="text">Open</div>
+          <div class="doted"></div>
+          <div class="count">10</div>
+        </div>
+        <div class="issue-item close">
+          <div class="text">Closed</div>
+          <div class="doted"></div>
+          <div class="count">10</div>
+        </div>
+      </div>
+    </div>
+    <div class="tags risks card {{true ? 'not-found' : ''}}" *ngIf="setting.risks">
+      <div class="header">
+        <div class="text">Open Risks</div>
+        <div class="icon"><mat-icon>east</mat-icon></div>
+      </div>
+      <div class="no-risk" *ngIf="true">
+        Currently, there is no risk.
+      </div>
+      <div class="risk-list">
+        <div class="col">
+          <div class="upper head">Impact</div>
+          <div class="text">critical</div>
+          <div class="text">significant</div>
+          <div class="text">high</div>
+          <div class="text">moderate</div>
+          <div class="text">low</div>
+          <div class="text"></div>
+        </div>
+        <div class="col">
+          <div class="upper head">probability</div>
+          <div class="box-area">
+            <div class="box-row">
+              <div class="box warning"></div>
+              <div class="box warning"></div>
+              <div class="box danger"></div>
+              <div class="box danger"></div>
+              <div class="box danger"></div>
+            </div>
+            <div class="box-row">
+              <div class="box"></div>
+              <div class="box warning"></div>
+              <div class="box warning"></div>
+              <div class="box danger">4</div>
+              <div class="box danger"></div>
+            </div>
+            <div class="box-row">
+              <div class="box"></div>
+              <div class="box warning"></div>
+              <div class="box warning">3</div>
+              <div class="box danger"></div>
+              <div class="box danger"></div>
+            </div>
+            <div class="box-row">
+              <div class="box">70</div>
+              <div class="box"></div>
+              <div class="box warning"></div>
+              <div class="box warning"></div>
+              <div class="box danger"></div>
+            </div>
+            <div class="box-row">
+              <div class="box"></div>
+              <div class="box"></div>
+              <div class="box"></div>
+              <div class="box"></div>
+              <div class="box warning"></div>
+            </div>
+            <div class="text-row">
+              <div class="text">rare</div>
+              <div class="text">unlikely</div>
+              <div class="text">possible</div>
+              <div class="text">likely</div>
+              <div class="text">high</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="tags sprints card" *ngIf="setting.sprints">
+      <div class="header">
+        <div class="text">Sprints</div>
+        <a *ngIf="!sprintLoading && sprintData.totalSprints > 0" href="/project/{{projectDetail.projectId}}/sprints">View all ({{sprintData.totalSprints}})</a>
+      </div>
+      <div *ngIf="sprintLoading" style="display: flex;height: 128px;justify-content: center; align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <div class="flex-row sprint-detail" *ngIf="!sprintLoading && sprintData.totalSprints > 0">
+        <div class="col3">
+          <div class="card sprint-info">
+            <div class="left-side" *ngIf="sprintData.plannedCount > 0 || sprintData.actualCount > 0">
+              <div class="planned" *ngIf="sprintData.plannedCount > 0">
+                <div class="planned-icon"></div>
+                <div class="text">{{sprintData.plannedCount}}</div>
+              </div>
+              <div class="activities" *ngIf="sprintData.actualCount > 0">
+                <div class="actual-icon"></div>
+                <div class="text">{{sprintData.actualCount}}</div>
+              </div>
+              <div class="issues">You have issues!</div>
+            </div>
+            <div class="left-side" *ngIf="sprintData.plannedCount === 0 && sprintData.actualCount === 0">
+              <img src="assets/images/good-work-icon.svg" />
+              <div class="issues">Good Work! <br> No Issues</div>
+            </div>
+            <div class="right-side">
+              <div class="sign">
+                <div class="sign-date">
+                  <img src="assets/images/requirements-approved.svg" />
+                  <div class="text">{{sprintData.lastSignedBy ? sprintData.lastSignedDate : '--'}}</div>
+                </div>
+                <div class="sign-name">{{sprintData.lastSignedBy || '--'}}</div>
+              </div>
+              <div class="satisfaction">
+                <div class="header">
+                  <div>Satisfaction</div>
+                  <mat-icon *ngIf="sprintData.satisfaction > 0">trending_up</mat-icon>
+                </div>
+                <div class="value">{{sprintData.satisfaction}}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col3">
+          <div class="card sprint-stats">
+            <div class="stat-list">
+              <div class="stat-item">
+                <div class="value">{{sprintData.openedPercentage}}</div>
+                <div class="name">
+                  <img src="assets/images/icon-event-time.svg">
+                  <div>Opened</div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="value">{{sprintData.closedPercentage}}</div>
+                <div class="name">
+                  <img src="assets/images/icon-action-save.svg">
+                  <div>Closed</div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="value">{{sprintData.signedPercentage}}</div>
+                <div class="name">
+                  <img src="assets/images/requirements-approved.svg">
+                  <div>Signed</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col3" *ngIf="sprintData.currentSprintTitle">
+          <div class="card current-sprint">
+            <div class="header">
+              <img src="assets/images/sprint-flag-icon.svg" />
+              <div class="text">{{sprintData.currentSprintTitle}}</div>
+            </div>
+            <div class="tag purple">Current</div>
+            <div class="deliverable">
+              <label>Deliverables</label>
+              <div class="value">{{sprintData.totalCompletedDeliverables}}/{{sprintData.totalDeliverables}}</div>
+            </div>
+            <div class="planned">
+              <label>Planned</label>
+              <div class="value">{{sprintData.currentSprintPlanned}}%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="no-sprint" *ngIf="!sprintLoading && (!sprintData || sprintData.totalSprints == 0)">
+        <img src="/assets/images/sprint_icon.svg" />
+        <div class="text">Ops! There are no sprint.</div>
+        <a href="/project/{{projectDetail.projectId}}/sprints?model=create" class="link">
+          <mat-icon>add_circle_outline</mat-icon>
+          <span>Create Sprint</span>
+        </a>
+      </div>
+    </div>
+    <div class="tags attachments card" *ngIf="setting.attachments">
+      <app-project-attachments
+        [entity]="module"
+        [entityid]="projectDetail.projectId"
+        class="small"
+      ></app-project-attachments>
+    </div>
+    <div class="tags Comments card" *ngIf="setting.comments">
+      <app-generic-comments
+        [entity]="module"
+        [entityid]="projectDetail.projectId"
+        (update)="updateDetail()"
+        type="small"
+      ></app-generic-comments>
+    </div>
+  </div>
+</div>

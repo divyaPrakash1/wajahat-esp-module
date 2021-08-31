@@ -1,0 +1,103 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+
+.social-links-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  .social-link-item {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
+  }
+}
+
+.share-tick {
+  &::after {
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    right: -3px;
+    display: inline-block;
+    content: '';
+    background-image: url('/assets/images/ic_shared_tick.png');
+  }
+}
+
+.links-list {
+  position: absolute;
+  top: 37px;
+  left: 0;
+  z-index: 1;
+  min-width: 256px;
+  @include clear-list();
+  border-radius: 4px;
+  box-shadow: 0 5px 40px 0 rgba(198, 201, 210, 0.6);
+  background: white;
+
+  .list-item {
+    display: flex;
+    padding: 10px 16px;
+
+    .item-link {
+      display: block;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      font-size: $f16;
+      font-weight: bold;
+      line-height: 1.5;
+      color: $main-color;
+
+      &.share-link {
+        padding-left: 40px;
+        background-repeat: no-repeat;
+        background-image: url('/assets/images/icons/social/icon-social-other-primary.svg');
+      }
+
+      &.send-msg {
+        padding-left: 40px;
+        background-image: url('/assets/images/icons/products/send_message.svg');
+        background-position: 0;
+        background-repeat: no-repeat;
+      }
+
+      &.schedule {
+        padding-left: 40px;
+        background-image: url('/assets/images/icons/products/calendar.svg');
+        background-position: 0;
+        background-repeat: no-repeat;
+      }
+
+      .upload-label {
+        display: block;
+        width: 100%;
+        cursor: pointer;
+      }
+    }
+
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #f6f7f9;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+
+.shared-product {
+  a {
+    color: #0000EE;
+  }
+}

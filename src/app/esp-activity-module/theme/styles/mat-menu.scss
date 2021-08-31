@@ -1,0 +1,32 @@
+@import './variables.scss';
+
+@mixin xcdr-mat-menu($width) {
+  width: $width !important;
+}
+
+.mat-menu-panel {
+  min-height: unset !important;
+
+  .mat-menu-content:not(:empty) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+
+    button {
+      font-weight: bold;
+    }
+
+    button:not(:last-child) {
+      border-bottom: 1px solid $color-secondary-divider;
+    }
+  }
+}
+
+
+.more-tabs-menu-backdrop + .cdk-overlay-connected-position-bounding-box {
+  top: 56px !important;
+  width: 100% !important;
+
+  .cdk-overlay-pane {
+    top: 56px !important;
+  }
+}

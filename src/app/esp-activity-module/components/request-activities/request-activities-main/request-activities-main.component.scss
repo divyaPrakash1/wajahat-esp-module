@@ -1,0 +1,49 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.main-container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+// .request-activities-container {
+//   mat-tab-group {
+//     margin: 24px 0px;
+//     border-radius: 4px;
+//     box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.25);
+//     ::ng-deep mat-tab-header {
+//       background-color: transparent;
+//       ::ng-deep .mat-tab-labels {
+//         border: none;
+//         ::ng-deep .mat-tab-label {
+//           border-radius: 4px;
+//           box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.26),
+//             inset 8px -4px 8px 0 rgba(198, 201, 210, 0.26);
+//           background-color: rgba(255, 255, 255, 0.7);
+//           &.mat-tab-label-active {
+//             background-color: #fff;
+//             box-shadow: none;
+//           }
+//         }
+//       }
+//       ::ng-deep mat-ink-bar {
+//         display: none;
+//       }
+//     }
+//     ::ng-deep .mat-tab-body-wrapper {
+//       padding: 24px;
+//       background-color: #fff;
+//     }
+//   }
+// }

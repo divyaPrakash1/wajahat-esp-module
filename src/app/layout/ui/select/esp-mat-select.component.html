@@ -1,0 +1,67 @@
+<mat-form-field fxFlex appearance="{{appearance}}" [class.no-border-h40]="appearance == 'standard'">
+  <mat-label *ngIf="appearance == 'outline'">{{placeholder}}</mat-label>
+  <mat-select *ngIf="allowMultiSelect" [placeholder]="placeholder" [formControl]="espFormControl" disableOptionCentering
+    multiple panelClass="esp-multi-select" [required]="isRequired">
+    <ngx-mat-select-search ngModel #filter="ngModel" [ngModelOptions]="{standalone: true}"
+      [placeholderLabel]="('Common.FIND'| translate) +' ' + placeholder + ' ' +'...'"
+      [noEntriesFoundLabel]="('Common.NO-MATCHING'| translate) +' ' + placeholder + ' ' + ('Common.FOUND'| translate)">
+    </ngx-mat-select-search>
+    <mat-select-trigger *ngIf="!triggerTextInBoxes">
+      {{triggerText}}
+    </mat-select-trigger>
+    <mat-select-trigger *ngIf="triggerTextInBoxes">
+      <div fxLayout="row wrap">
+        <ng-container *ngIf="!espFormControl.value.includes(-1) else allBox">
+          <div *ngFor="let name of selectNamesList | filterByProperty:['name',filter.value];" class="trigger-box">
+            {{name}}
+          </div>
+        </ng-container>
+        <ng-template #allBox>
+          <div class="trigger-box">
+            All
+          </div>
+        </ng-template>
+      </div>
+    </mat-select-trigger>
+    <mat-option *ngIf="!filter.value" [value]="-1" (click)="toggleAllSelection()" [disabled]="disableSelectAll"
+      [class.option-two-lines]="optionInTwoLines">
+      <ng-container *ngIf="!optionInTwoLines; else twoLinesSelectAll">Select All</ng-container>
+      <ng-template #twoLinesSelectAll>
+        <div class="primary-text">Select All</div>
+      </ng-template>
+    </mat-option>
+    <mat-option [class.option-two-lines]="optionInTwoLines"
+      fxLayoutAlign="{{optionInTwoLines ? 'start start' : 'center center'}}"
+      *ngFor="let item of options | filterByProperty:['name',filter.value];" [value]="item.value" (click)="toggleItem()"
+      [disabled]="item.disabled">
+      <ng-container *ngIf="!optionInTwoLines; else twoLines">{{item.name}}</ng-container>
+      <ng-template #twoLines>
+        <div class="primary-text esp-multiselect">{{item.name}}</div>
+        <div class="secondry-text" *ngIf="item.description" [matTooltip]="item.description">{{item.description}}</div>
+      </ng-template>
+    </mat-option>
+  </mat-select>
+
+  <mat-select *ngIf="!allowMultiSelect" [placeholder]="placeholder" [formControl]="espFormControl"
+    disableOptionCentering>
+    <ngx-mat-select-search ngModel #singleSelectFilter="ngModel" [ngModelOptions]="{standalone: true}"
+      [placeholderLabel]="('SEARCH'| translate)+'...'"
+      [noEntriesFoundLabel]="('NoRequestFound.HEADING-TITLE'| translate)">
+    </ngx-mat-select-search>
+    <mat-select-trigger *ngIf="optionInTwoLines">
+      {{triggerText}}
+    </mat-select-trigger>
+    <mat-option [class.option-two-lines]="optionInTwoLines"
+      fxLayoutAlign="{{optionInTwoLines ? 'start start' : 'center center'}}"
+      *ngFor="let item of options | filterByProperty:['name',singleSelectFilter.value];" [value]="item.value"
+      (click)="updateTriggerTextForSingleSelection()">
+      <ng-container *ngIf="!optionInTwoLines; else twoLines">{{item.name}}</ng-container>
+      <ng-template #twoLines>
+        <div class="primary-text esp-multiselect">{{item.name}}</div>
+        <div class="secondry-text" *ngIf="item.description" [matTooltip]="item.description">{{item.description}}</div>
+      </ng-template>
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-error *ngIf="espFormControl.hasError('required') && (espFormControl.dirty || espFormControl.touched)">
+  {{"Error.Required" | translate}}</mat-error>

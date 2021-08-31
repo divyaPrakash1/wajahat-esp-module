@@ -1,0 +1,36 @@
+@import './variables.scss';
+.esp-text-search-input {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 1;
+    left: 8px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    background-image: url("src/assets/images/icons/search.svg");
+  }
+
+  input {
+    padding-left: 20px;
+  }
+
+  input.mat-input-element {
+    margin-top: -1.0625em;
+  }
+
+  &.gray-control {
+    ::ng-deep .mat-form-field-wrapper {
+      background-color: rgb(205, 208, 216, 0.25);
+    }
+  }
+
+  &.less-padding-top{
+    ::ng-deep .mat-form-field-infix{
+      border-top: 0.25em solid transparent !important;
+    }
+  }
+}

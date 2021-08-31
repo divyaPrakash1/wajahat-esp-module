@@ -1,0 +1,29 @@
+.mat-tab-header {
+    border-bottom: 0 !important;
+    height       : 40px !important;
+}
+
+.mat-ink-bar {
+    width : 40px !important;
+    height: 2px !important;
+}
+
+.mat-tab-label {
+    padding        : 0 3% 0 0 !important;
+    justify-content: left !important;
+    min-width: unset !important;
+}
+
+.tab-label {
+    font-size  : 16px;
+    font-weight: bold;
+}
+
+.tab-label-sm {
+    font-size  : 12px;
+    font-weight: bold;
+}
+
+.mat-tab-label-active {
+    opacity: 1 !important;
+}

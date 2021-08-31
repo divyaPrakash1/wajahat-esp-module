@@ -1,0 +1,89 @@
+@import '~@angular/material/theming';
+
+$custom-typography: mat-typography-config(
+  $font-family: 'Lato',
+  $body-1: mat-typography-level(14px, 14px, 400)
+);
+
+
+
+@include mat-core($custom-typography);
+
+//To generate colors use below link:
+//
+//http://mcg.mbitson.com/#!?mcgpalette0=%233f51b5
+//
+
+$mat-nasty-green: (
+  50 : #edf6e8,
+  100 : #d3e8c5,
+  200 : #b6d99f,
+  300 : #98ca79,
+  400 : #82be5c,
+  500 : var(--primary-color),
+  600 : #64ac39,
+  700 : #59a331,
+  800 : #4f9a29,
+  900 : #3d8b1b,
+  A100 : #d4ffc3,
+  A200 : #afff90,
+  A400 : #8aff5d,
+  A700 : #77ff44,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$mat-pinkish-orange: (
+  50 : #fdede9,
+  100 : #fbd1c8,
+  200 : #f9b3a4,
+  300 : #f6947f,
+  400 : #f47d63,
+  500 : #f26648,
+  600 : #f05e41,
+  700 : #ee5338,
+  800 : #ec4930,
+  900 : #e83821,
+  A100 : #ffffff,
+  A200 : #ffefed,
+  A400 : #ffc1ba,
+  A700 : #ffaaa1,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$xcdrs-theme-primary: mat-palette($mat-nasty-green);
+$xcdrs-theme-accent: mat-palette($mat-nasty-green);
+$xcdrs-theme-warn: mat-palette($mat-red);
+
+$xcdrs-mat-theme: mat-light-theme($xcdrs-theme-primary, $xcdrs-theme-accent, $xcdrs-theme-warn);
+
+@include angular-material-theme($xcdrs-mat-theme);

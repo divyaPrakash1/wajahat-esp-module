@@ -1,0 +1,39 @@
+@import 'src/app/esp-activity-module/theme/styles/variables.scss';
+@import 'src/app/esp-activity-module/theme/styles/mixins.scss';
+@import 'src/app/esp-activity-module/theme/styles/shake-element.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 400px;
+}
+
+xcdrs-appliation-details-card {
+  margin-bottom: 16px;
+}
+
+.p-t-40 {
+  padding-top: 40px;
+}
+
+.p-b-40 {
+  padding-bottom: 40px;
+}
+
+.m-b-16 {
+  margin-bottom: 16px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+xcdrs-submission-details-card {
+  margin-bottom: 16px;
+}
+
+
+.detail-main-spinner {
+  @include fixed-centered-spinner;
+}

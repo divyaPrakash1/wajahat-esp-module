@@ -1,0 +1,64 @@
+@import 'variables.scss';
+@import 'mixins.scss';
+
+.btn-close-container {
+  position: relative;
+}
+
+.btn-close {
+  position: absolute;
+  right: -15px;
+  top: -15px;
+}
+
+.mat-dialog-title {
+  position: relative;
+
+  .dialog-title {
+    font-size: $f24;
+    font-weight: 800;
+    color: $main-color;
+    padding: 0 5px;
+  }
+
+  .dialog-description{
+      font-size: $f16;
+      color: $main-color;
+      line-height: 1.5;
+      margin-top: 24px;
+  }
+}
+
+.mat-dialog-actions .mat-button-base + .mat-button-base, .mat-dialog-actions .mat-mdc-button-base + .mat-mdc-button-base {
+  margin-left: 0px;
+}
+
+.mat-dialog-actions {
+  padding: 16px 0;
+
+  .mat-stroked-button {
+    min-width: 144px;
+  }
+
+  .gradient-btn {
+    min-width: 200px;
+  }
+
+  button {
+    height: 48px;
+  }
+
+  @include media-mat-xs {
+    button {
+      height: auto;
+    }
+
+    .mat-stroked-button {
+      min-width: auto;
+    }
+
+    .gradient-btn {
+      min-width: auto;
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<div class="user-list">
+  <div class="user-row" *ngFor="let user of users">
+    <div class="picture">
+      <img src="{{user.userProfilePicture}}" />
+    </div>
+    <div class="name-area">
+      <div class="name"  (click)="onUserDetail(user)">{{user.fullName}}</div>
+      <div class="position">{{user.role}}</div>
+    </div>
+    <div class="actions">
+      <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="!user.isOwner">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="onEditUser(user)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-menu-item (click)="onDeleteUser(user)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="add-row" (click)="onAddClick()">
+    <div class="icon"><mat-icon>add_circle_outline</mat-icon></div>
+    <div class="text">Add User</div>
+  </div>
+</div>

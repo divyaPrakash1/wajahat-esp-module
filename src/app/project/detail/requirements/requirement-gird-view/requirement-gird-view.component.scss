@@ -1,0 +1,83 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.gird-view{display: flex; justify-content: space-between;align-items: stretch;padding-bottom: 18px;
+  @include respond-to(mobile){flex-direction: column;padding: 8px;}
+  .column{width:calc(33% - 5px);
+    @include respond-to(mobile){width: 100%;}
+  }
+
+  .planned-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Planned_Not Planned.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Planned_Started.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Planned_Planned with Issues.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Planned_Completed Successfully.svg');}
+    &.warning.completed{background-image: url('/assets/images/Indicator_Planned_Completed with Issues.svg');}
+  }
+  .actual-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Actual_Not Started.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Actual_Activities Started.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Actual_Completed Successfully.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Actual_Completed with Issues.svg');}
+  }
+
+  .card{display: flex;flex-direction: row;
+    .req-icon{width:28px;}
+    .wrap-area{flex: 1;display: flex;flex-direction: column;}
+    .top-title-area{height: 24px;margin-bottom:6px;display:flex; justify-content: space-between;
+      .title{font-size: 16px;color: var(--black-grey-color);line-height: 22px;cursor: pointer;}
+      .icon{color: var(--light-blue-grey);cursor: pointer;}
+    }
+    .status{margin-top:8px;
+      .tag{padding:6px 10px 7px;display:inline-block;@include border-radius(2px);
+        &.blue{font-size:14px;line-height: 14px;}
+      }
+    }
+    .deliverable{margin:6px 0px;font-size: 16px;line-height: 18px;display: flex;align-items: center; justify-content: center; max-width: 100%;
+      label{color:var(--grey-color);margin-right: 6px;width: 128px;}
+      .value{flex:1;color:var(--black-color);overflow: hidden;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+    }
+    .tags-area{margin-top:6px;
+      .tag{display: inline-block;font-size: 14px;color:#97a3a9; @include border-radius(2px);padding:6px 12px;margin-right:6px;margin-top:6px;background-color: #f3f5f6;}
+    }
+    .bottom-line{margin-top:12px;display: flex;justify-content: space-between;
+      .critical-tag{display: flex;align-items:center; justify-content: flex-end;
+        .icon{display: inline-block;width: 42px;height:18px;background-image: url('/assets/images/requirement-high-icon.svg');background-repeat: space;background-size: 12px auto;vertical-align: middle;}
+        .text{padding-left: 6px;font-size: 14px;line-height: 14px;}
+
+        &.Low{
+          .icon{width: 16px;height:22px;background-image: url('/assets/images/requirement-low-icon.svg');}
+        }
+        &.Medium{
+          .icon{width: 16px;height:22px;background-image: url('/assets/images/requirement-medium-icon.svg');}
+        }
+        &.High{
+          .icon{width: 24px;background-image: url('/assets/images/requirement-high-icon.svg');}
+        }
+      }
+      .info{display: flex; align-items: center;
+        .activity-count{width:24px;height:24px;background-color: #f3f5f6;border: solid 1px #cbd2d5; @include border-radius(26px);display: flex;align-items:center; justify-content: center;font-size: 12px;font-weight: 700;margin:0 2px;color: var(--black-color);}
+        .percentage-tag{color: var(--black-color);font-size: 12px;font-weight: 700;line-height: 14px;width: 36px;margin:0 3px;}
+      }
+    }
+  }
+}
+
+.gr-cards{
+  .back-button{display: flex;align-items: center;padding: 12px;margin:6px 0;width: 164px;cursor: pointer;}
+  .back-icon{color:var(--grey-color);margin-right: 8px;}
+  .back-text{font-size: 14px;color:var(--black-grey-color);}
+  .requirement-row{display: flex;justify-content: space-between; align-items: center;}
+  .requirement-tag{min-width:64px;max-width:96px;margin-right: 8px;
+    .tag{padding:6px 10px 7px;display:inline-block;@include border-radius(2px);
+      &.blue{font-size:14px;line-height: 14px;}
+    }
+  }
+  .requirement-title{flex: 1;font-size: 20px;font-weight: bold;color:var(--black-grey-color);text-transform: capitalize;}
+  .requirement-actions{width: 48px;
+    button{color:var(--grey-color);background: transparent;@include border-radius(4px);padding:0 6px;
+      &:hover, &[aria-expanded="true"]{background: rgba(203, 210, 213, 0.25);}
+      .mat-icon{vertical-align: middle;}
+    }
+    .defaultButton{line-height:18px;padding: 5px 10px;}
+    label{vertical-align: super;cursor: pointer;}
+  }
+  .detail-card{padding:0;}
+}

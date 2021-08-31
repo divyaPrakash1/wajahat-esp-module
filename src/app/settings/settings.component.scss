@@ -1,0 +1,16 @@
+@import '../../assets/styles/css3-mixins.scss';
+
+.container{display: flex;overflow: hidden;flex-direction: column;position: relative;padding: 30px 0;max-width: var(--container-width);margin: 0 auto;margin-top:60px;
+  @include respond-to('max-width: '$screen-lg){padding:16px 10px;}
+}
+
+.link-group{display: flex;align-items: center;justify-content: space-between;
+  .title{width:164px;font-size: 18px;font-weight: 600;}
+  .selected{flex: 1;}
+  .button{width:196px;}
+}
+.group-list{margin-top: 30px;
+  .group-item{padding-left:18px;position:relative;margin-top: 16px;font-size:16px;
+    &:before{content: "- ";position:absolute;left:0;}
+  }
+}

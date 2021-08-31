@@ -1,0 +1,25 @@
+<div class="change-state">
+  <div class="header">Close Requirement</div>
+  <div class="icon">
+    <img src="/assets/images/Close_Project_Icon.svg" />
+  </div>
+  <div class="text-info">Are you sure you want to close the requirement? </div>
+  <div *ngIf="loading" style="display: flex;height: 164px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="state-options" *ngIf="!loading">
+    <mat-radio-group name="project-state-change">
+      <mat-radio-button
+        [checked]="selected == state.id"
+        value="{{state.id}}"
+        *ngFor="let state of stateList"
+        (change)="radioChange(state.id)"
+        class="state.id"
+      >{{state.name}}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div class="state-buttons" *ngIf="!loading">
+    <button (click)="cancel($event)" class="outlined">Cancel</button>
+    <button (click)="change($event)" [disabled]="selected == 0">Close</button>
+  </div>
+</div>

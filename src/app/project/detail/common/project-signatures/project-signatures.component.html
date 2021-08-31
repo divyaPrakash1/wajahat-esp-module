@@ -1,0 +1,20 @@
+<div class="pd-attachments-container {{loading ? '' : 'count'+signatureList.length}}">
+  <div class="grey-header">
+    <div class="text">Signature ({{signatureList.length}})</div>
+  </div>
+  <div class="text no-text">No Signature</div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="no-attachment" *ngIf="!loading && signatureList.length===0">
+    Currently, No one signed this project.
+  </div>
+  <div class="signature-body" *ngIf="!loading && signatureList.length>0">
+    <div class="signature-box" *ngFor="let sign of signatureList">
+      <div class="signature-area">
+        <div class="signature-by">Signed by {{sign.userName}}</div>
+        <div class="signature-style">{{sign.userName}}</div>
+      </div>
+    </div>
+  </div>
+</div>

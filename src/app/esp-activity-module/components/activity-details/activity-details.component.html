@@ -1,0 +1,2337 @@
+<xcdrs-size-detector></xcdrs-size-detector>
+<!-- fxHide.xs
+fxHide.sm
+fxShow.gt-md
+fxShow.lt-xl
+fxShow.lg
+fxShow.lt-lg
+fxShow.md -->
+
+<div fxFlex fxLayout="column" fxLayoutAlign="start stretch"
+  *ngIf="isEngProDataLoaded && isOppProDataLoaded && dataLoaded && !isLoading">
+  <div fxFlex>
+    <xcdrs-breadcrumbs *ngIf="!!activity &&  !isOppProActivity || !!oppProActivity  && isOppProActivity">
+      <a [routerLink]=" ['/pages/applications']" class="clickable" *ngIf="isESPcomponent">{{moduleName}}</a>
+      <a [routerLink]=" ['/pages/applications/', activity.requestId]" [queryParams]="{ my:isMyspace, activeTab:preTab}"
+        class="clickable" *ngIf="isESPcomponent">{{requestName}}</a>
+      <a [routerLink]="isESPcomponent? ['/pages/applications/', activity.requestId]: ['/pages/activities']"
+        [queryParams]="isESPcomponent? {my:isMyspace, activeTab:preTab} : {activeTab:preTab}" class="clickable"
+        *ngIf="accessedFrom != 'msgs'">Activities</a>
+
+      <a [routerLink]="isESPcomponent? ['/pages/applications/', activity.requestId]: ['/pages/activities']"
+        [queryParams]="isESPcomponent? {my:isMyspace, activeTab:preTab} : {activeTab:preTab, innerPreTab:innerPreTab}"
+        *ngIf="preTab != 0 && accessedFrom != 'msgs'" class="clickable">
+        <span *ngIf="preTab==1">Following</span>
+        <span *ngIf="preTab==2">Backlog</span>
+      </a>
+
+
+
+      <a *ngIf="accessedFrom == 'user' && !isOppProActivity"
+        routerLink="/pages/activities/following/details/{{ activity.userOwner.UserId}}"
+        [queryParams]="{accessedFrom:accessedFrom , activeTab:preTab, innerPreTab:innerPreTab}">{{
+        activity.userOwner.UserFirstName +
+        " " +
+        activity.userOwner.UserLastName
+        }}</a>
+
+      <a *ngIf="accessedFrom == 'shared' && !isOppProActivity" routerLink="/pages/activities/following/shared/details"
+        [queryParams]="{accessedFrom:accessedFrom , activeTab:preTab, innerPreTab:innerPreTab}">Shared Activities</a>
+
+      <a *ngIf="accessedFrom == 'msgs' && !isOppProActivity" routerLink="/pages/messages"
+        [queryParams]="{conversationId:conversationId}">Messages</a>
+
+      <a routerLink="/pages/activities/new/{{listType}}" *ngIf="accessedFrom == 'carousel-details' && !isOppProActivity"
+        class="clickable">
+        <span *ngIf="listType == 'assigned' && accessedFrom == 'carousel-details'">New Activities Assigned to me ({{
+          listLength }})</span>
+
+        <span *ngIf="listType == 'reported' && accessedFrom == 'carousel-details'">New Activities Reported to me ({{
+          listLength }})</span>
+      </a>
+      <span class="title"><span *ngIf="!isOppProActivity">Activity</span><span *ngIf="!!isOppProActivity">{{
+          oppProActivity.activityType }}</span>
+        Details</span>
+
+    </xcdrs-breadcrumbs>
+  </div>
+  <div fxFlex class="activity-main-info">
+    <mat-card fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+      <mat-card-header fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+        <mat-card-title fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex>
+            <span *ngIf="!isOppProActivity">{{ activity.description }}</span><span *ngIf="!!isOppProActivity">{{
+              oppProActivity.subject }}</span>
+          </div>
+
+          <xcdrs-activities-actions [actions]="isOppProActivity ? []:activity.allowedActions"
+            [activity]="isOppProActivity ? oppProActivity : activity" [engProLoggedInUserId]="engProLoggedInUserId"
+            [loggedInUserId]="loggedInUserId" [size]="size" [oppProData]="oppProData" [espAddon]="espAddon"
+            [activeTab]="'Details'" [isESPcomponent]="isESPcomponent" [isMyspace]="isMyspace"
+            (reload)="isOppProActivity ? getOppProDetails(activityId) : getDetails(activityId)">
+          </xcdrs-activities-actions>
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100" fxLayout="column" fxLayoutAlign="start stretch"
+            *ngIf="!isOppProActivity">
+            <mat-table fxFlex fxHide.xs fxHide.sm fxShow.gt-md fxShow.lt-xl fxShow.lg fxShow.lt-lg fxShow.md
+              [dataSource]="activityDataSource" class="mat-elevation-z8">
+              <!-- Assigned By Column-->
+              <div
+                *ngIf="activity.createdBy!=null  && activity.createdBy.UserId != loggedInUserId && !activity.isShared || (activity.isShared)">
+                <ng-container matColumnDef="assignedBy">
+                  <mat-header-cell *matHeaderCellDef class="assignedBy"><span
+                      *ngIf="!activity.isShared">Assigned</span><span
+                      *ngIf="activity.isShared && activity">Shared</span>&nbsp;By</mat-header-cell>
+                  <mat-cell *matCellDef="let element" class="assignedBy">
+                    {{
+                    element.createdBy.UserFirstName +
+                    " " +
+                    element.createdBy.UserLastName
+                    }}
+                  </mat-cell>
+                </ng-container>
+              </div>
+
+              <!-- Project Column -->
+              <div
+                *ngIf="activity.parentBoardId != null && !isEpmActivity ||   isEpmActivity && !!activity.epmInfo && activity.epmInfo.ParentProjectId !=null ">
+                <ng-container matColumnDef="project">
+                  <mat-header-cell *matHeaderCellDef class="project">
+                    Board
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let element" class="project">
+                    <span *ngIf="activity.parentBoardId != null && !isEpmActivity">{{ element.parentBoardName }}</span>
+                    <span *ngIf=" isEpmActivity && !!activity.epmInfo && activity.epmInfo.ParentProjectId !=null">{{
+                      element.epmInfo.ParentProjectName }}</span>
+                  </mat-cell>
+                </ng-container>
+              </div>
+
+
+              <!-- requestNumber Column -->
+              <div *ngIf="activity.requestNumber != null">
+                <ng-container matColumnDef="requestNumber">
+                  <mat-header-cell *matHeaderCellDef class="requestNumber">
+                    Request #
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let element" class="requestNumber">
+                    {{ element.requestNumber }}
+                  </mat-cell>
+                </ng-container>
+              </div>
+
+              <!-- requestName Column -->
+              <div *ngIf="activity.requestName != null">
+                <ng-container matColumnDef="requestName">
+                  <mat-header-cell *matHeaderCellDef class="requestName">
+                    Request Name
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let element" class="requestName">
+                    {{ element.requestName }}
+                  </mat-cell>
+                </ng-container>
+              </div>
+              <!-- Due Date Column -->
+              <ng-container matColumnDef="dueDate">
+                <mat-header-cell *matHeaderCellDef class="dueDate">Due Date</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="dueDate">
+                  <span>{{ element.dueDate }}</span>
+                </mat-cell>
+              </ng-container>
+
+
+              <ng-container matColumnDef="claimed" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-header-cell *matHeaderCellDef class="claimed">Claimed</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="claimed">
+                  <span class="claimed-lbl">{{ element.totalClaims }} <span *ngIf="element.maxClaims!=null">/
+                      {{element.maxClaims}}</span></span>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="started" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-header-cell *matHeaderCellDef class="started">Open</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="started">
+                  <span class="started-lbl">{{element.sharedStats.StartedCount + element.sharedStats.NotStartedCount
+                    }}</span>
+                </mat-cell>
+              </ng-container>
+              <ng-container matColumnDef="completed" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-header-cell *matHeaderCellDef class="completed">Closed</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="completed">
+                  <span class="completed-lbl">{{element.sharedStats.CompletedCount + element.sharedStats.CancelledCount
+                    }}</span>
+                </mat-cell>
+              </ng-container>
+              <!-- Due Date Column -->
+              <div
+                *ngIf="(activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 ) || activity.appType === 3 ">
+                <ng-container matColumnDef="efforts">
+                  <mat-header-cell *matHeaderCellDef class="efforts">Efforts</mat-header-cell>
+                  <mat-cell *matCellDef="let element" class="efforts">
+                    <span *ngIf="
+                      activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 &&
+                        element.effortInHour != null &&
+                        element.effortInHour != 0
+                      ">{{ element.effortInHour }}h
+                      <!-- <span *ngIf="element.effortInHour > 1">hrs&nbsp; </span> -->
+                    </span>
+                    <span *ngIf="activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 &&
+                        element.effortInMinute != null &&
+                        element.effortInMinute != 0
+                      ">&nbsp;{{ element.effortInMinute }}min
+                      <!-- <span *ngIf="element.effortInMinute > 1">mins</span> -->
+                    </span>
+
+                    <span *ngIf="activity.appType === 3 && activity.actualValue !=null">{{activity.actualValue}}h</span>
+                  </mat-cell>
+                </ng-container>
+              </div>
+
+
+              <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+
+            <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md fxLayout="column"
+              fxLayoutAlign="space-around stretch">
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                *ngIf="activity.createdBy!=null && activity.createdBy.UserId != loggedInUserId">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35"><span *ngIf="!activity.isShared">Assigned</span><span
+                    *ngIf="activity.isShared && (isAccessedFromShared || isAccessedFromStacked )">Shared</span> By:
+                </mat-label>
+                <span>
+                  {{
+                  activity.createdBy.UserFirstName +
+                  " " +
+                  activity.createdBy.UserLastName
+                  }}
+                </span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                *ngIf="activity.parentBoardId != null && !isEpmActivity||   isEpmActivity &&  !!activity.epmInfo && activity.epmInfo.ParentProjectId !=null ">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Project: </mat-label>
+                <span *ngIf="activity.parentBoardId != null && !isEpmActivity">{{ activity.parentBoardName }}</span>
+                <span *ngIf=" isEpmActivity &&  !!activity.epmInfo && activity.epmInfo.ParentProjectId !=null">{{
+                  activity.epmInfo.ParentProjectName }}</span>
+              </p>
+
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.requestNumber != null">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Request #: </mat-label>
+                <span> {{ activity.requestNumber }} </span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.requestName != null">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Request Name: </mat-label>
+                <span> {{ activity.requestName }} </span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Due Date: </mat-label>
+                <span>{{ activity.dueDate }}</span>
+              </p>
+
+
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-label fxFlex.xs="40" fxFlex="35">Claimed:
+                </mat-label>
+                <span>{{ activity.totalClaims }} <span *ngIf="activity.maxClaims !=null">/
+                    {{activity.maxClaims}}</span></span>
+              </p>
+
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-label fxFlex.xs="40" fxFlex="35">Open:
+                </mat-label>
+                <span class="started">{{ activity.sharedStats.StartedCount +
+                  activity.sharedStats.NotStartedCount}}</span>
+              </p>
+
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.isShared && isAccessedFromShared">
+                <mat-label fxFlex.xs="40" fxFlex="35">Closed:
+                </mat-label>
+                <span class="completed">{{ activity.sharedStats.CompletedCount +
+                  activity.sharedStats.CancelledCount}}</span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                *ngIf="(activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 ) || activity.appType === 3 ">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Efforts: </mat-label>
+                <span *ngIf="
+                activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 &&
+                activity.effortInHour != null &&
+                activity.effortInHour != 0
+                ">{{ activity.effortInHour }}
+                  <span>h&nbsp;</span>
+                  <!-- <span *ngIf="activity.effortInHour > 1">hrs&nbsp; </span> -->
+                </span>
+                <span *ngIf="activity.effortSum != null && activity.effortSum != 0 && activity.appType !=3 &&
+                activity.effortInMinute != null &&
+                activity.effortInMinute != 0
+                ">
+                  {{ activity.effortInMinute }}
+                  <span>min</span>
+                  <!-- <span *ngIf="activity.effortInMinute > 1">mins</span> -->
+                </span>
+                <span *ngIf="activity.appType === 3 && activity.actualValue !=null">{{activity.actualValue}}h</span>
+
+              </p>
+            </div>
+
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="progress-conatiner">
+              <span fxFlex="20" fxFlex.xs="35" fxFlex.sm="35" [ngStyle]="{
+                  color: activity.progressStatusColor,
+                  'font-weight': 'bold',
+                  'white-space': 'nowrap'
+                }" *ngIf="!activity.isShared  && activity.dueDate !=null">
+                {{ activity.progressStatus }}</span>
+
+              <!-- <span
+              fxFlex="20"
+              fxFlex.xs="35"
+              fxFlex.sm="35"
+              [ngStyle]="{
+                color: '#00a3ff',
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+              *ngIf="activity.isShared && activity.sharedStats.StartedCount > 0"
+            >
+              In Progress</span
+            >
+              <span
+              fxFlex="20"
+              fxFlex.xs="35"
+              fxFlex.sm="35"
+              [ngStyle]="{
+                color: '#8795b1',
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+              *ngIf="activity.isShared && activity.sharedStats.NotStartedCount == 0"
+            >
+              Not Started</span
+            > -->
+              <span fxFlex="nogrow"
+                *ngIf="activity.score != null && activity.status != 4 && !activity.isShared  && activity.dueDate !=null"
+                [ngClass]="{ done: activity.status == 2 }" [ngStyle]="{
+                  color:
+                    activity.status == 2
+                      ? '#AAADB8'
+                      : activity.progressStatusColor,
+                  'font-weight': 'bold',
+                  'white-space': 'nowrap',
+                  'padding-right': '5px'
+                }">{{ activity.score }} %</span>
+              <mat-progress-bar fxFlex="22" class="activity-progress" [value]="activity.score"
+                *ngIf="activity.score != null && activity.status != 4 && !activity.isShared  && activity.dueDate !=null"
+                [ngClass]="{ done: activity.status == 2 }"></mat-progress-bar>
+              <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md
+                fxLayoutAlign="end end" class="icons" *ngIf="!isEpmActivity">
+                <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="toggleImportant()"
+                  *ngIf="activity.isImportant" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0H24V24H0z" />
+                    <path fill="#6CB33F"
+                      d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm.21 6H7.705C7.318 6 7 6.318 7 6.706v10.588c0 .388.318.706.706.706.388 0 .706-.318.706-.706V13.06h3.53l.507 1.023c.12.24.367.389.629.389h3.804c.389 0 .706-.318.706-.706V8.118c0-.389-.317-.706-.706-.706h-3.53l-.507-1.024c-.12-.24-.367-.388-.636-.388z" />
+                  </g>
+                </svg>
+
+                <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="toggleImportant()"
+                  *ngIf="!activity.isImportant" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0H24V24H0z" />
+                    <path fill="#6CB33F"
+                      d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zm.21 4.5c.268 0 .515.148.635.388l.508 1.024h3.53c.388 0 .705.317.705.706v5.647c0 .388-.317.706-.706.706h-3.804c-.262 0-.509-.149-.629-.389l-.508-1.023h-3.53v4.235c0 .388-.317.706-.705.706-.388 0-.706-.318-.706-.706V6.706C7 6.318 7.318 6 7.706 6z" />
+                  </g>
+                </svg>
+
+                <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="doFollow()"
+                  *ngIf="activity.isFollowed && activity.dueDate !=null" xmlns="http://www.w3.org/2000/svg" width="24"
+                  height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0H24V24H0z" />
+                    <path fill="#6CB33F"
+                      d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zM8.26 14.105c-.903 0-1.635.732-1.635 1.635s.732 1.635 1.635 1.635 1.635-.732 1.635-1.635-.732-1.635-1.635-1.635zM7 5.33v2.122l.272.004c5.147.144 9.276 4.362 9.276 9.544h2.122l-.004-.296C18.51 10.398 13.343 5.33 7 5.33zm0 4.245v2.123l.218.004c2.824.115 5.085 2.446 5.085 5.298h2.122l-.004-.245c-.13-3.99-3.4-7.18-7.421-7.18z" />
+                  </g>
+                </svg>
+
+                <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="doFollow()"
+                  *ngIf="!activity.isFollowed && activity.dueDate !=null" xmlns="http://www.w3.org/2000/svg" width="24"
+                  height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0H24V24H0z" />
+                    <path fill="#6CB33F"
+                      d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zM8.26 14.105c.903 0 1.635.732 1.635 1.635s-.732 1.635-1.635 1.635-1.635-.732-1.635-1.635.732-1.635 1.635-1.635zM7 5.33c6.343 0 11.509 5.068 11.666 11.374l.004.296h-2.123c0-5.182-4.128-9.4-9.275-9.544L7 7.452V5.33zm0 4.245c4.02 0 7.292 3.19 7.421 7.18l.004.245h-2.123c0-2.852-2.26-5.183-5.084-5.298L7 11.697V9.575z" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div fxFlex="60" fxFlex.xs="100" fxFlex.sm="100" fxLayout="column" fxLayoutAlign="start stretch"
+            *ngIf="!!isOppProActivity">
+            <mat-table fxFlex fxHide.xs fxHide.sm fxShow.gt-md fxShow.lt-xl fxShow.lg fxShow.lt-lg fxShow.md
+              [dataSource]="activityDataSource" class="mat-elevation-z8">
+              <!-- Due Date Column -->
+              <ng-container matColumnDef="date">
+                <mat-header-cell *matHeaderCellDef class="date">Date</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="date">
+                  <span>{{ element.date }}</span>
+                </mat-cell>
+              </ng-container>
+              <!-- Tile Column -->
+              <ng-container matColumnDef="time" *ngIf="
+                  oppProActivity.activityType == 'call' ||
+                  oppProActivity.activityType == 'meeting'
+                ">
+                <mat-header-cell *matHeaderCellDef class="time">Time</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="time">
+                  <span class="small-letters">{{ element.startTime }} - {{ element.endTime }}</span>
+                </mat-cell>
+              </ng-container>
+              <div *ngIf="
+                  oppProActivity.activityType == 'call' ||
+                  oppProActivity.activityType == 'meeting'
+                ">
+                <mat-header-row *matHeaderRowDef="['date', 'time']; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['date', 'time']"></mat-row>
+              </div>
+
+              <div *ngIf="
+                  oppProActivity.activityType == 'proposal' ||
+                  oppProActivity.activityType == 'task'
+                ">
+                <mat-header-row *matHeaderRowDef="['date']; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['date']"></mat-row>
+              </div>
+            </mat-table>
+            <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md fxLayout="column"
+              fxLayoutAlign="space-around stretch">
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Date: </mat-label>
+                <span>
+                  {{ oppProActivity.date }}
+                </span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="
+                  oppProActivity.activityType == 'call' ||
+                  oppProActivity.activityType == 'meeting'
+                ">
+                <mat-label fxFlex.xs="40" fxFlex.sm="35">Time: </mat-label>
+                <span>
+                  {{ oppProActivity.startTime }} - {{ oppProActivity.endTime }}
+                </span>
+              </p>
+            </div>
+
+            <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="progress-conatiner">
+              <span fxFlex="20" fxFlex.xs="35" fxFlex.sm="35" [ngStyle]="{
+                  color: oppProActivity.progressStatusColor,
+                  'font-weight': 'bold',
+                  'white-space': 'nowrap'
+                }">
+                {{ oppProActivity.progressStatus }}</span>
+
+              <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md
+                fxLayoutAlign="end end" class="icons">
+                <!-- <svg
+                class="clickable"
+                *ngIf="activity.isImportant"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0H24V24H0z" />
+                  <path
+                    fill="#6CB33F"
+                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm.21 6H7.705C7.318 6 7 6.318 7 6.706v10.588c0 .388.318.706.706.706.388 0 .706-.318.706-.706V13.06h3.53l.507 1.023c.12.24.367.389.629.389h3.804c.389 0 .706-.318.706-.706V8.118c0-.389-.317-.706-.706-.706h-3.53l-.507-1.024c-.12-.24-.367-.388-.636-.388z"
+                  />
+                </g>
+              </svg>
+
+              <svg
+                class="clickable"
+                *ngIf="!activity.isImportant"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0H24V24H0z" />
+                  <path
+                    fill="#6CB33F"
+                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zm.21 4.5c.268 0 .515.148.635.388l.508 1.024h3.53c.388 0 .705.317.705.706v5.647c0 .388-.317.706-.706.706h-3.804c-.262 0-.509-.149-.629-.389l-.508-1.023h-3.53v4.235c0 .388-.317.706-.705.706-.388 0-.706-.318-.706-.706V6.706C7 6.318 7.318 6 7.706 6z"
+                  />
+                </g>
+              </svg>
+
+              <svg
+                class="clickable"
+                (click)="doFollow()"
+                *ngIf="activity.isFollowed"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0H24V24H0z" />
+                  <path
+                    fill="#6CB33F"
+                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zM8.26 14.105c-.903 0-1.635.732-1.635 1.635s.732 1.635 1.635 1.635 1.635-.732 1.635-1.635-.732-1.635-1.635-1.635zM7 5.33v2.122l.272.004c5.147.144 9.276 4.362 9.276 9.544h2.122l-.004-.296C18.51 10.398 13.343 5.33 7 5.33zm0 4.245v2.123l.218.004c2.824.115 5.085 2.446 5.085 5.298h2.122l-.004-.245c-.13-3.99-3.4-7.18-7.421-7.18z"
+                  />
+                </g>
+              </svg>
+
+              <svg
+                class="clickable"
+                (click)="doFollow()"
+                *ngIf="!activity.isFollowed"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0H24V24H0z" />
+                  <path
+                    fill="#6CB33F"
+                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm0 1.5C6.201 1.5 1.5 6.201 1.5 12S6.201 22.5 12 22.5 22.5 17.799 22.5 12 17.799 1.5 12 1.5zM8.26 14.105c.903 0 1.635.732 1.635 1.635s-.732 1.635-1.635 1.635-1.635-.732-1.635-1.635.732-1.635 1.635-1.635zM7 5.33c6.343 0 11.509 5.068 11.666 11.374l.004.296h-2.123c0-5.182-4.128-9.4-9.275-9.544L7 7.452V5.33zm0 4.245c4.02 0 7.292 3.19 7.421 7.18l.004.245h-2.123c0-2.852-2.26-5.183-5.084-5.298L7 11.697V9.575z"
+                  />
+                </g>
+              </svg> -->
+              </div>
+            </div>
+          </div>
+
+          <div fxFlex="40" fxFlex.xs="0" fxFlex.sm="0"></div>
+        </div>
+
+        <div fxFlex fxHide.xs fxHide.sm fxShow.gt-md fxShow.lt-xl fxShow.lg fxShow.lt-lg fxShow.md fxLayout="row"
+          fxLayoutAlign="end end" class="icons" *ngIf="!isOppProActivity && !isEpmActivity">
+          <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="toggleImportant()"
+            *ngIf="!activity.isImportant" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="icon_action_flag_outlined" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+              <path
+                d="M12,0 C18.627417,0 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 0,18.627417 0,12 C0,5.372583 5.372583,0 12,0 Z M12,1.5 C6.20101013,1.5 1.5,6.20101013 1.5,12 C1.5,17.7989899 6.20101013,22.5 12,22.5 C17.7989899,22.5 22.5,17.7989899 22.5,12 C22.5,6.20101013 17.7989899,1.5 12,1.5 Z M12.2094118,6 C12.4776471,6 12.7247059,6.14823529 12.8447059,6.38823529 L12.8447059,6.38823529 L13.3529412,7.41176471 L16.8823529,7.41176471 C17.2705882,7.41176471 17.5882353,7.72941176 17.5882353,8.11764706 L17.5882353,8.11764706 L17.5882353,13.7647059 C17.5882353,14.1529412 17.2705882,14.4705882 16.8823529,14.4705882 L16.8823529,14.4705882 L13.0776471,14.4705882 C12.8164706,14.4705882 12.5694118,14.3223529 12.4494118,14.0823529 L12.4494118,14.0823529 L11.9411765,13.0588235 L8.41176471,13.0588235 L8.41176471,17.2941176 C8.41176471,17.6823529 8.09411765,18 7.70588235,18 C7.31764706,18 7,17.6823529 7,17.2941176 L7,17.2941176 L7,6.70588235 C7,6.31764706 7.31764706,6 7.70588235,6 L7.70588235,6 Z"
+                id="Combined-Shape" fill="#AAADB8"></path>
+            </g>
+          </svg>
+          <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="toggleImportant()"
+            *ngIf="activity.isImportant" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="icon_action_flag_filled" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+              <path
+                d="M12,0 C18.627417,0 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 0,18.627417 0,12 C0,5.372583 5.372583,0 12,0 Z M12.2094118,6 L7.70588235,6 C7.31764706,6 7,6.31764706 7,6.70588235 L7,17.2941176 C7,17.6823529 7.31764706,18 7.70588235,18 C8.09411765,18 8.41176471,17.6823529 8.41176471,17.2941176 L8.41176471,13.0588235 L11.9411765,13.0588235 L12.4494118,14.0823529 C12.5694118,14.3223529 12.8164706,14.4705882 13.0776471,14.4705882 L16.8823529,14.4705882 C17.2705882,14.4705882 17.5882353,14.1529412 17.5882353,13.7647059 L17.5882353,8.11764706 C17.5882353,7.72941176 17.2705882,7.41176471 16.8823529,7.41176471 L13.3529412,7.41176471 L12.8447059,6.38823529 C12.7247059,6.14823529 12.4776471,6 12.2094118,6 Z"
+                id="Combined-Shape" fill="#6cb33f"></path>
+            </g>
+          </svg>
+
+          <svg [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="doFollow()"
+            *ngIf="activity.isFollowed && activity.dueDate !=null" width="24px" height="24px" viewBox="0 0 24 24"
+            version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="icon_action_follow_filled" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+              <path
+                d="M12,0 C18.627417,0 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 0,18.627417 0,12 C0,5.372583 5.372583,0 12,0 Z M8.26,14.105 C7.35701443,14.105 6.625,14.8370144 6.625,15.74 C6.625,16.6429856 7.35701443,17.375 8.26,17.375 C9.16298557,17.375 9.895,16.6429856 9.895,15.74 C9.895,14.8370144 9.16298557,14.105 8.26,14.105 Z M7,5.33 L7,7.4525 L7.27180915,7.45629563 C12.418643,7.60021032 16.5475,11.8184052 16.5475,17 L16.5475,17 L18.67,17 L18.6663028,16.7035312 C18.5088663,10.3978911 13.3433846,5.33 7,5.33 L7,5.33 Z M7,9.575 L7,11.6975 L7.21831984,11.7019292 C10.0423891,11.8167172 12.3025,14.148125 12.3025,17 L12.3025,17 L14.425,17 L14.4210333,16.7548063 C14.291788,12.765929 11.02045,9.575 7,9.575 L7,9.575 Z"
+                id="Combined-Shape" fill="#6cb33f"></path>
+            </g>
+          </svg>
+          <svg class="clickable" (click)="doFollow()" *ngIf="!activity.isFollowed && activity.dueDate !=null"
+            width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="icon_action_follow_outlined" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+              <path
+                d="M12,0 C18.627417,0 24,5.372583 24,12 C24,18.627417 18.627417,24 12,24 C5.372583,24 0,18.627417 0,12 C0,5.372583 5.372583,0 12,0 Z M12,1.5 C6.20101013,1.5 1.5,6.20101013 1.5,12 C1.5,17.7989899 6.20101013,22.5 12,22.5 C17.7989899,22.5 22.5,17.7989899 22.5,12 C22.5,6.20101013 17.7989899,1.5 12,1.5 Z M8.26,14.105 C9.16298557,14.105 9.895,14.8370144 9.895,15.74 C9.895,16.6429856 9.16298557,17.375 8.26,17.375 C7.35701443,17.375 6.625,16.6429856 6.625,15.74 C6.625,14.8370144 7.35701443,14.105 8.26,14.105 Z M7,5.33 C13.3433846,5.33 18.5088663,10.3978911 18.6663028,16.7035312 L18.67,17 L16.5475,17 C16.5475,11.8184052 12.418643,7.60021032 7.27180915,7.45629563 L7,7.4525 L7,5.33 Z M7,9.575 C11.02045,9.575 14.291788,12.765929 14.4210333,16.7548063 L14.425,17 L12.3025,17 C12.3025,14.148125 10.0423891,11.8167172 7.21831984,11.7019292 L7,11.6975 L7,9.575 Z"
+                id="Combined-Shape" fill="#AAADB8"></path>
+            </g>
+          </svg>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div fxFlex fxHide.xs fxHide.sm fxShow.gt-md fxShow.lt-xl fxShow.lg fxShow.lt-lg fxShow.md fxLayout="row"
+    fxLayoutAlign="start start" class="activity-more-info">
+    <div fxFlex="40" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="activity-details-conatiner">
+        <p class="title">
+          <mat-label>Details</mat-label>
+        </p>
+        <mat-card class="details"
+          *ngIf="!isOppProActivity && !isEpmActivity && !!activity && (activity.tacticId != null || (activity.isShared  && isAccessedFromShared))">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.tacticId != null">
+              <mat-label fxFlex="28" *ngIf="isEngProActivity">Job: </mat-label>
+              <mat-label fxFlex="28" *ngIf="!isEngProActivity">{{ activity.tacticLabelText }}:
+              </mat-label>
+
+              <span> {{ activity?.tactic?.title | textTruncate: 20 }} </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+              *ngIf="activity.tacticId != null && !!activity.tactic?.category">
+              <mat-label fxFlex="28">Category: </mat-label>
+              <span> {{ activity.tactic?.category?.text }} </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+              *ngIf="activity.tacticId != null &&  activity.tactic.tags?.length > 0">
+              <mat-label fxFlex="28">Tags: </mat-label>
+              <span class="tags-area">
+                <span *ngFor="
+                  let tag of activity.tactic.tags;
+                  let i = index;
+                  let last = last
+                ">
+                  <span class="tag" *ngIf="i <= 1; else tagCounter">
+                    {{ tag.text }}</span>
+                  <ng-template #tagCounter>
+                    <span *ngIf="last && activity.tactic.tags?.length > 1" class="tag-counter">+{{
+                      activity.tactic.tags?.length - 1 }}</span>
+                  </ng-template>
+                </span>
+              </span>
+            </p>
+
+            <p fxFlex fxLayout="column" fxLayoutAlign="start stretch" *ngIf="activity.isShared && isAccessedFromShared"
+              class="statistics">
+              <b>Statistics</b>
+              <span fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                  <mat-label>Not Started</mat-label>
+                  <span class="not-started">{{activity.sharedStats.NotStartedCount}}</span>
+                </span>
+                <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                  <mat-label>In Progress</mat-label>
+                  <span class="started">{{activity.sharedStats.StartedCount}}</span>
+                </span>
+                <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                  <mat-label>Done</mat-label>
+                  <span class="completed">{{activity.sharedStats.CompletedCount}}</span>
+                </span>
+                <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                  <mat-label>Cancelled</mat-label>
+                  <span class="cancelled">{{activity.sharedStats.CancelledCount}}</span>
+                </span>
+              </span>
+            </p>
+          </mat-card-content>
+        </mat-card>
+        <!--oppPro details-->
+        <mat-card class="details" *ngIf="!!isOppProActivity">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+            *ngIf="oppProActivity.activityType == 'call'">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="oppProActivity.callFromId != null">
+              <mat-label fxFlex="28">Call From: </mat-label>
+              <span>{{ oppProActivity.callFromName }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="oppProActivity.callToId != null">
+              <mat-label fxFlex="28">Call To: </mat-label>
+              <span>{{ oppProActivity.callToName }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">For: </mat-label>
+              <span class="for-lbl">{{
+                oppProActivity.associatedEntityName
+                }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Oportunity: </mat-label>
+              <span>{{ oppProActivity.associatedEntityTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Purpose: </mat-label>
+              <span>{{ oppProActivity.callToActionTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Reminder: </mat-label>
+              <span>Never</span>
+            </p>
+
+            <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+              <span fxFlex="nogrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0L24 0 24 24 0 24z" />
+                    <path fill="#AAADB8"
+                      d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                  </g>
+                </svg>
+              </span>
+              <span fxFlex>
+                This call is added to&nbsp;<b>OpportunityPro</b>.
+              </span>
+            </p>
+          </mat-card-content>
+
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+            *ngIf="oppProActivity.activityType == 'meeting'">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="oppProActivity.callFromId != null">
+              <mat-label fxFlex="28">Meeting Host: </mat-label>
+              <span>{{ oppProActivity.callFromName }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Participants: </mat-label>
+              <span>{{ oppProActivity.callToName }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Channel: </mat-label>
+              <span>{{ oppProActivity.channel }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">For: </mat-label>
+              <span class="for-lbl">{{
+                oppProActivity.associatedEntityName
+                }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Oportunity: </mat-label>
+              <span>{{ oppProActivity.associatedEntityTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Purpose: </mat-label>
+              <span>{{ oppProActivity.callToActionTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Reminder: </mat-label>
+              <span>Never</span>
+            </p>
+
+            <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+              <span fxFlex="nogrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0L24 0 24 24 0 24z" />
+                    <path fill="#AAADB8"
+                      d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                  </g>
+                </svg>
+              </span>
+              <span fxFlex>
+                This meeting is added to&nbsp;<b>OpportunityPro</b>.
+              </span>
+            </p>
+          </mat-card-content>
+
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+            *ngIf="oppProActivity.activityType == 'proposal'">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Oportunity: </mat-label>
+              <span>{{ oppProActivity.associatedEntityTitle }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">To: </mat-label>
+              <span class="for-lbl">{{
+                oppProActivity.associatedEntityName
+                }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="oppProActivity.callToId != null">
+              <mat-label fxFlex="28">Contact: </mat-label>
+              <span>{{ oppProActivity.callToName }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="oppProActivity.callFromId != null">
+              <mat-label fxFlex="28">Assigned By: </mat-label>
+              <span>{{ oppProActivity.callFromName }}</span>
+            </p>
+
+            <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+              <span fxFlex="nogrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0L24 0 24 24 0 24z" />
+                    <path fill="#AAADB8"
+                      d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                  </g>
+                </svg>
+              </span>
+              <span fxFlex>
+                This proposal is added to&nbsp;<b>OpportunityPro</b>.
+              </span>
+            </p>
+          </mat-card-content>
+
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+            *ngIf="oppProActivity.activityType == 'task'">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">For: </mat-label>
+              <span class="for-lbl" *ngIf="oppProActivity.associatedEntityName != 'salesjob'">{{
+                oppProActivity.associatedEntityName }}</span>
+              <span class="for-lbl" *ngIf="oppProActivity.associatedEntityName == 'salesjob'">Sales Job</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+              *ngIf="oppProActivity.associatedEntityName != 'salesjob'">
+              <mat-label fxFlex="28">Oportunity: </mat-label>
+              <span>{{ oppProActivity.associatedEntityTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Purpose: </mat-label>
+              <span>{{ oppProActivity.callToActionTitle }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="28">Reminder: </mat-label>
+              <span>Never</span>
+            </p>
+
+            <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+              <span fxFlex="nogrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <g fill="none" fill-rule="evenodd">
+                    <path d="M0 0L24 0 24 24 0 24z" />
+                    <path fill="#AAADB8"
+                      d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                  </g>
+                </svg>
+              </span>
+              <span fxFlex>
+                This task is added to&nbsp;<b>OpportunityPro</b>.
+              </span>
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="activity-shared-conatiner" [ngClass]="{'epm': isEpmActivity}"
+        *ngIf="!isOppProActivity && activity.isShared && isAccessedFromShared">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Shared with {{activity.sharedWithUsers?.length}} Employees</mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="shared">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <div class="claimed" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                  *ngIf="!!activity?.sharedWithUsersClaimed?.length">
+                  <div class="title">Claimed ({{activity?.sharedWithUsersClaimed?.length}})</div>
+                  <div class="users" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="user-container"
+                      *ngFor="let user of activity.sharedWithUsersClaimed; let last=last" [ngClass]="{'last': last}">
+                      <ngx-avatar fxFlex="nogrow" name="{{user.UserName}}" [src]="user.profilePictureUrl"
+                        initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF" size="24" textSizeRatio=textSizeRatio
+                        [round]="true"></ngx-avatar>
+
+                      <p class="user-info" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                        <span class="name">{{user.UserName}}</span>
+                        <span *ngIf="user.position!=null" class="position">{{user.position}}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="not-claimed" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                  *ngIf="!!activity.sharedWithUsersNotClaimed?.length">
+                  <div class="title">Not Claimed ({{activity.sharedWithUsersNotClaimed?.length}})</div>
+                  <div class="users" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="user-container"
+                      *ngFor="let user of activity.sharedWithUsersNotClaimed; let last=last" [ngClass]="{'last': last}">
+                      <ngx-avatar fxFlex="nogrow" name="{{user.UserName}}" [src]="user.profilePictureUrl"
+                        initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF" size="24" textSizeRatio=textSizeRatio
+                        [round]="true"></ngx-avatar>
+
+                      <p class="user-info" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                        <span class="name">{{user.UserName}}</span>
+                        <span *ngIf="user.position!=null" class="position">{{user.position}}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="share-with-more clickable"
+                  [class.disabled]="activity.maxClaims !=null && activity?.sharedWithUsersClaimed?.length == activity.maxClaims"
+                  fxFlex fxLayout="row" fxLayoutAlign="start center" (click)="openShareWithUsersDialog()">
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g fill="none" fill-rule="evenodd">
+                      <g>
+                        <g>
+                          <g>
+                            <path d="M0 0H24V24H0z"
+                              transform="translate(-23 -1265) translate(8 585) translate(15 680)" />
+                            <path fill="#6CB33F"
+                              d="M23.225 11.994l-8.008-8.666c-.525-.568-1.41-.603-1.979-.078-.25.231-.407.546-.442.882l-.008.146v3.088l-.1.1h-.767c-5.88 0-10.664 4.632-10.817 10.406l-.004.284v1.688c0 .747.606 1.353 1.353 1.353.377 0 .737-.158.993-.435 2.299-2.486 5.482-3.992 8.874-4.212l.365-.019.103.1v3.08c0 .772.627 1.4 1.4 1.4.342 0 .67-.126.924-.35l.105-.1 8.008-8.667-8.008-8.666 8.008 8.666zm-8.537-6.439l5.95 6.439-5.95 6.438v-3.81h-1.5c-3.787 0-7.418 1.406-10.188 3.911v-.377c0-4.852 3.991-8.79 8.921-8.79h2.767v-3.81z"
+                              transform="translate(-23 -1265) translate(8 585) translate(15 680)" />
+                          </g>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+
+                  <span>Share with other employees</span>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="activity-progress-conatiner" [ngClass]="{'epm': isEpmActivity}"
+        *ngIf="!isOppProActivity  && activity.dueDate !=null">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Progress </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="progress">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.targetValue != null">
+                  <mat-label fxFlex="28">Target: </mat-label>
+                  <span>
+                    {{ activity.targetValue }}
+                    <span *ngIf="activity.tacticId != null">{{
+                      activity.tactic?.unit
+                      }}</span>
+                    <span *ngIf="activity.tacticId == null">{{
+                      activity?.unit
+                      }}</span></span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.actualValue != null">
+                  <mat-label fxFlex="28">Actuals: </mat-label>
+                  <span>
+                    {{ activity.actualValue }}
+                    <span *ngIf="activity.tacticId != null && activity.appType !=3">{{
+                      activity.tactic?.unit
+                      }}</span>
+                    <span *ngIf="activity.tacticId == null && activity.appType !=3">{{
+                      activity?.unit
+                      }}</span>
+
+                    <span *ngIf="activity.appType ==3">h</span>
+                  </span>
+                  <!-- <span *ngIf="activity.actualValue == null"> None </span> -->
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.weight != null">
+                  <mat-label fxFlex="28">Weight: </mat-label>
+                  <span>{{ activity.weight }}</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="!isEpmActivity">
+                  <mat-label fxFlex="28">Condition: </mat-label>
+                  <span *ngIf="activity.tacticId == null">{{
+                    activity.condition
+                    }}</span>
+
+                  <span *ngIf="activity.tacticId != null">{{
+                    activity?.tactic?.condition
+                    }}</span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="activity-additional-details-conatiner" [ngClass]="{'epm': isEpmActivity}" *ngIf="!isOppProActivity">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Additional Details </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="additional">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="28">Created On: </mat-label>
+                  <span> {{ activity.creationDate }} </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.completedDate != null">
+                  <mat-label fxFlex="28">Completed On: </mat-label>
+                  <span> {{ activity.completedDate }} </span>
+                </p>
+                <p fxFlex fxLayout="row" *ngIf="activity.createdBy!=null" fxLayoutAlign="start center">
+                  <mat-label fxFlex="28">Created By: </mat-label>
+                  <span>
+                    {{
+                    activity.createdBy.UserFirstName +
+                    " " +
+                    activity.createdBy.UserLastName
+                    }}</span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="activity-additional-details-conatiner" [ngClass]="{'epm': isEpmActivity}"
+        *ngIf="!isOppProActivity  && activity.dueDate !=null">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Settings </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="additional">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                  *ngIf="isEpmActivity && !!activity.epmInfo && activity.epmInfo.ReportingCutOffDate !=null">
+                  <mat-label fxFlex="40">Reporting Cutoff Date: </mat-label>
+                  <span> {{activity.epmInfo.ReportingCutOffDate|date: 'd MMM y'}} </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Reminder: </mat-label>
+                  <span *ngIf="activity.reminder != null && activity.reminder != 0">
+                    {{ activity.reminder }}
+                    <span *ngIf="activity.reminder == 1">Day </span><span *ngIf="activity.reminder > 1">Days </span>
+                    before (9:00 am)
+                  </span>
+                  <span *ngIf="activity.reminder == null || activity.reminder == 0">Never</span>
+                </p>
+                <!-- <p
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                *ngIf="activity.weight != null"
+              >
+                <mat-label fxFlex="35">Weight: </mat-label>
+                <span>{{ activity.weight }}</span>
+              </p> -->
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Recurrence: </mat-label>
+                  <span>None</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Distribution: </mat-label>
+                  <span>None</span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="activity-history-conatiner" [ngClass]="{'epm': isEpmActivity}"
+        *ngIf="!isOppProActivity && !!activity && !!activity.history?.length  && activity.dueDate !=null">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> History </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card class="history" *ngFor="let historyRec of activity.history">
+              <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start start">
+                <ngx-avatar fxFlex="10" fxFlex.xs="20" fxFlex.sm="20" name="{{
+                  historyRec.user.UserFirstName +
+                    ' ' +
+                    historyRec.user.UserLastName
+                }}" [src]="historyRec.user.UserProfilePictureUrl" initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF"
+                  size="24" textSizeRatio=textSizeRatio [round]="true"></ngx-avatar>
+                <p fxFlex fxLayout="column" fxLayoutAlign="start stretch" class="history-action">
+                  <span>
+                    <span class="user">{{
+                      historyRec.user.UserFirstName +
+                      " " +
+                      historyRec.user.UserLastName
+                      }}</span>
+
+                    <!-- <span *ngIf="historyRec.action == 'updated'">
+                  changed {{ historyRec.fieldName }} to "{{
+                  historyRec.newValue
+                  }}"</span
+                  > -->
+                    <span *ngIf="historyRec.action == 'updated'">
+                      updated the task
+                    </span>
+
+                    <span *ngIf="historyRec.action != 'updated'">
+                      {{ historyRec.action }} this activity
+                      <span *ngIf="historyRec.action == 'moved'">
+                        to "{{ historyRec.newValue }}"
+                      </span>
+                    </span>
+                  </span>
+                  <mat-label class="date">{{ historyRec.changeDate }} at
+                    {{ historyRec?.changeTime }}</mat-label>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div *ngIf="
+        !isOppProActivity && !!activity.efforts && activity.efforts?.length > 0  && activity.dueDate !=null"
+        class="activity-efforts-conatiner" [ngClass]="{'epm': isEpmActivity}">
+        <p class="title">
+          <mat-label>Efforts</mat-label>
+        </p>
+        <mat-card *ngIf="isLoadingEffort">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+            <mat-spinner [diameter]="24"></mat-spinner>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="efforts" *ngFor="let effort of activity.efforts">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <span fxFlex class="date">{{ effort.completedDate }}
+                <span *ngIf="effort.startTime != null && effort.endTime != null">({{ effort.startTime }} - {{
+                  effort.endTime }})</span></span>
+              <span fxFlex="nogrow" fxLayoutAlign="end center" class="hours">
+                <span *ngIf="effort.hours != null && effort.hours != 0">{{ effort.hours }}
+                  <span>h&nbsp;</span>
+                  <!-- <span *ngIf="effort.hours > 1">hrs&nbsp;</span> -->
+                </span>
+                <span *ngIf="effort.minutes != null && effort.minutes != 0">
+                  {{ effort.minutes }}
+                  <span>min</span>
+                  <!-- <span *ngIf="effort.minutes > 1">mins</span> -->
+                </span>
+              </span>
+            </p>
+            <p *ngIf="effort.note != null">
+              <mat-label *ngIf="!effort.showLongComment">{{ effort.note | textTruncate: 270 }}
+              </mat-label>
+
+              <mat-label *ngIf="effort.showLongComment">{{
+                effort.note
+                }}</mat-label>
+              <a (click)="effort.showLongComment = true" *ngIf="
+                !effort.showLongComment && isMaxCharsReached(effort.note)
+              " class="clickable more-link">See More</a><a (click)="effort.showLongComment = false"
+                *ngIf="effort.showLongComment && isMaxCharsReached(effort.note)" class="clickable less-link">See
+                Less</a>
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div fxFlex="60" fxLayout="column" fxLayoutAlign="start stretch"
+      *ngIf="!(isEpmActivity && activity.note == null) || !isOppProActivity && !isEpmActivity">
+      <div class="activity-notes-conatiner">
+        <p class="title" *ngIf="!(isEpmActivity && activity.note == null) || !isEpmActivity">
+          <mat-label>Notes </mat-label>
+        </p>
+        <mat-card *ngIf="isLoadingNote">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+            <mat-spinner [diameter]="24"></mat-spinner>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="notes" *ngIf="!(isEpmActivity && activity.note == null) || ( !isEpmActivity)">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch" *ngIf="!isOppProActivity">
+            <button class="send-btn" *ngIf="!isEpmActivity && (note != null && !isLoadingNote && activity.note == null) || noteInEditMode" (click)="sendNote()">
+              <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                <g>
+                  <g id="send">
+                    <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                  </g>
+                </g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+              </svg>
+            </button>
+            <textarea rows="1" *ngIf="!isEpmActivity && (activity.note == null || noteInEditMode)" class="notes-control"
+              [ngClass]="{ 'expand-note-ctrl': isMaxCharsReached() }" placeholder="Add your notes here..."
+              (keydown)="addNote($event)" [(ngModel)]="note"></textarea>
+
+            <p [ngClass]="{'clickable': !isEpmActivity }" *ngIf="activity.note != null && canEdit && !noteInEditMode">
+              <span class="note-container" id="note"><span *ngIf="!show"
+                  (click)="!isEpmActivity ? enableEditNote():''">{{ activity.note | textTruncate: 415 }}</span>
+                <span *ngIf="show" (click)="!isEpmActivity? enableEditNote():''">{{ activity.note }}</span>
+
+                <a (click)="noteInEditMode = false; show = true" *ngIf="!show && isMaxCharsReached()"
+                  class="clickable more-link">See More</a><a (click)="noteInEditMode = false; show = false"
+                  *ngIf="show && isMaxCharsReached()" class="clickable less-link">See Less</a>
+              </span>
+            </p>
+          </mat-card-content>
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch" *ngIf="!!isOppProActivity">
+            <button class="send-btn" *ngIf="
+              (note != null &&
+                !isLoadingNote &&
+                oppProActivity.note == null) ||
+              noteInEditMode
+            " (click)="sendNote()">
+              <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                <g>
+                  <g id="send">
+                    <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                  </g>
+                </g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+              </svg>
+            </button>
+            <textarea rows="1" *ngIf="oppProActivity.note == null || noteInEditMode" class="notes-control"
+              [ngClass]="{ 'expand-note-ctrl': isMaxCharsReached() }" placeholder="Add your notes here..."
+              (keydown)="addNote($event)" [(ngModel)]="note"></textarea>
+
+            <p class="clickable" *ngIf="
+              oppProActivity.note != null &&
+              oppProActivity.canEdit &&
+              !noteInEditMode
+            ">
+              <span class="note-container" id="note"><span *ngIf="!show"
+                  (click)="noteInEditMode = true; note = oppProActivity.note">{{ oppProActivity.note | textTruncate: 415
+                  }}</span>
+                <span *ngIf="show" (click)="noteInEditMode = true; note = oppProActivity.note">{{ oppProActivity.note
+                  }}</span>
+
+                <a (click)="noteInEditMode = false; show = true" *ngIf="!show && isMaxCharsReached()"
+                  class="clickable more-link">See More</a><a (click)="noteInEditMode = false; show = false"
+                  *ngIf="show && isMaxCharsReached()" class="clickable less-link">See Less</a>
+              </span>
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="activity-attachments-conatiner" *ngIf="!isOppProActivity && !isEpmActivity">
+        <p class="title">
+          <mat-label>Attachments</mat-label>
+        </p>
+        <mat-card *ngIf="isLoadingAttachment">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+            <mat-spinner [diameter]="24"></mat-spinner>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="attachments" *ngFor="let attachment of activity.attachments">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <a fxFlex class="file-name" href="{{ attachment.fileUrl }}" target="_self" charset="UTF-8">{{
+                attachment.name }}</a>
+              <span fxFlex="nogrow" fxLayoutAlign="end center" class="actions-menu-container clickable">
+                <button color="primary" [matMenuTriggerFor]="menu" class="actions-btn clickable">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="deleteAttachment(attachment.id)">
+                    Delete
+                  </button>
+                </mat-menu>
+              </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <svg *ngIf="attachment?.type == 'doc' || attachment?.type == 'docx'" width="24px" height="24px"
+                viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_docx" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M9.65930817,11.1743164 C10.5868876,11.1743164 11.2898706,11.4281345 11.7682783,11.9357782 C12.246686,12.4434219 12.4858862,13.1889294 12.4858862,14.1723231 C12.4858862,15.1530589 12.2453571,15.8985663 11.7642916,16.4088679 C11.283226,16.9191695 10.5789141,17.1743164 9.65133474,17.1743164 C8.73704446,17.1743164 8.03605479,16.9178406 7.54834471,16.4048812 C7.06063463,15.8919218 6.81678325,15.1450854 6.81678325,14.1643496 C6.81678325,13.1942451 7.05930574,12.4533887 7.544358,11.9417583 C8.02941026,11.4301278 8.7343866,11.1743164 9.65930817,11.1743164 Z M16.1496736,11.1822898 C16.7795771,11.1822898 17.3815644,11.3191655 17.9556537,11.5929211 L17.4732617,12.8327882 C17.2579782,12.731791 17.0426979,12.646742 16.8274145,12.5776387 C16.612131,12.5085353 16.3809041,12.4739842 16.1337268,12.4739842 C15.7589741,12.4739842 15.4666182,12.627471 15.2566504,12.9344493 C15.0466825,13.2414276 14.9417002,13.6646792 14.9417002,14.2042167 C14.9417002,15.325817 15.368274,15.8866088 16.2214344,15.8866088 C16.479243,15.8866088 16.7290744,15.8507287 16.9709361,15.7789676 C17.2127977,15.7072064 17.4559847,15.6208285 17.7005042,15.5198314 L17.7005042,16.8513928 C17.214123,17.0666763 16.6639624,17.1743164 16.0500058,17.1743164 C15.1702672,17.1743164 14.4958554,16.9191695 14.02675,16.4088679 C13.5576447,15.8985663 13.3230955,15.1610322 13.3230955,14.1962433 C13.3230955,13.592918 13.4367157,13.0626908 13.6639593,12.6055456 C13.891203,12.1484005 14.21811,11.796909 14.6446902,11.5510606 C15.0712704,11.3052122 15.5729265,11.1822898 16.1496736,11.1822898 Z M3.05731481,11.2660108 C3.99286766,11.2660108 4.71511957,11.505211 5.22409222,11.9836187 C5.73306486,12.4620264 5.98754737,13.1530494 5.98754737,14.0567084 C5.98754737,15.0294708 5.71977596,15.7789649 5.18422511,16.3052134 C4.64867426,16.8314619 3.89585787,17.0945822 2.92575335,17.0945822 L1.04003906,17.0945822 L1.04003906,11.2660108 L3.05731481,11.2660108 Z M20.0845573,11.2660108 L21.137049,13.0680041 L22.1496736,11.2660108 L23.9476803,11.2660108 L22.1018331,14.2361104 L24.0872151,17.0945822 L22.2652882,17.0945822 L21.1290756,15.2726553 L20.0048231,17.0945822 L18.2227633,17.0945822 L20.1563181,14.1125224 L18.3383779,11.2660108 L20.0845573,11.2660108 Z M9.65930817,12.4660108 C8.86993545,12.4660108 8.47525501,13.0347758 8.47525501,14.1723231 C8.47525501,15.299239 8.86727767,15.8626885 9.65133474,15.8626885 C10.0500078,15.8626885 10.3456859,15.7258128 10.5383779,15.4520573 C10.7310699,15.1783017 10.8274145,14.7517279 10.8274145,14.1723231 C10.8274145,13.5902603 10.729741,13.1603643 10.5343912,12.8826221 C10.3390414,12.6048798 10.04735,12.4660108 9.65930817,12.4660108 Z M3.07326165,12.5377716 L2.61478989,12.5377716 L2.61478989,15.8028878 L2.96562046,15.8028878 C3.44402817,15.8028878 3.79485522,15.6640188 4.01811215,15.3862765 C4.24136908,15.1085343 4.35299587,14.6839538 4.35299587,14.1125224 C4.35299587,13.5783004 4.24734909,13.1822911 4.03605235,12.9244825 C3.82475561,12.6666739 3.50382859,12.5377716 3.07326165,12.5377716 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+              <svg *ngIf="
+                attachment?.type == 'png' ||
+                attachment?.type == 'jpg' ||
+                attachment?.type == 'jpeg' ||
+                attachment?.type == 'gif'
+              " width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_img" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M18.144,10.907 C18.3975855,10.907 18.6352771,10.9275493 18.8571224,10.9687898 C19.0785748,11.0099572 19.2839033,11.0670256 19.4730898,11.1401204 C19.66281,11.2134214 19.8374274,11.3007591 19.996797,11.4021762 C20.1550385,11.5028753 20.2993255,11.6139962 20.4605464,11.7964475 L20.4647125,12.0225258 L20.1187996,12.5552498 C20.0339176,12.691061 19.9139855,12.7798861 19.7680818,12.8118025 C19.6231001,12.8435173 19.4727625,12.8108342 19.3226737,12.7199884 C19.2316793,12.6643807 19.1428478,12.6146051 19.0562154,12.5706611 C18.9741949,12.5290565 18.8864267,12.4926464 18.7928488,12.4614537 C18.7012654,12.4309259 18.6003511,12.4072089 18.4901506,12.3904392 C18.3792289,12.3735599 18.2489481,12.365 18.1,12.365 C17.8605202,12.365 17.6464427,12.4057911 17.4563272,12.4869379 C17.2676484,12.5674716 17.1086621,12.68024 16.9773712,12.8263725 C16.8445262,12.9742347 16.74173,13.1533514 16.668734,13.3652751 C16.5944138,13.5810435 16.557,13.824461 16.557,14.096 C16.557,14.3905816 16.5981275,14.6510655 16.6797139,14.8778278 C16.7599316,15.1007856 16.871545,15.2865035 17.0148119,15.4367025 C17.157436,15.5862278 17.3279303,15.699834 17.5283092,15.7785956 C17.7321384,15.8587134 17.9610203,15.899 18.216,15.899 C18.3895698,15.899 18.5424007,15.8818535 18.6740691,15.8480625 C18.7663671,15.8243754 18.8573284,15.7949105 18.947,15.7596453 L18.947,15.157 L18.516,15.157 C18.382779,15.157 18.2674499,15.1161896 18.179948,15.0339908 C18.0902893,14.949766 18.043,14.8376471 18.043,14.712 L18.0722893,13.9732893 L18.268,13.819 L20.3307107,13.8482893 L20.485,14.044 L20.4741479,16.4853062 L20.3926305,16.621753 C20.0761153,16.8527236 19.7377622,17.0222076 19.3784168,17.1295817 C19.0226269,17.2358934 18.6469554,17.289 18.252,17.289 C17.7476453,17.289 17.2885418,17.2102018 16.8755697,17.0521332 C16.4610987,16.8934909 16.1047479,16.6713626 15.808082,16.3862177 C15.5108146,16.1004946 15.2811135,15.7610721 15.1199474,15.3696687 C14.9592576,14.979422 14.879,14.5543738 14.879,14.096 C14.879,13.6335332 14.9554432,13.2070129 15.1086184,12.817633 C15.2626628,12.4260433 15.4833048,12.0876083 15.7697106,11.8040954 C16.055774,11.5209215 16.401082,11.3002003 16.803982,11.1424814 C17.2054248,10.985333 17.6524173,10.907 18.144,10.907 Z M5.816,10.971 L5.88671068,11.0002893 L6.041,11.196 L6.01171068,17.0707107 L5.816,17.225 L4.53728932,17.1957107 L4.383,17 L4.41228932,11.1252893 L4.608,10.971 L5.816,10.971 Z M8.344,10.971 L8.49496678,10.9754983 C8.55751282,10.9796681 8.61523041,10.9918254 8.66798985,11.0124704 C8.72789209,11.0359104 8.78202133,11.0718233 8.82909903,11.118901 C8.87133364,11.1611356 8.90863429,11.214091 8.94326316,11.2795051 L10.6330302,14.5030708 L12.3171477,11.2787253 C12.3522792,11.2123659 12.3916886,11.1579508 12.4370314,11.1148751 C12.4845444,11.0697378 12.5378275,11.0352375 12.5960101,11.0124704 C12.6488543,10.9917922 12.7058732,10.9797103 12.771574,10.9752418 L12.8452719,10.9720001 L13.9025481,11.0002535 L14.057,11.196 L14.0277107,17.0707107 L13.832,17.225 L12.7012893,17.1957107 L12.547,17 L12.547,13.898161 L11.3393721,16.1882869 C11.2101055,16.4354143 10.9935754,16.569 10.72,16.569 L10.552,16.569 C10.4177759,16.569 10.2945522,16.5359141 10.1866737,16.4699884 C10.0783004,16.4037603 9.99216273,16.3074521 9.93301921,16.1890316 L8.71375594,13.8791564 L8.68771068,17.0707107 L8.492,17.225 L7.36128932,17.1957107 L7.207,17 L7.23628932,11.1252893 L7.432,10.971 L8.344,10.971 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+
+              <svg *ngIf="attachment?.type == 'pdf'" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_pdf" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M6.57559331,10.2529297 C7.33309294,10.2529297 7.9018928,10.4183739 8.28200995,10.7492672 C8.66212709,11.0801606 8.85218281,11.5505143 8.85218281,12.1603425 C8.85218281,12.8303332 8.6546069,13.347859 8.25944915,13.7129355 C7.8642914,14.0780121 7.30301173,14.2605476 6.57559331,14.2605476 L6.12027541,14.2605476 L6.12027541,16.2499997 L4.5,16.2499997 L4.5,10.2529297 L6.57559331,10.2529297 Z M11.8835335,10.2529297 C12.8461323,10.2529297 13.5892639,10.499045 14.1129504,10.991283 C14.636637,11.4835211 14.8984764,12.1945209 14.8984764,13.1243038 C14.8984764,14.1251878 14.6229639,14.8963492 14.0719308,15.437811 C13.5208977,15.9792728 12.7463181,16.2499997 11.7481687,16.2499997 L9.80794021,16.2499997 L9.80794021,10.2529297 L11.8835335,10.2529297 Z M19.5172868,10.2529297 L19.5172868,11.553252 L17.5688543,11.553252 L17.5688543,12.6976997 L19.3655141,12.6976997 L19.3655141,13.998022 L17.5688543,13.998022 L17.5688543,16.2499997 L15.9731907,16.2499997 L15.9731907,10.2529297 L19.5172868,10.2529297 Z M11.8999414,11.5614559 L11.4282156,11.5614559 L11.4282156,14.9209637 L11.7891884,14.9209637 C12.2814264,14.9209637 12.6423955,14.77808 12.8721066,14.4923085 C13.1018177,14.206537 13.2166715,13.7696823 13.2166715,13.1817313 C13.2166715,12.6320655 13.1079706,12.2246079 12.8905654,11.9593463 C12.6731603,11.6940847 12.3429556,11.5614559 11.8999414,11.5614559 Z M6.53867564,11.5614559 L6.12027541,11.5614559 L6.12027541,12.9397155 L6.47561675,12.9397155 C6.65900111,12.9397155 6.8524751,12.8713501 6.99604452,12.7346173 C7.13961395,12.5978846 7.21139759,12.4091961 7.21139759,12.1685464 C7.21139759,11.7638174 6.98715918,11.5614559 6.53867564,11.5614559 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+
+              <svg *ngIf="attachment?.type == 'pptx' || attachment?.type == 'ppt'" width="24px" height="24px"
+                viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_pptx" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M3.61664645,11.0029297 C4.37451618,11.0029297 4.94359393,11.1684547 5.32389679,11.4995097 C5.70419965,11.8305647 5.89434823,12.3011483 5.89434823,12.9112744 C5.89434823,13.5815924 5.69667579,14.0993711 5.30132497,14.464626 C4.90597416,14.8298809 4.34442027,15.0125056 3.61664645,15.0125056 L3.16110609,15.0125056 L3.16110609,17.0029297 L1.54003906,17.0029297 L1.54003906,11.0029297 L3.61664645,11.0029297 Z M8.92717997,11.0029297 C9.68504969,11.0029297 10.2541274,11.1684547 10.6344303,11.4995097 C11.0147332,11.8305647 11.2048817,12.3011483 11.2048817,12.9112744 C11.2048817,13.5815924 11.0072093,14.0993711 10.6118585,14.464626 C10.2165077,14.8298809 9.65495378,15.0125056 8.92717997,15.0125056 L8.47163961,15.0125056 L8.47163961,17.0029297 L6.85057258,17.0029297 L6.85057258,11.0029297 L8.92717997,11.0029297 Z M16.2691772,11.0029297 L16.2691772,12.3285111 L14.8081649,12.3285111 L14.8081649,17.0029297 L13.1870979,17.0029297 L13.1870979,12.3285111 L11.7219816,12.3285111 L11.7219816,11.0029297 L16.2691772,11.0029297 Z M18.4114481,11.0029297 L19.4948954,12.8579228 L20.5373031,11.0029297 L22.3881923,11.0029297 L20.4880555,14.0603852 L22.5318311,17.0029297 L20.6563181,17.0029297 L19.4866875,15.1274167 L18.3293687,17.0029297 L16.4948954,17.0029297 L18.4853195,13.9331622 L16.6139105,11.0029297 L18.4114481,11.0029297 Z M3.57971075,12.3120952 L3.16110609,12.3120952 L3.16110609,13.6910282 L3.45659173,13.6910282 C3.700095,13.6910282 3.89366352,13.6226294 4.03730308,13.4858298 C4.18094265,13.3490302 4.25276136,13.1602496 4.25276136,12.9194824 C4.25276136,12.5145556 4.0284134,12.3120952 3.57971075,12.3120952 Z M8.89024426,12.3120952 L8.47163961,12.3120952 L8.47163961,13.6910282 L8.76712525,13.6910282 C9.01062852,13.6910282 9.20419703,13.6226294 9.3478366,13.4858298 C9.49147617,13.3490302 9.56329488,13.1602496 9.56329488,12.9194824 C9.56329488,12.5145556 9.33894691,12.3120952 8.89024426,12.3120952 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+
+              <svg *ngIf="attachment?.type == 'xls' || attachment?.type == 'xlsx'" width="24px" height="24px"
+                viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_xls" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M17.6546658,9.932 C18.0267276,9.932 18.3731436,9.98985504 18.6929467,10.1060167 C19.0149251,10.2229685 19.2895852,10.3868903 19.5152646,10.5979152 L19.6265785,10.7020009 L19.2535055,11.4119894 C19.2034276,11.4942602 19.148761,11.5585174 19.0859678,11.6039884 C19.0106359,11.6585391 18.919704,11.684 18.8186658,11.684 C18.7200436,11.684 18.622034,11.6520179 18.5287801,11.595271 L18.3810632,11.5100728 L18.2111136,11.4224136 C18.1507981,11.3947168 18.0844892,11.3680982 18.0122139,11.3426376 C17.9176364,11.3093205 17.8025387,11.292 17.6666658,11.292 C17.4344777,11.292 17.2733309,11.3400341 17.1759829,11.4270857 C17.0806545,11.5123313 17.0346658,11.6197856 17.0346658,11.764 C17.0346658,11.8439774 17.0554317,11.9019033 17.096973,11.9478173 C17.1551644,12.0121342 17.234847,12.0700369 17.3373366,12.1207307 C17.4131929,12.158251 17.4965123,12.1933113 17.5872833,12.2258338 L17.9716485,12.349347 L18.2201926,12.433039 C18.3932831,12.4930624 18.5621946,12.5635585 18.7268896,12.6445103 C18.9021424,12.7306515 19.0594273,12.8394837 19.1981281,12.9707274 C19.3475552,13.1064434 19.456639,13.2713969 19.5431307,13.4641063 C19.63158,13.6611776 19.6746658,13.8947482 19.6746658,14.164 C19.6746658,14.4529922 19.6239888,14.7254728 19.5224351,14.980093 C19.420323,15.2361132 19.2724179,15.4605722 19.0795401,15.6519663 C18.8860498,15.8439682 18.6485866,15.9941397 18.3689194,16.1024924 C18.0901495,16.2104975 17.7770875,16.264 17.4306658,16.264 C17.2331683,16.264 17.036421,16.2439675 16.8406178,16.2039494 C16.6466813,16.1643127 16.4595668,16.1090289 16.2793993,16.0380968 C16.0987647,15.9669808 15.9284704,15.8814774 15.768666,15.7815997 C15.6061341,15.6800172 15.4629934,15.5660889 15.3395906,15.4397479 L15.230185,15.3277375 L15.6698574,14.6186942 C15.7162095,14.5512731 15.7768753,14.4958371 15.8498916,14.4532442 C15.928155,14.4075906 16.0135304,14.384 16.1026658,14.384 C16.2175574,14.384 16.3308471,14.4237507 16.438199,14.4953684 L16.7114853,14.6696683 C16.8046627,14.7270083 16.9145283,14.7804236 17.0410677,14.8295651 C17.153575,14.8732573 17.2940113,14.896 17.4626658,14.896 C17.6992501,14.896 17.870895,14.8452987 17.9844977,14.7504652 C18.0888673,14.6633393 18.1426658,14.5295447 18.1426658,14.332 C18.1426658,14.2298935 18.1192663,14.1568214 18.0753917,14.1044798 C18.0177072,14.0356631 17.9402436,13.9763957 17.8412231,13.9268854 C17.7677203,13.890134 17.6865149,13.8565225 17.6031092,13.8279536 L17.4568004,13.7826097 C17.2968999,13.7378918 17.1330589,13.6884687 16.9652652,13.6343417 C16.7916075,13.5783231 16.6221425,13.5110973 16.4569169,13.4326852 C16.2789369,13.3482201 16.1201033,13.2362802 15.9812444,13.0974214 C15.8395787,12.9557556 15.7259538,12.7818866 15.6402113,12.5773081 C15.5530139,12.3692582 15.5106658,12.1181413 15.5106658,11.824 C15.5106658,11.5812186 15.558708,11.3455116 15.6543387,11.1183886 C15.7504646,10.8900896 15.8916952,10.6872584 16.0767931,10.5111169 C16.2612836,10.3355534 16.4864043,10.1953142 16.7507418,10.0901634 C17.0167965,9.98432949 17.3184178,9.932 17.6546658,9.932 Z M6.03618502,9.996 C6.1478482,9.996 6.23797444,10.0123866 6.31141281,10.0543514 C6.3803135,10.0937232 6.43696703,10.1526429 6.48306331,10.228074 L7.55020425,11.9827 L8.60868643,10.2491008 C8.65521804,10.1715482 8.71051411,10.1099922 8.77657977,10.0667078 C8.84962231,10.0188523 8.9350178,9.996 9.02818502,9.996 L10.5500384,9.996 L8.57009807,12.9637631 L10.5842297,16.2 L9.02418502,16.2 C8.90082173,16.2 8.79164793,16.1662349 8.70422463,16.0953511 C8.63502083,16.03924 8.57887564,15.972627 8.53978158,15.9013758 L7.46323673,14.0705639 L6.34924647,15.9129368 C6.30527546,15.9772021 6.25369805,16.0355438 6.19479207,16.0877176 C6.10999885,16.1628202 6.00325685,16.2 5.88418502,16.2 L4.4,16.2 L6.42646542,13.0131165 L4.46791112,9.996 L6.03618502,9.996 Z M12.624185,9.996 L12.624185,14.824 L14.868185,14.824 L14.868185,16.2 L11.024185,16.2 L11.024185,9.996 L12.624185,9.996 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+              <svg *ngIf="attachment?.type == 'unknown'" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="icon_document_unknown" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                  <path
+                    d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M8.096,10.996 L8.096,12.336 L5.608,12.336 L5.608,13.54 L7.696,13.54 L7.696,14.884 L5.608,14.884 L5.608,17.2 L4,17.2 L4,10.996 L8.096,10.996 Z M10.536,10.996 L10.536,17.2 L8.928,17.2 L8.928,10.996 L10.536,10.996 Z M13.352,10.996 L13.352,15.824 L15.596,15.824 L15.596,17.2 L11.752,17.2 L11.752,10.996 L13.352,10.996 Z M20.424,10.996 L20.424,12.336 L17.936,12.336 L17.936,13.428 L19.872,13.428 L19.872,14.736 L17.936,14.736 L17.936,15.86 L20.424,15.86 L20.424,17.2 L16.328,17.2 L16.328,10.996 L20.424,10.996 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                    id="shape" fill="#AAADB8"></path>
+                </g>
+              </svg>
+              <mat-label>{{ attachment?.type }}, {{ attachment.size }} KB</mat-label>
+            </p>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="upload-attachments">
+          <mat-card-content>
+            <button fxFlex fxLayout="row" fxLayoutAlign="start center" class="upload-btn" [class.clickable]="canEdit"
+              [class.disabled]="!canEdit" (click)="openFileUploader()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <g fill="none" fill-rule="evenodd">
+                  <path d="M0 0L24 0 24 24 0 24z" />
+                  <path fill="#6CB33F"
+                    d="M19.571 10.586l-8.132 8.132c-1.562 1.562-4.094 1.562-5.657 0-1.562-1.563-1.562-4.095 0-5.657l8.84-8.84c.975-.975 2.559-.975 3.535 0 .976.977.976 2.56 0 3.536l-7.425 7.425c-.389.389-1.025.389-1.414 0s-.389-1.025 0-1.414l6.718-6.718-1.061-1.06-6.718 6.717c-.975.976-.975 2.56 0 3.536.976.975 2.56.975 3.536 0l7.425-7.425c1.562-1.563 1.562-4.094 0-5.657-1.563-1.563-4.095-1.563-5.657 0L4.72 12c-2.149 2.15-2.149 5.629 0 7.778 2.15 2.15 5.63 2.15 7.779 0l8.132-8.132-1.06-1.06z" />
+                </g>
+              </svg>
+
+              <span>Upload an Attachment</span>
+            </button>
+            <input style="display: none" id="wizard-upload-file" type="file" accept="image/*, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/pdf, 	
+          application/vnd.ms-powerpoint, 	
+          application/vnd.openxmlformats-officedocument.presentationml.presentation" (change)="uploadFile($event)" />
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="activity-comments-conatiner" *ngIf="!isOppProActivity && !isEpmActivity">
+        <p class="title">
+          <mat-label>Comments</mat-label>
+        </p>
+        <mat-card *ngIf="isLoadingComment">
+          <mat-card-content class="small-spinner">
+            <mat-spinner [diameter]="24"></mat-spinner>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="no-comments" *ngIf="!isLoadingComment && activity.comments?.length == 0">
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center">
+            <svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink">
+              <g id="icon_empty-state_comments" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <rect id="Rectangle" x="0" y="0" width="80" height="80"></rect>
+                <g id="chat" transform="translate(7.000000, 10.000000)" fill-rule="nonzero">
+                  <path
+                    d="M21.5410345,0.529137931 L60.3911379,0.608793103 C63.4885862,0.608793103 66,3.1202069 66,6.2187931 L66,6.2187931 L66,30.2757931 C66,32.3407586 64.1034483,34.2103793 60.3103448,35.8846552 L60.3103448,35.8846552 L60.3103448,48.4018966 L53.0282461,40.3914754 C53.05513,40.1688174 53.0689655,39.9421436 53.0689655,39.7122414 L53.0689655,39.7122414 L53.0689655,16.6552414 C53.0689655,13.5577931 49.5575517,10.0463793 46.4589655,10.0463793 L46.4589655,10.0463793 L15.931,10.1111379 L15.9310345,6.138 C15.9310345,3.11430049 18.3242808,0.649061283 21.3207315,0.533383055 L21.5410345,0.529137931 Z"
+                    id="Combined-shape" fill="#E5E6E9"></path>
+                  <path
+                    d="M44.4589655,13.0463793 C47.5575517,13.0463793 50.0689655,15.5577931 50.0689655,18.6552414 L50.0689655,42.7122414 C50.0689655,45.8096897 47.5575517,48.3211034 44.4601034,48.3211034 L25.0344828,48.4018966 L13.6551724,60.9191379 L13.6551724,48.4018966 L5.60886207,48.4018966 C2.51141379,48.4018966 -2.20268248e-13,45.8904828 -2.20268248e-13,42.7930345 L-2.20268248e-13,18.7360345 C-2.20268248e-13,15.6385862 2.51141379,13.1271724 5.60886207,13.1271724 L44.4589655,13.0463793 Z M27.2,36.4 L9,36.4 C8.22680135,36.4 7.6,37.0268014 7.6,37.8 L7.6,37.8 L7.6,38.2 C7.6,38.9731986 8.22680135,39.6 9,39.6 L9,39.6 L27.2,39.6 C27.9731986,39.6 28.6,38.9731986 28.6,38.2 L28.6,38.2 L28.6,37.8 C28.6,37.0268014 27.9731986,36.4 27.2,36.4 L27.2,36.4 Z M41.4,28.8 L9,28.8 C8.22680135,28.8 7.6,29.4268014 7.6,30.2 L7.6,30.2 L7.6,30.6 C7.6,31.3731986 8.22680135,32 9,32 L9,32 L41.4,32 C42.1731986,32 42.8,31.3731986 42.8,30.6 L42.8,30.6 L42.8,30.2 C42.8,29.4268014 42.1731986,28.8 41.4,28.8 L41.4,28.8 Z M41.4,21.2 L9,21.2 C8.22680135,21.2 7.6,21.8268014 7.6,22.6 L7.6,22.6 L7.6,23 C7.6,23.7731986 8.22680135,24.4 9,24.4 L9,24.4 L41.4,24.4 C42.1731986,24.4 42.8,23.7731986 42.8,23 L42.8,23 L42.8,22.6 C42.8,21.8268014 42.1731986,21.2 41.4,21.2 L41.4,21.2 Z"
+                    id="Combined-shape" fill="#CDD0D8"></path>
+                </g>
+              </g>
+            </svg>
+            <mat-label>There are no comments yet</mat-label>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="comment" *ngFor="let comment of activity.comments">
+          <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start start">
+            <ngx-avatar fxFlex="10" fxFlex.xs="20" fxFlex.sm="20" name="{{
+              comment?.createdBy?.FirstName + ' ' + comment?.createdBy?.LastName
+            }}" [src]="comment.createdBy.ProfilePictureUrl" initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF"
+              size="40" textSizeRatio=textSizeRatio [round]="true"></ngx-avatar>
+            <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+              <p class="comment-creator" fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <span fxFlex>{{
+                  comment?.createdBy?.FirstName + " " + comment?.createdBy?.LastName
+                  }}</span>
+
+                <span fxFlex="nogrow" fxLayoutAlign="end center" class="actions-menu-container clickable">
+                  <button color="primary" [matMenuTriggerFor]="menu" class="actions-btn clickable">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="deleteComment(comment.id)">
+                      Delete
+                    </button>
+                  </mat-menu>
+                </span>
+              </p>
+              <p class="comment-text" [innerHTML]="urlify(comment.text)|sanitizeHtml"></p>
+
+              <p class="comment-date">
+                <mat-label>{{ comment?.timeAgo }} </mat-label>
+                <!-- <a herf="#">Reply</a> -->
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="add-comment" *ngIf="canEdit">
+          <mat-card-content>
+            <button class="send-btn" *ngIf="comment != null && !isLoadingComment" (click)="sendComment()">
+              <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                <g>
+                  <g id="send">
+                    <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                  </g>
+                </g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+                <g></g>
+              </svg>
+            </button>
+            <input type="text" class="comment-control" placeholder="Add your comment here..."
+              (keydown)="addComment($event)" [(ngModel)]="comment" />
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md fxLayout="row"
+    fxLayoutAlign="start start" class="activity-more-info">
+    <mat-tab-group class="details-tabs">
+      <mat-tab label="Notes" *ngIf="!(isEpmActivity && activity.note == null) || !isEpmActivity">
+        <ng-template matTabContent>
+          <div class="activity-notes-conatiner"
+            *ngIf="!isOppProActivity && (!(isEpmActivity && activity.note == null) || ( !isEpmActivity))">
+            <mat-card *ngIf="isLoadingNote">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+                <mat-spinner [diameter]="24"></mat-spinner>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="notes"
+              *ngIf="!isOppProActivity && (!(isEpmActivity && activity.note == null) || ( !isEpmActivity))">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <button class="send-btn" *ngIf="
+                   !isEpmActivity && (note != null && !isLoadingNote && activity.note == null) ||
+                    noteInEditMode
+                  " (click)="sendNote()">
+                  <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                    viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                    <g>
+                      <g id="send">
+                        <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                      </g>
+                    </g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                  </svg>
+                </button>
+                <textarea rows="1" *ngIf=" !isEpmActivity &&(activity.note == null || noteInEditMode)"
+                  class="notes-control" [ngClass]="{ 'expand-note-ctrl': isMaxCharsReached() }"
+                  placeholder="Add your notes here..." (keydown)="addNote($event)" [(ngModel)]="note"></textarea>
+
+                <p [ngClass]="{'clickable': !isEpmActivity}"
+                  *ngIf=" !isEpmActivity && (activity.note != null && canEdit && !noteInEditMode)">
+                  <span class="note-container" id="note"><span *ngIf="!show"
+                      (click)="!isEpmActivity? enableEditNote():''">{{ activity.note | textTruncate: 415 }}</span><span
+                      *ngIf="show" (click)="!isEpmActivity? enableEditNote():''">{{ activity.note }}</span>
+                    <a (click)="noteInEditMode = false; show = true" *ngIf="!show && isMaxCharsReached()"
+                      class="clickable more-link">See More</a><a (click)="noteInEditMode = false; show = false"
+                      *ngIf="show && isMaxCharsReached()" class="clickable less-link">See Less</a>
+                  </span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="activity-notes-conatiner" *ngIf="!!isOppProActivity">
+            <mat-card *ngIf="isLoadingNote">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+                <mat-spinner [diameter]="24"></mat-spinner>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="notes">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <button class="send-btn" *ngIf="
+                    (note != null &&
+                      !isLoadingNote &&
+                      oppProActivity.note == null) ||
+                    noteInEditMode
+                  " (click)="sendNote()">
+                  <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                    viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                    <g>
+                      <g id="send">
+                        <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                      </g>
+                    </g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                  </svg>
+                </button>
+                <textarea rows="1" *ngIf="oppProActivity.note == null || noteInEditMode" class="notes-control"
+                  [ngClass]="{ 'expand-note-ctrl': isMaxCharsReached() }" placeholder="Add your notes here..."
+                  (keydown)="addNote($event)" [(ngModel)]="note"></textarea>
+
+                <p class="clickable" *ngIf="
+                    oppProActivity.note != null &&
+                    oppProActivity.canEdit &&
+                    !noteInEditMode
+                  ">
+                  <span class="note-container" id="note"><span *ngIf="!show" (click)="
+                        noteInEditMode = true;
+                      ">{{ oppProActivity.note | textTruncate: 415 }}</span><span *ngIf="show" (click)="
+                        noteInEditMode = true; note = oppProActivity.note
+                      ">{{ oppProActivity.note }}</span>
+                    <a (click)="noteInEditMode = false; show = true" *ngIf="!show && isMaxCharsReached()"
+                      class="clickable more-link">See More</a><a (click)="noteInEditMode = false; show = false"
+                      *ngIf="show && isMaxCharsReached()" class="clickable less-link">See Less</a>
+                  </span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="activity-attachments-conatiner" *ngIf="!isOppProActivity && !isEpmActivity">
+            <p class="title">
+              <mat-label>Attachments</mat-label>
+            </p>
+            <mat-card *ngIf="isLoadingAttachment">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+                <mat-spinner [diameter]="24"></mat-spinner>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="attachments" *ngFor="let attachment of activity.attachments">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <a fxFlex class="file-name" href="{{ attachment.fileUrl }}" target="_self" charset="UTF-8">{{
+                    attachment.name }}</a>
+                  <span fxFlex="nogrow" fxLayoutAlign="end center" class="actions-menu-container clickable">
+                    <button color="primary" [matMenuTriggerFor]="menu" class="actions-btn clickable">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="deleteAttachment(attachment.id)">
+                        Delete
+                      </button>
+                    </mat-menu>
+                  </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <svg *ngIf="
+                      attachment?.type == 'doc' || attachment?.type == 'docx'
+                    " width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_docx" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M9.65930817,11.1743164 C10.5868876,11.1743164 11.2898706,11.4281345 11.7682783,11.9357782 C12.246686,12.4434219 12.4858862,13.1889294 12.4858862,14.1723231 C12.4858862,15.1530589 12.2453571,15.8985663 11.7642916,16.4088679 C11.283226,16.9191695 10.5789141,17.1743164 9.65133474,17.1743164 C8.73704446,17.1743164 8.03605479,16.9178406 7.54834471,16.4048812 C7.06063463,15.8919218 6.81678325,15.1450854 6.81678325,14.1643496 C6.81678325,13.1942451 7.05930574,12.4533887 7.544358,11.9417583 C8.02941026,11.4301278 8.7343866,11.1743164 9.65930817,11.1743164 Z M16.1496736,11.1822898 C16.7795771,11.1822898 17.3815644,11.3191655 17.9556537,11.5929211 L17.4732617,12.8327882 C17.2579782,12.731791 17.0426979,12.646742 16.8274145,12.5776387 C16.612131,12.5085353 16.3809041,12.4739842 16.1337268,12.4739842 C15.7589741,12.4739842 15.4666182,12.627471 15.2566504,12.9344493 C15.0466825,13.2414276 14.9417002,13.6646792 14.9417002,14.2042167 C14.9417002,15.325817 15.368274,15.8866088 16.2214344,15.8866088 C16.479243,15.8866088 16.7290744,15.8507287 16.9709361,15.7789676 C17.2127977,15.7072064 17.4559847,15.6208285 17.7005042,15.5198314 L17.7005042,16.8513928 C17.214123,17.0666763 16.6639624,17.1743164 16.0500058,17.1743164 C15.1702672,17.1743164 14.4958554,16.9191695 14.02675,16.4088679 C13.5576447,15.8985663 13.3230955,15.1610322 13.3230955,14.1962433 C13.3230955,13.592918 13.4367157,13.0626908 13.6639593,12.6055456 C13.891203,12.1484005 14.21811,11.796909 14.6446902,11.5510606 C15.0712704,11.3052122 15.5729265,11.1822898 16.1496736,11.1822898 Z M3.05731481,11.2660108 C3.99286766,11.2660108 4.71511957,11.505211 5.22409222,11.9836187 C5.73306486,12.4620264 5.98754737,13.1530494 5.98754737,14.0567084 C5.98754737,15.0294708 5.71977596,15.7789649 5.18422511,16.3052134 C4.64867426,16.8314619 3.89585787,17.0945822 2.92575335,17.0945822 L1.04003906,17.0945822 L1.04003906,11.2660108 L3.05731481,11.2660108 Z M20.0845573,11.2660108 L21.137049,13.0680041 L22.1496736,11.2660108 L23.9476803,11.2660108 L22.1018331,14.2361104 L24.0872151,17.0945822 L22.2652882,17.0945822 L21.1290756,15.2726553 L20.0048231,17.0945822 L18.2227633,17.0945822 L20.1563181,14.1125224 L18.3383779,11.2660108 L20.0845573,11.2660108 Z M9.65930817,12.4660108 C8.86993545,12.4660108 8.47525501,13.0347758 8.47525501,14.1723231 C8.47525501,15.299239 8.86727767,15.8626885 9.65133474,15.8626885 C10.0500078,15.8626885 10.3456859,15.7258128 10.5383779,15.4520573 C10.7310699,15.1783017 10.8274145,14.7517279 10.8274145,14.1723231 C10.8274145,13.5902603 10.729741,13.1603643 10.5343912,12.8826221 C10.3390414,12.6048798 10.04735,12.4660108 9.65930817,12.4660108 Z M3.07326165,12.5377716 L2.61478989,12.5377716 L2.61478989,15.8028878 L2.96562046,15.8028878 C3.44402817,15.8028878 3.79485522,15.6640188 4.01811215,15.3862765 C4.24136908,15.1085343 4.35299587,14.6839538 4.35299587,14.1125224 C4.35299587,13.5783004 4.24734909,13.1822911 4.03605235,12.9244825 C3.82475561,12.6666739 3.50382859,12.5377716 3.07326165,12.5377716 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+                  <svg *ngIf="
+                      attachment?.type == 'png' ||
+                      attachment?.type == 'jpg' ||
+                      attachment?.type == 'jpeg' ||
+                      attachment?.type == 'gif'
+                    " width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_img" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M18.144,10.907 C18.3975855,10.907 18.6352771,10.9275493 18.8571224,10.9687898 C19.0785748,11.0099572 19.2839033,11.0670256 19.4730898,11.1401204 C19.66281,11.2134214 19.8374274,11.3007591 19.996797,11.4021762 C20.1550385,11.5028753 20.2993255,11.6139962 20.4605464,11.7964475 L20.4647125,12.0225258 L20.1187996,12.5552498 C20.0339176,12.691061 19.9139855,12.7798861 19.7680818,12.8118025 C19.6231001,12.8435173 19.4727625,12.8108342 19.3226737,12.7199884 C19.2316793,12.6643807 19.1428478,12.6146051 19.0562154,12.5706611 C18.9741949,12.5290565 18.8864267,12.4926464 18.7928488,12.4614537 C18.7012654,12.4309259 18.6003511,12.4072089 18.4901506,12.3904392 C18.3792289,12.3735599 18.2489481,12.365 18.1,12.365 C17.8605202,12.365 17.6464427,12.4057911 17.4563272,12.4869379 C17.2676484,12.5674716 17.1086621,12.68024 16.9773712,12.8263725 C16.8445262,12.9742347 16.74173,13.1533514 16.668734,13.3652751 C16.5944138,13.5810435 16.557,13.824461 16.557,14.096 C16.557,14.3905816 16.5981275,14.6510655 16.6797139,14.8778278 C16.7599316,15.1007856 16.871545,15.2865035 17.0148119,15.4367025 C17.157436,15.5862278 17.3279303,15.699834 17.5283092,15.7785956 C17.7321384,15.8587134 17.9610203,15.899 18.216,15.899 C18.3895698,15.899 18.5424007,15.8818535 18.6740691,15.8480625 C18.7663671,15.8243754 18.8573284,15.7949105 18.947,15.7596453 L18.947,15.157 L18.516,15.157 C18.382779,15.157 18.2674499,15.1161896 18.179948,15.0339908 C18.0902893,14.949766 18.043,14.8376471 18.043,14.712 L18.0722893,13.9732893 L18.268,13.819 L20.3307107,13.8482893 L20.485,14.044 L20.4741479,16.4853062 L20.3926305,16.621753 C20.0761153,16.8527236 19.7377622,17.0222076 19.3784168,17.1295817 C19.0226269,17.2358934 18.6469554,17.289 18.252,17.289 C17.7476453,17.289 17.2885418,17.2102018 16.8755697,17.0521332 C16.4610987,16.8934909 16.1047479,16.6713626 15.808082,16.3862177 C15.5108146,16.1004946 15.2811135,15.7610721 15.1199474,15.3696687 C14.9592576,14.979422 14.879,14.5543738 14.879,14.096 C14.879,13.6335332 14.9554432,13.2070129 15.1086184,12.817633 C15.2626628,12.4260433 15.4833048,12.0876083 15.7697106,11.8040954 C16.055774,11.5209215 16.401082,11.3002003 16.803982,11.1424814 C17.2054248,10.985333 17.6524173,10.907 18.144,10.907 Z M5.816,10.971 L5.88671068,11.0002893 L6.041,11.196 L6.01171068,17.0707107 L5.816,17.225 L4.53728932,17.1957107 L4.383,17 L4.41228932,11.1252893 L4.608,10.971 L5.816,10.971 Z M8.344,10.971 L8.49496678,10.9754983 C8.55751282,10.9796681 8.61523041,10.9918254 8.66798985,11.0124704 C8.72789209,11.0359104 8.78202133,11.0718233 8.82909903,11.118901 C8.87133364,11.1611356 8.90863429,11.214091 8.94326316,11.2795051 L10.6330302,14.5030708 L12.3171477,11.2787253 C12.3522792,11.2123659 12.3916886,11.1579508 12.4370314,11.1148751 C12.4845444,11.0697378 12.5378275,11.0352375 12.5960101,11.0124704 C12.6488543,10.9917922 12.7058732,10.9797103 12.771574,10.9752418 L12.8452719,10.9720001 L13.9025481,11.0002535 L14.057,11.196 L14.0277107,17.0707107 L13.832,17.225 L12.7012893,17.1957107 L12.547,17 L12.547,13.898161 L11.3393721,16.1882869 C11.2101055,16.4354143 10.9935754,16.569 10.72,16.569 L10.552,16.569 C10.4177759,16.569 10.2945522,16.5359141 10.1866737,16.4699884 C10.0783004,16.4037603 9.99216273,16.3074521 9.93301921,16.1890316 L8.71375594,13.8791564 L8.68771068,17.0707107 L8.492,17.225 L7.36128932,17.1957107 L7.207,17 L7.23628932,11.1252893 L7.432,10.971 L8.344,10.971 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+
+                  <svg *ngIf="attachment?.type == 'pdf'" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_pdf" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M6.57559331,10.2529297 C7.33309294,10.2529297 7.9018928,10.4183739 8.28200995,10.7492672 C8.66212709,11.0801606 8.85218281,11.5505143 8.85218281,12.1603425 C8.85218281,12.8303332 8.6546069,13.347859 8.25944915,13.7129355 C7.8642914,14.0780121 7.30301173,14.2605476 6.57559331,14.2605476 L6.12027541,14.2605476 L6.12027541,16.2499997 L4.5,16.2499997 L4.5,10.2529297 L6.57559331,10.2529297 Z M11.8835335,10.2529297 C12.8461323,10.2529297 13.5892639,10.499045 14.1129504,10.991283 C14.636637,11.4835211 14.8984764,12.1945209 14.8984764,13.1243038 C14.8984764,14.1251878 14.6229639,14.8963492 14.0719308,15.437811 C13.5208977,15.9792728 12.7463181,16.2499997 11.7481687,16.2499997 L9.80794021,16.2499997 L9.80794021,10.2529297 L11.8835335,10.2529297 Z M19.5172868,10.2529297 L19.5172868,11.553252 L17.5688543,11.553252 L17.5688543,12.6976997 L19.3655141,12.6976997 L19.3655141,13.998022 L17.5688543,13.998022 L17.5688543,16.2499997 L15.9731907,16.2499997 L15.9731907,10.2529297 L19.5172868,10.2529297 Z M11.8999414,11.5614559 L11.4282156,11.5614559 L11.4282156,14.9209637 L11.7891884,14.9209637 C12.2814264,14.9209637 12.6423955,14.77808 12.8721066,14.4923085 C13.1018177,14.206537 13.2166715,13.7696823 13.2166715,13.1817313 C13.2166715,12.6320655 13.1079706,12.2246079 12.8905654,11.9593463 C12.6731603,11.6940847 12.3429556,11.5614559 11.8999414,11.5614559 Z M6.53867564,11.5614559 L6.12027541,11.5614559 L6.12027541,12.9397155 L6.47561675,12.9397155 C6.65900111,12.9397155 6.8524751,12.8713501 6.99604452,12.7346173 C7.13961395,12.5978846 7.21139759,12.4091961 7.21139759,12.1685464 C7.21139759,11.7638174 6.98715918,11.5614559 6.53867564,11.5614559 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+
+                  <svg *ngIf="
+                      attachment?.type == 'pptx' || attachment?.type == 'ppt'
+                    " width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_pptx" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M3.61664645,11.0029297 C4.37451618,11.0029297 4.94359393,11.1684547 5.32389679,11.4995097 C5.70419965,11.8305647 5.89434823,12.3011483 5.89434823,12.9112744 C5.89434823,13.5815924 5.69667579,14.0993711 5.30132497,14.464626 C4.90597416,14.8298809 4.34442027,15.0125056 3.61664645,15.0125056 L3.16110609,15.0125056 L3.16110609,17.0029297 L1.54003906,17.0029297 L1.54003906,11.0029297 L3.61664645,11.0029297 Z M8.92717997,11.0029297 C9.68504969,11.0029297 10.2541274,11.1684547 10.6344303,11.4995097 C11.0147332,11.8305647 11.2048817,12.3011483 11.2048817,12.9112744 C11.2048817,13.5815924 11.0072093,14.0993711 10.6118585,14.464626 C10.2165077,14.8298809 9.65495378,15.0125056 8.92717997,15.0125056 L8.47163961,15.0125056 L8.47163961,17.0029297 L6.85057258,17.0029297 L6.85057258,11.0029297 L8.92717997,11.0029297 Z M16.2691772,11.0029297 L16.2691772,12.3285111 L14.8081649,12.3285111 L14.8081649,17.0029297 L13.1870979,17.0029297 L13.1870979,12.3285111 L11.7219816,12.3285111 L11.7219816,11.0029297 L16.2691772,11.0029297 Z M18.4114481,11.0029297 L19.4948954,12.8579228 L20.5373031,11.0029297 L22.3881923,11.0029297 L20.4880555,14.0603852 L22.5318311,17.0029297 L20.6563181,17.0029297 L19.4866875,15.1274167 L18.3293687,17.0029297 L16.4948954,17.0029297 L18.4853195,13.9331622 L16.6139105,11.0029297 L18.4114481,11.0029297 Z M3.57971075,12.3120952 L3.16110609,12.3120952 L3.16110609,13.6910282 L3.45659173,13.6910282 C3.700095,13.6910282 3.89366352,13.6226294 4.03730308,13.4858298 C4.18094265,13.3490302 4.25276136,13.1602496 4.25276136,12.9194824 C4.25276136,12.5145556 4.0284134,12.3120952 3.57971075,12.3120952 Z M8.89024426,12.3120952 L8.47163961,12.3120952 L8.47163961,13.6910282 L8.76712525,13.6910282 C9.01062852,13.6910282 9.20419703,13.6226294 9.3478366,13.4858298 C9.49147617,13.3490302 9.56329488,13.1602496 9.56329488,12.9194824 C9.56329488,12.5145556 9.33894691,12.3120952 8.89024426,12.3120952 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+
+                  <svg *ngIf="
+                      attachment?.type == 'xls' || attachment?.type == 'xlsx'
+                    " width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_xls" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M17.6546658,9.932 C18.0267276,9.932 18.3731436,9.98985504 18.6929467,10.1060167 C19.0149251,10.2229685 19.2895852,10.3868903 19.5152646,10.5979152 L19.6265785,10.7020009 L19.2535055,11.4119894 C19.2034276,11.4942602 19.148761,11.5585174 19.0859678,11.6039884 C19.0106359,11.6585391 18.919704,11.684 18.8186658,11.684 C18.7200436,11.684 18.622034,11.6520179 18.5287801,11.595271 L18.3810632,11.5100728 L18.2111136,11.4224136 C18.1507981,11.3947168 18.0844892,11.3680982 18.0122139,11.3426376 C17.9176364,11.3093205 17.8025387,11.292 17.6666658,11.292 C17.4344777,11.292 17.2733309,11.3400341 17.1759829,11.4270857 C17.0806545,11.5123313 17.0346658,11.6197856 17.0346658,11.764 C17.0346658,11.8439774 17.0554317,11.9019033 17.096973,11.9478173 C17.1551644,12.0121342 17.234847,12.0700369 17.3373366,12.1207307 C17.4131929,12.158251 17.4965123,12.1933113 17.5872833,12.2258338 L17.9716485,12.349347 L18.2201926,12.433039 C18.3932831,12.4930624 18.5621946,12.5635585 18.7268896,12.6445103 C18.9021424,12.7306515 19.0594273,12.8394837 19.1981281,12.9707274 C19.3475552,13.1064434 19.456639,13.2713969 19.5431307,13.4641063 C19.63158,13.6611776 19.6746658,13.8947482 19.6746658,14.164 C19.6746658,14.4529922 19.6239888,14.7254728 19.5224351,14.980093 C19.420323,15.2361132 19.2724179,15.4605722 19.0795401,15.6519663 C18.8860498,15.8439682 18.6485866,15.9941397 18.3689194,16.1024924 C18.0901495,16.2104975 17.7770875,16.264 17.4306658,16.264 C17.2331683,16.264 17.036421,16.2439675 16.8406178,16.2039494 C16.6466813,16.1643127 16.4595668,16.1090289 16.2793993,16.0380968 C16.0987647,15.9669808 15.9284704,15.8814774 15.768666,15.7815997 C15.6061341,15.6800172 15.4629934,15.5660889 15.3395906,15.4397479 L15.230185,15.3277375 L15.6698574,14.6186942 C15.7162095,14.5512731 15.7768753,14.4958371 15.8498916,14.4532442 C15.928155,14.4075906 16.0135304,14.384 16.1026658,14.384 C16.2175574,14.384 16.3308471,14.4237507 16.438199,14.4953684 L16.7114853,14.6696683 C16.8046627,14.7270083 16.9145283,14.7804236 17.0410677,14.8295651 C17.153575,14.8732573 17.2940113,14.896 17.4626658,14.896 C17.6992501,14.896 17.870895,14.8452987 17.9844977,14.7504652 C18.0888673,14.6633393 18.1426658,14.5295447 18.1426658,14.332 C18.1426658,14.2298935 18.1192663,14.1568214 18.0753917,14.1044798 C18.0177072,14.0356631 17.9402436,13.9763957 17.8412231,13.9268854 C17.7677203,13.890134 17.6865149,13.8565225 17.6031092,13.8279536 L17.4568004,13.7826097 C17.2968999,13.7378918 17.1330589,13.6884687 16.9652652,13.6343417 C16.7916075,13.5783231 16.6221425,13.5110973 16.4569169,13.4326852 C16.2789369,13.3482201 16.1201033,13.2362802 15.9812444,13.0974214 C15.8395787,12.9557556 15.7259538,12.7818866 15.6402113,12.5773081 C15.5530139,12.3692582 15.5106658,12.1181413 15.5106658,11.824 C15.5106658,11.5812186 15.558708,11.3455116 15.6543387,11.1183886 C15.7504646,10.8900896 15.8916952,10.6872584 16.0767931,10.5111169 C16.2612836,10.3355534 16.4864043,10.1953142 16.7507418,10.0901634 C17.0167965,9.98432949 17.3184178,9.932 17.6546658,9.932 Z M6.03618502,9.996 C6.1478482,9.996 6.23797444,10.0123866 6.31141281,10.0543514 C6.3803135,10.0937232 6.43696703,10.1526429 6.48306331,10.228074 L7.55020425,11.9827 L8.60868643,10.2491008 C8.65521804,10.1715482 8.71051411,10.1099922 8.77657977,10.0667078 C8.84962231,10.0188523 8.9350178,9.996 9.02818502,9.996 L10.5500384,9.996 L8.57009807,12.9637631 L10.5842297,16.2 L9.02418502,16.2 C8.90082173,16.2 8.79164793,16.1662349 8.70422463,16.0953511 C8.63502083,16.03924 8.57887564,15.972627 8.53978158,15.9013758 L7.46323673,14.0705639 L6.34924647,15.9129368 C6.30527546,15.9772021 6.25369805,16.0355438 6.19479207,16.0877176 C6.10999885,16.1628202 6.00325685,16.2 5.88418502,16.2 L4.4,16.2 L6.42646542,13.0131165 L4.46791112,9.996 L6.03618502,9.996 Z M12.624185,9.996 L12.624185,14.824 L14.868185,14.824 L14.868185,16.2 L11.024185,16.2 L11.024185,9.996 L12.624185,9.996 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+                  <svg *ngIf="attachment?.type == 'unknown'" width="24px" height="24px" viewBox="0 0 24 24" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="icon_document_unknown" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect id="Bg" x="0" y="0" width="24" height="24"></rect>
+                      <path
+                        d="M5.80555556,19.5 L5.80555556,20.3333333 L18.4444444,20.3333333 L18.4444444,19.5 L20.25,19.5 L20.25,20.3333333 C20.25,21.2041228 19.5232064,21.9208403 18.6000339,21.993872 L18.4444444,22 L5.80555556,22 C4.86220029,22 4.08575639,21.3291136 4.00663862,20.4769544 L4,20.3333333 L4,19.5 L5.80555556,19.5 Z M8.096,10.996 L8.096,12.336 L5.608,12.336 L5.608,13.54 L7.696,13.54 L7.696,14.884 L5.608,14.884 L5.608,17.2 L4,17.2 L4,10.996 L8.096,10.996 Z M10.536,10.996 L10.536,17.2 L8.928,17.2 L8.928,10.996 L10.536,10.996 Z M13.352,10.996 L13.352,15.824 L15.596,15.824 L15.596,17.2 L11.752,17.2 L11.752,10.996 L13.352,10.996 Z M20.424,10.996 L20.424,12.336 L17.936,12.336 L17.936,13.428 L19.872,13.428 L19.872,14.736 L17.936,14.736 L17.936,15.86 L20.424,15.86 L20.424,17.2 L16.328,17.2 L16.328,10.996 L20.424,10.996 Z M16.1098611,2 L20.25,6.09464286 L20.25,8.25 L18.4444444,8.25 L18.4444444,7.35714286 L14.8333333,7.35714286 L14.8333333,3.78571429 L5.80555556,3.78571429 L5.80555556,8.25 L4,8.25 L4,3.78571429 C4,2.85098214 4.73083698,2.08063393 5.65766374,2.00593594 L5.80555556,2 L16.1098611,2 Z"
+                        id="shape" fill="#AAADB8"></path>
+                    </g>
+                  </svg>
+                  <mat-label>{{ attachment?.type }}, {{ attachment.size }} KB</mat-label>
+                </p>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="upload-attachments">
+              <mat-card-content>
+                <button fxFlex fxLayout="row" fxLayoutAlign="start center" class="upload-btn"
+                  [class.clickable]="canEdit" [class.disabled]="!canEdit" (click)="openFileUploader()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g fill="none" fill-rule="evenodd">
+                      <path d="M0 0L24 0 24 24 0 24z" />
+                      <path fill="#6CB33F"
+                        d="M19.571 10.586l-8.132 8.132c-1.562 1.562-4.094 1.562-5.657 0-1.562-1.563-1.562-4.095 0-5.657l8.84-8.84c.975-.975 2.559-.975 3.535 0 .976.977.976 2.56 0 3.536l-7.425 7.425c-.389.389-1.025.389-1.414 0s-.389-1.025 0-1.414l6.718-6.718-1.061-1.06-6.718 6.717c-.975.976-.975 2.56 0 3.536.976.975 2.56.975 3.536 0l7.425-7.425c1.562-1.563 1.562-4.094 0-5.657-1.563-1.563-4.095-1.563-5.657 0L4.72 12c-2.149 2.15-2.149 5.629 0 7.778 2.15 2.15 5.63 2.15 7.779 0l8.132-8.132-1.06-1.06z" />
+                    </g>
+                  </svg>
+                  <span>Upload an Attachment</span>
+                </button>
+                <input style="display: none" id="wizard-upload-file" type="file" accept="image/*, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/pdf, 	
+            application/vnd.ms-powerpoint, 	
+            application/vnd.openxmlformats-officedocument.presentationml.presentation" (change)="uploadFile($event)" />
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="activity-comments-conatiner" *ngIf="!isOppProActivity && !isEpmActivity">
+            <p class="title">
+              <mat-label>Comments</mat-label>
+            </p>
+            <mat-card *ngIf="isLoadingComment">
+              <mat-card-content class="small-spinner">
+                <mat-spinner [diameter]="24"></mat-spinner>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="no-comments" *ngIf="!isLoadingComment && activity.comments?.length == 0">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center">
+                <svg width="80px" height="80px" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <g id="icon_empty-state_comments" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect id="Rectangle" x="0" y="0" width="80" height="80"></rect>
+                    <g id="chat" transform="translate(7.000000, 10.000000)" fill-rule="nonzero">
+                      <path
+                        d="M21.5410345,0.529137931 L60.3911379,0.608793103 C63.4885862,0.608793103 66,3.1202069 66,6.2187931 L66,6.2187931 L66,30.2757931 C66,32.3407586 64.1034483,34.2103793 60.3103448,35.8846552 L60.3103448,35.8846552 L60.3103448,48.4018966 L53.0282461,40.3914754 C53.05513,40.1688174 53.0689655,39.9421436 53.0689655,39.7122414 L53.0689655,39.7122414 L53.0689655,16.6552414 C53.0689655,13.5577931 49.5575517,10.0463793 46.4589655,10.0463793 L46.4589655,10.0463793 L15.931,10.1111379 L15.9310345,6.138 C15.9310345,3.11430049 18.3242808,0.649061283 21.3207315,0.533383055 L21.5410345,0.529137931 Z"
+                        id="Combined-shape" fill="#E5E6E9"></path>
+                      <path
+                        d="M44.4589655,13.0463793 C47.5575517,13.0463793 50.0689655,15.5577931 50.0689655,18.6552414 L50.0689655,42.7122414 C50.0689655,45.8096897 47.5575517,48.3211034 44.4601034,48.3211034 L25.0344828,48.4018966 L13.6551724,60.9191379 L13.6551724,48.4018966 L5.60886207,48.4018966 C2.51141379,48.4018966 -2.20268248e-13,45.8904828 -2.20268248e-13,42.7930345 L-2.20268248e-13,18.7360345 C-2.20268248e-13,15.6385862 2.51141379,13.1271724 5.60886207,13.1271724 L44.4589655,13.0463793 Z M27.2,36.4 L9,36.4 C8.22680135,36.4 7.6,37.0268014 7.6,37.8 L7.6,37.8 L7.6,38.2 C7.6,38.9731986 8.22680135,39.6 9,39.6 L9,39.6 L27.2,39.6 C27.9731986,39.6 28.6,38.9731986 28.6,38.2 L28.6,38.2 L28.6,37.8 C28.6,37.0268014 27.9731986,36.4 27.2,36.4 L27.2,36.4 Z M41.4,28.8 L9,28.8 C8.22680135,28.8 7.6,29.4268014 7.6,30.2 L7.6,30.2 L7.6,30.6 C7.6,31.3731986 8.22680135,32 9,32 L9,32 L41.4,32 C42.1731986,32 42.8,31.3731986 42.8,30.6 L42.8,30.6 L42.8,30.2 C42.8,29.4268014 42.1731986,28.8 41.4,28.8 L41.4,28.8 Z M41.4,21.2 L9,21.2 C8.22680135,21.2 7.6,21.8268014 7.6,22.6 L7.6,22.6 L7.6,23 C7.6,23.7731986 8.22680135,24.4 9,24.4 L9,24.4 L41.4,24.4 C42.1731986,24.4 42.8,23.7731986 42.8,23 L42.8,23 L42.8,22.6 C42.8,21.8268014 42.1731986,21.2 41.4,21.2 L41.4,21.2 Z"
+                        id="Combined-shape" fill="#CDD0D8"></path>
+                    </g>
+                  </g>
+                </svg>
+                <mat-label>There are no comments yet</mat-label>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="comment" *ngFor="let comment of activity.comments">
+              <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start start">
+                <ngx-avatar fxFlex="10" fxFlex.xs="20" fxFlex.sm="20" name="{{
+                    comment?.createdBy?.FirstName +
+                      ' ' +
+                      comment.createdBy.LastName
+                  }}" [src]="comment.createdBy.ProfilePictureUrl" initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF"
+                  size="40" textSizeRatio=textSizeRatio [round]="true"></ngx-avatar>
+                <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                  <p class="comment-creator" fxFlex fxLayout="row" fxLayoutAlign="start center">
+                    <span fxFlex>{{
+                      comment?.createdBy?.FirstName +
+                      " " +
+                      comment.createdBy.LastName
+                      }}</span>
+
+                    <span fxFlex="nogrow" fxLayoutAlign="end center" class="actions-menu-container clickable">
+                      <button color="primary" [matMenuTriggerFor]="menu" class="actions-btn clickable">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="deleteComment(comment.id)">
+                          Delete
+                        </button>
+                      </mat-menu>
+                    </span>
+                  </p>
+                  <p class="comment-text" [innerHTML]="urlify(comment.text)|sanitizeHtml"></p>
+
+                  <p class="comment-date">
+                    <mat-label>{{ comment.timeAgo }} </mat-label>
+                    <!-- <a herf="#">Reply</a> -->
+                  </p>
+                </div>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="add-comment" *ngIf="canEdit">
+              <mat-card-content>
+                <button class="send-btn" *ngIf="comment != null && !isLoadingComment" (click)="sendComment()">
+                  <svg fill="white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" height="12"
+                    viewBox="0 0 535.5 535.5" style="enable-background: new 0 0 535.5 535.5" xml:space="preserve">
+                    <g>
+                      <g id="send">
+                        <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75 		" />
+                      </g>
+                    </g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                    <g></g>
+                  </svg>
+                </button>
+                <input type="text" class="comment-control" placeholder="Add your comment here..."
+                  (keydown)="addComment($event)" [(ngModel)]="comment" />
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Details">
+        <ng-template matTabContent>
+          <div class="activity-details-conatiner"
+            *ngIf="!isOppProActivity && !!activity  && (activity.tacticId != null || (activity.isShared  && isAccessedFromShared))">
+            <mat-card class="details">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.tacticId != null">
+                  <mat-label fxFlex="40">Job: </mat-label>
+                  <mat-label fxFlex="40" *ngIf="isEngProActivity">Job:
+                  </mat-label>
+                  <mat-label fxFlex="40" *ngIf="!isEngProActivity">{{ activity.tacticLabelText }}:
+                  </mat-label>
+
+                  <span> {{ activity?.tactic?.title | textTruncate: 20 }} </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="
+                    activity.tacticId != null && !!activity.tactic?.category
+                  ">
+                  <mat-label fxFlex="40">Category: </mat-label>
+                  <span> {{ activity.tactic?.category?.text }} </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                  *ngIf="activity.tacticId != null && !!activity?.tactic?.tags?.length">
+                  <mat-label fxFlex="40">Tags: </mat-label>
+                  <span class="tags-area">
+                    <span *ngFor="
+                        let tag of activity?.tactic?.tags;
+                        let i = index;
+                        let last = last
+                      ">
+                      <span class="tag" *ngIf="i <= 1; else tagCounter">
+                        {{ tag.text }}</span>
+                      <ng-template #tagCounter>
+                        <span *ngIf="isLast(last)" class="tag-counter">
+                          +{{ isLast(last, true) }}
+                        </span>
+                      </ng-template>
+                    </span>
+                  </span>
+                </p>
+
+
+                <p fxFlex fxLayout="column" fxLayoutAlign="start stretch"
+                  *ngIf="activity.isShared && isAccessedFromShared" class="statistics">
+                  <b>Statistics</b>
+                  <span fxFlex fxLayout="row" fxLayoutAlign="start center">
+                    <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                      <mat-label>Not Started</mat-label>
+                      <span class="not-started">{{activity.sharedStats.NotStartedCount}}</span>
+                    </span>
+                    <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                      <mat-label>In Progress</mat-label>
+                      <span class="started">{{activity.sharedStats.StartedCount}}</span>
+                    </span>
+                    <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                      <mat-label>Done</mat-label>
+                      <span class="completed">{{activity.sharedStats.CompletedCount}}</span>
+                    </span>
+                    <span fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                      <mat-label>Cancelled</mat-label>
+                      <span class="cancelled">{{activity.sharedStats.CancelledCount}}</span>
+                    </span>
+                  </span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="activity-details-conatiner" *ngIf="!!isOppProActivity">
+            <mat-card class="details">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                *ngIf="oppProActivity.activityType == 'call'">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Call From: </mat-label>
+                  <span>{{ oppProActivity.callFromName }} </span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Call To: </mat-label>
+                  <span>{{ oppProActivity.callToName }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">For: </mat-label>
+                  <span class="for-lbl">{{
+                    oppProActivity.associatedEntityName
+                    }}</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Oportunity: </mat-label>
+                  <span>{{ oppProActivity.associatedEntityTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Purpose: </mat-label>
+                  <span>{{ oppProActivity.callToActionTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Reminder: </mat-label>
+                  <span>Never</span>
+                </p>
+
+                <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                  <span fxFlex="nogrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                        <path d="M0 0L24 0 24 24 0 24z" />
+                        <path fill="#AAADB8"
+                          d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                      </g>
+                    </svg>
+                  </span>
+                  <span fxFlex>
+                    This call is added to&nbsp;<b>OpportunityPro</b>.
+                  </span>
+                </p>
+              </mat-card-content>
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                *ngIf="oppProActivity.activityType == 'task'">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">For: </mat-label>
+                  <span class="for-lbl" *ngIf="oppProActivity.associatedEntityName != 'salesjob'">{{
+                    oppProActivity.associatedEntityName }}</span>
+                  <span class="for-lbl" *ngIf="oppProActivity.associatedEntityName == 'salesjob'">Sales Job</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                  *ngIf="oppProActivity.associatedEntityName != 'salesjob'">
+                  <mat-label fxFlex="40">Oportunity: </mat-label>
+                  <span>{{ oppProActivity.associatedEntityTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Purpose: </mat-label>
+                  <span>{{ oppProActivity.callToActionTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Reminder: </mat-label>
+                  <span>Never</span>
+                </p>
+
+                <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                  <span fxFlex="nogrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                        <path d="M0 0L24 0 24 24 0 24z" />
+                        <path fill="#AAADB8"
+                          d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                      </g>
+                    </svg>
+                  </span>
+                  <span fxFlex>
+                    This task is added to&nbsp;<b>OpportunityPro</b>.
+                  </span>
+                </p>
+              </mat-card-content>
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                *ngIf="oppProActivity.activityType == 'meeting'">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Meeting Host: </mat-label>
+                  <span>{{ oppProActivity.callFromName }} </span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Participants: </mat-label>
+                  <span>{{ oppProActivity.callToName }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Channel: </mat-label>
+                  <span>{{ oppProActivity.channel }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">For: </mat-label>
+                  <span class="for-lbl">{{
+                    oppProActivity.associatedEntityName
+                    }}</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Oportunity: </mat-label>
+                  <span>{{ oppProActivity.associatedEntityTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Purpose: </mat-label>
+                  <span>{{ oppProActivity.callToActionTitle }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Reminder: </mat-label>
+                  <span>Never</span>
+                </p>
+
+                <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                  <span fxFlex="nogrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                        <path d="M0 0L24 0 24 24 0 24z" />
+                        <path fill="#AAADB8"
+                          d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                      </g>
+                    </svg>
+                  </span>
+                  <span fxFlex>
+                    This meeting is added to&nbsp;<b>OpportunityPro</b>.
+                  </span>
+                </p>
+              </mat-card-content>
+
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                *ngIf="oppProActivity.activityType == 'proposal'">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Oportunity: </mat-label>
+                  <span>{{ oppProActivity.associatedEntityTitle }}</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">To: </mat-label>
+                  <span class="for-lbl">{{
+                    oppProActivity.associatedEntityName
+                    }}</span>
+                </p>
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Contact: </mat-label>
+                  <span>{{ oppProActivity.callToName }}</span>
+                </p>
+
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-label fxFlex="40">Assigned By: </mat-label>
+                  <span>{{ oppProActivity.callFromName }} </span>
+                </p>
+
+                <p class="info-text" fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+                  <span fxFlex="nogrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                      <g fill="none" fill-rule="evenodd">
+                        <path d="M0 0L24 0 24 24 0 24z" />
+                        <path fill="#AAADB8"
+                          d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z" />
+                      </g>
+                    </svg>
+                  </span>
+                  <span fxFlex>
+                    This proposal is added to&nbsp;<b>OpportunityPro</b>.
+                  </span>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div class="activity-shared-conatiner" *ngIf="activity.isShared && isAccessedFromShared">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Shared with {{activity.sharedWithUsers?.length}} Employees</mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card class="shared">
+                  <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <div class="claimed" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                      *ngIf="!!activity?.sharedWithUsersClaimed?.length">
+                      <div class="title">Claimed ({{activity?.sharedWithUsersClaimed?.length}})</div>
+                      <div class="users" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                        <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="user-container"
+                          *ngFor="let user of activity.sharedWithUsersClaimed; let last=last"
+                          [ngClass]="{'last': last}">
+                          <ngx-avatar fxFlex="nogrow" name="{{user.UserName}}" [src]="user.profilePictureUrl"
+                            initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF" size="24" textSizeRatio=textSizeRatio
+                            [round]="true"></ngx-avatar>
+
+                          <p class="user-info" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                            <span class="name">{{user.UserName}}</span>
+                            <span *ngIf="user.position!=null" class="position">{{user.position}}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="not-claimed" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+                      *ngIf="!!activity.sharedWithUsersNotClaimed?.length">
+                      <div class="title">Not Claimed ({{activity.sharedWithUsersNotClaimed?.length}})</div>
+                      <div class="users" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                        <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="user-container"
+                          *ngFor="let user of activity.sharedWithUsersNotClaimed; let last=last"
+                          [ngClass]="{'last': last}">
+                          <ngx-avatar fxFlex="nogrow" name="{{user.UserName}}" [src]="user.profilePictureUrl"
+                            initialsSize="2" bgColor="#00C853" fgColor="#FFFFFF" size="24" textSizeRatio=textSizeRatio
+                            [round]="true"></ngx-avatar>
+
+                          <p class="user-info" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+                            <span class="name">{{user.UserName}}</span>
+                            <span *ngIf="user.position!=null" class="position">{{user.position}}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="share-with-more clickable"
+                      [class.disabled]="activity.maxClaims !=null &&  activity?.sharedWithUsersClaimed?.length == activity.maxClaims"
+                      fxFlex fxLayout="row" fxLayoutAlign="start center" (click)="openShareWithUsersDialog()">
+
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <g fill="none" fill-rule="evenodd">
+                          <g>
+                            <g>
+                              <g>
+                                <path d="M0 0H24V24H0z"
+                                  transform="translate(-23 -1265) translate(8 585) translate(15 680)" />
+                                <path fill="#6CB33F"
+                                  d="M23.225 11.994l-8.008-8.666c-.525-.568-1.41-.603-1.979-.078-.25.231-.407.546-.442.882l-.008.146v3.088l-.1.1h-.767c-5.88 0-10.664 4.632-10.817 10.406l-.004.284v1.688c0 .747.606 1.353 1.353 1.353.377 0 .737-.158.993-.435 2.299-2.486 5.482-3.992 8.874-4.212l.365-.019.103.1v3.08c0 .772.627 1.4 1.4 1.4.342 0 .67-.126.924-.35l.105-.1 8.008-8.667-8.008-8.666 8.008 8.666zm-8.537-6.439l5.95 6.439-5.95 6.438v-3.81h-1.5c-3.787 0-7.418 1.406-10.188 3.911v-.377c0-4.852 3.991-8.79 8.921-8.79h2.767v-3.81z"
+                                  transform="translate(-23 -1265) translate(8 585) translate(15 680)" />
+                              </g>
+                            </g>
+                          </g>
+                        </g>
+                      </svg>
+
+                      <span>Share with other employees</span>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <div class="activity-progress-conatiner" *ngIf="!isOppProActivity  && activity.dueDate !=null">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Progress </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card class="progress">
+                  <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.targetValue != null">
+                      <mat-label fxFlex="40">Target: </mat-label>
+                      <span>
+                        {{ activity.targetValue }}
+                        <span *ngIf="activity.tacticId != null  && activity.appType !=3">{{
+                          activity.tactic?.unit
+                          }}</span><span *ngIf="activity.tacticId == null  && activity.appType !=3">{{
+                          activity?.unit
+                          }}</span>
+                        <span *ngIf="activity.appType ==3">h</span>
+                      </span>
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.actualValue != null">
+                      <mat-label fxFlex="40">Actuals: </mat-label>
+                      <span *ngIf="activity.actualValue != null">
+                        {{ activity.actualValue }}
+                        <span *ngIf="activity.tacticId != null && activity.appType !=3">{{
+                          activity.tactic?.unit
+                          }}</span>
+                        <span *ngIf="activity.tacticId == null && activity.appType !=3">{{
+                          activity?.unit
+                          }}</span>
+                        <span *ngIf="activity.appType ==3">h</span>
+                      </span>
+                      <!-- <span *ngIf="activity.actualValue == null"> None </span> -->
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.weight != null">
+                      <mat-label fxFlex="40">Weight: </mat-label>
+                      <span>{{ activity.weight }}</span>
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="!isEpmActivity">
+                      <mat-label fxFlex="40">Condition: </mat-label>
+                      <span *ngIf="activity.tacticId == null">{{
+                        activity.condition
+                        }}</span>
+
+                      <span *ngIf="activity.tacticId != null">{{
+                        activity?.tactic?.condition
+                        }}</span>
+                    </p>
+                  </mat-card-content>
+                </mat-card>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <div class="activity-additional-details-conatiner" *ngIf="!isOppProActivity">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Additional Details </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card class="additional">
+                  <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                      <mat-label fxFlex="40">Created On: </mat-label>
+                      <span> {{ activity.creationDate }} </span>
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.completedDate != null">
+                      <mat-label fxFlex="40">Completed On: </mat-label>
+                      <span> {{ activity.completedDate }} </span>
+                    </p>
+                    <p fxFlex fxLayout="row" *ngIf="activity.createdBy!=null" fxLayoutAlign="start center">
+                      <mat-label fxFlex="40">Created By: </mat-label>
+                      <span>
+                        {{
+                        activity.createdBy.UserFirstName +
+                        " " +
+                        activity.createdBy.UserLastName
+                        }}</span>
+                    </p>
+                  </mat-card-content>
+                </mat-card>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <div class="activity-history-conatiner" *ngIf="
+              !!activity && !!activity.history?.length && !isOppProActivity  && activity.dueDate !=null">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> History </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card class="history" *ngFor="let historyRec of activity.history">
+                  <mat-card-content fxFlex fxLayout="row" fxLayoutAlign="start start">
+                    <ngx-avatar fxFlex="15" name="{{
+                        historyRec.user.UserFirstName +
+                          ' ' +
+                          historyRec.user.UserLastName
+                      }}" [src]="historyRec.user.UserProfilePictureUrl" initialsSize="2" bgColor="#00C853"
+                      fgColor="#FFFFFF" size="24" textSizeRatio=textSizeRatio [round]="true"></ngx-avatar>
+                    <p fxFlex fxLayout="column" fxLayoutAlign="start stretch" class="history-action">
+                      <span>
+                        <span class="user">{{
+                          historyRec.user.UserFirstName +
+                          " " +
+                          historyRec.user.UserLastName
+                          }}</span>
+
+                        <!-- <span *ngIf="historyRec.action == 'updated'">
+                        changed {{ historyRec.fieldName }} to "{{
+                        historyRec.newValue
+                        }}"</span> -->
+                        <span *ngIf="historyRec.action == 'updated'">
+                          updated the task
+                        </span>
+
+                        <span *ngIf="historyRec.action != 'updated'">
+                          {{ historyRec.action }} this activity
+                          <span *ngIf="historyRec.action == 'moved'">
+                            to "{{ historyRec.newValue }}"
+                          </span>
+                        </span>
+                      </span>
+                      <mat-label class="date">{{ historyRec.changeDate }} at
+                        {{ historyRec?.changeTime }}</mat-label>
+                    </p>
+                  </mat-card-content>
+                </mat-card>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Efforts" *ngIf="!isOppProActivity  && activity.dueDate !=null">
+        <ng-template matTabContent>
+          <div *ngIf="
+              !!activity && !!activity.efforts && activity.efforts?.length > 0  && activity.dueDate !=null"
+            class="activity-efforts-conatiner">
+            <mat-card *ngIf="isLoadingEffort">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="small-spinner">
+                <mat-spinner [diameter]="24"></mat-spinner>
+              </mat-card-content>
+            </mat-card>
+            <mat-card class="efforts" *ngFor="let effort of activity.efforts">
+              <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <span fxFlex class="date">{{ effort.completedDate }}
+                    <span *ngIf="effort.startTime != null && effort.endTime != null">({{ effort.startTime }} - {{
+                      effort.endTime }})</span></span>
+                  <span fxFlex="nogrow" fxLayoutAlign="end center" class="hours">
+                    <span *ngIf="effort.hours != null && effort.hours != 0">{{ effort.hours }}
+                      <span>h&nbsp;</span>
+                      <!-- <span *ngIf="effort.hours > 1">hrs&nbsp;</span> -->
+                    </span>
+                    <span *ngIf="effort.minutes != null && effort.minutes != 0">
+                      {{ effort.minutes }}
+                      <span>min</span>
+                      <!-- <span *ngIf="effort.minutes > 1">mins</span> -->
+                    </span>
+                  </span>
+                </p>
+                <p *ngIf="effort.note != null">
+                  <mat-label *ngIf="!effort?.showLongComment">{{ effort.note | textTruncate: 270 }}
+                  </mat-label>
+
+                  <mat-label *ngIf="effort?.showLongComment">{{
+                    effort.note
+                    }}</mat-label>
+                  <a (click)="effort.showLongComment = true" *ngIf="
+                      !effort?.showLongComment && isMaxCharsReached(effort.note)
+                    " class="clickable more-link">See More</a><a (click)="effort.showLongComment = false" *ngIf="
+                      effort?.showLongComment && isMaxCharsReached(effort.note)
+                    " class="clickable less-link">See Less</a>
+                </p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div *ngIf="activity.efforts?.length == 0" fxFlex fxLayout="column" fxLayoutAlign="end center">
+            <mat-label class="empty-efforts">No Efforts Logged</mat-label>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Settings" *ngIf="!isOppProActivity  && activity.dueDate !=null">
+        <ng-template matTabContent>
+          <div class="activity-additional-details-conatiner">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title> Settings </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-card class="additional">
+                  <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+                      *ngIf="isEpmActivity && !!activity.epmInfo && activity.epmInfo.ReportingCutOffDate !=null">
+                      <mat-label fxFlex="65">Reporting Cutoff Date: </mat-label>
+                      <span> {{activity.epmInfo.ReportingCutOffDate|date: 'd MMM y'}} </span>
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                      <mat-label fxFlex="65">Reminder: </mat-label>
+                      <span *ngIf="
+                          activity.reminder != null && activity.reminder != 0
+                        ">
+                        {{ activity.reminder }}
+                        <span *ngIf="activity.reminder == 1">Day </span><span *ngIf="activity.reminder > 1">Days </span>
+                        before (9:00 am)
+                      </span>
+                      <span *ngIf="
+                          activity.reminder == null || activity.reminder == 0
+                        ">Never</span>
+                    </p>
+                    <!-- <p
+                      fxFlex
+                      fxLayout="row"
+                      fxLayoutAlign="start center"
+                      *ngIf="activity.weight != null"
+                    >
+                      <mat-label fxFlex="35">Weight: </mat-label>
+                      <span>{{ activity.weight }}</span>
+                    </p> -->
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                      <mat-label fxFlex="65">Recurrence: </mat-label>
+                      <span>None</span>
+                    </p>
+                    <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                      <mat-label fxFlex="65">Distribution: </mat-label>
+                      <span>None</span>
+                    </p>
+                  </mat-card-content>
+                </mat-card>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutAlign="end center" fxLayoutAlign.xs="center end"
+    fxLayoutAlign.sm="center end">
+    <button fxFlex="nogrow" fxFlex.xs fxFlex.sm class="log-action-btn gradient-btn"
+      *ngIf="!isOppProActivity && canLogActual && activity.isAccepted && activity.dueDate !=null && !isAccessedFromStacked && !isAccessedFromShared"
+      mat-flat-button color="primary" type="submit" (click)="openLogDialog()">
+      Log
+    </button>
+  </div>
+</div>
+
+<div fxFlex fxLayout="column" *ngIf="
+    !isEngProDataLoaded || (!dataLoaded && isLoading) || !isOppProDataLoaded
+  " fxLayoutAlign="space-around center" class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,201 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+
+.mine-activities-conatiner {
+  width: 100%;
+
+  .fill-bg {
+    background-color: white;
+    border-radius: 5px;
+    height: 450px;
+    @include flex-center;
+  }
+
+  .actions-container {
+    margin: 12px 0px;
+
+    xcdrs-search-field {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .defult-filter {
+      background-color: $primary-color;
+      border-radius: 21px;
+      padding: 4px 4px;
+      font-size: 10px;
+      position: relative;
+      top: -4px;
+      right: -39px;
+      height: 8px;
+    }
+
+    .filter-icon-container {
+      margin: 10px 8px 0px 16px;
+      cursor: pointer;
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    }
+
+    .add-action-btn {
+      width: 194px;
+      height: 48px;
+    }
+  }
+
+  .filter-container {
+    width: 100%;
+
+    .filter-list {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      margin: 4px 0 12px 0;
+      padding: 0;
+      list-style: none;
+
+      .filter-list-item {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        border-radius: 4px;
+        background: $primary-color;
+        color: white;
+        font-size: $f14;
+        font-weight: normal;
+
+        .icon-close {
+          margin-left: 4px;
+          cursor: pointer;
+        }
+      }
+
+      .clear-filter-item {
+        height: 24px;
+        line-height: 24px;
+        font-size: $f16;
+        font-weight: 600;
+        margin-left: 16px;
+        color: $primary-color;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .small-spinner {
+    width: 100%;
+    @include flex-center;
+    margin-bottom: 10px;
+  }
+
+  .ungrouped-container {
+    width: 100%;
+    xcdrs-activities-table {
+      margin-bottom: 52px;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
+
+  .activity-progress {
+    border-radius: 4px;
+    ::ng-deep .mat-progress-bar-background {
+      fill: #f2f2f2;
+    }
+
+    ::ng-deep .mat-progress-bar-buffer {
+      background-color: #f2f2f2;
+    }
+
+    ::ng-deep .mat-progress-bar-fill::after {
+      background-color: #00a3ff;
+    }
+    &.done {
+      ::ng-deep .mat-progress-bar-fill::after {
+        background-color: #aaadb8;
+      }
+    }
+  }
+  .over-due {
+    font-size: $f14;
+    color: #e21d26;
+  }
+
+  mat-card {
+    margin: 4px 0px;
+    padding: 16px 0px;
+    mat-label {
+      font-size: $f14;
+    }
+
+    // .card-header {
+    //   padding: 0px 16px;
+    //   margin-bottom: 12px;
+    //   font-size: 16px;
+    // }
+    mat-card-content {
+      padding: 0px 16px;
+
+      .call {
+        border-radius: 4px;
+        background-color: rgba(0, 174, 239, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #00aeef;
+      }
+      .meeting {
+        border-radius: 4px;
+        background-color: rgba(54, 125, 255, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #367dff;
+      }
+
+      .task {
+        display: none;
+      }
+
+      .proposal {
+        border-radius: 4px;
+        background-color: rgba(248, 151, 29, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #f8971d;
+      }
+    }
+  }
+}
+
+.fab-container {
+  margin: 8px;
+  position: absolute;
+  right: 45px;
+  .mat-fab {
+    border-radius: 20%;
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    bottom: 8px;
+    z-index: 20;
+    ::ng-deep .mat-button-wrapper {
+      line-height: 0px;
+      padding: 0px;
+    }
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}

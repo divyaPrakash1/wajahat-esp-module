@@ -1,0 +1,16 @@
+
+::ng-deep .mat-menu-panel{
+    box-shadow: 0 2px 40px 0 rgba(18, 21, 27, 0.11) !important;
+}
+
+.mat-menu-panel{
+    box-shadow: 0 2px 40px 0 rgba(18, 21, 27, 0.11) !important;
+}
+
+// .mat-menu-content button:last-child, .menu-btn {
+//     border-bottom: none !important;
+// }
+
+.mat-menu-content .mat-menu-item:last-child{
+    border-bottom: none !important;
+}

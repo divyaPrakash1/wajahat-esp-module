@@ -1,0 +1,29 @@
+<div class="pd-users-container">
+  <div class="grey-header" *ngIf="!loading && userList.length>0">
+    <div class="text">Users</div>
+    <a (click)="openAttachmentPopup()">View all ({{userList.length}})</a>
+  </div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="card not-found" *ngIf="!loading && userList.length<=0">
+    <div class="full-no-found">
+      <img src="/assets/images/add-user-empty.svg" />
+      <div class="text">Ops! There is no user.</div>
+    </div>
+    <a class="link no-link" (click)="onAddUser()">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span>Add User</span>
+    </a>
+  </div>
+  <app-project-user-listing
+    *ngIf="!loading && userList.length>0"
+    [users]="userList"
+    (onuser)="onDetailUser($event)"
+    (onadd)="onAddUser()"
+    (onedit)="onEditUser($event)"
+    (ondelete)="onDeleteUser($event)"
+  ></app-project-user-listing>
+</div>
+
+

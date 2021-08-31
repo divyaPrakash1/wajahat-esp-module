@@ -1,0 +1,163 @@
+<div class="overlay">
+  <div *ngIf="loading" class="full-loader">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="wrapper" *ngIf="!loading">
+    <div class="top-header">
+      <div class="h-icon">
+        <img class="requirement-icon" src="assets/images/lined-requirement-icon.svg" />
+      </div>
+      <div class="h-title">{{!isEditing ? 'New' : 'Edit'}} requirement</div>
+    </div>
+    <form [formGroup]="requirementForm">
+      <div class="req-title">
+        <mat-form-field>
+          <mat-label>Title</mat-label>
+          <input matInput type="text" color="xui" class="xui" formControlName="title" (keypress)="keyPressMaxLength($event, '60')">
+          <mat-error *ngIf="requirementForm.hasError('required', 'title')">
+            Please enter name of requirement.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-description">
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <textarea matInput type="text" color="xui" class="xui" formControlName="description"></textarea>
+          <mat-error *ngIf="requirementForm.hasError('required', 'description')">
+            Please enter description of requirement.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-revenue">
+        <mat-form-field>
+          <mat-label>Revenue</mat-label>
+          <input matInput type="text" color="xui" class="xui" (keypress)="keyPressNumeric($event)" formControlName="revenue">
+          <span matSuffix>{{currency.name}}</span>
+          <mat-error *ngIf="requirementForm.hasError('required', 'revenue')">
+            Please enter revenue of requirement.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-cost">
+        <mat-form-field>
+          <mat-label>Cost</mat-label>
+          <input matInput type="text" color="xui" class="xui" data-max="{{maxcost}}" (keypress)="keyPressNumeric($event)" formControlName="cost" placeholder="Max: {{maxcost}}">
+          <span matSuffix>{{currency.name}}</span>
+          <mat-error *ngIf="requirementForm.hasError('required', 'cost')">
+            Please enter cost of requirement.
+          </mat-error>
+          <mat-error *ngIf="requirementForm.hasError('max', 'cost')">
+            Cost cannot be more than {{maxcost}} {{currency.name}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-priority">
+        <mat-form-field class="xfilter">
+          <mat-label>Priority</mat-label>
+          <mat-select placeholder="Priority" panelClass="status-filter-panel" formControlName="priority">
+            <mat-option *ngFor="let status of priorityList" [value]="status.id">{{status.name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="requirementForm.hasError('required', 'priority')">
+            Please select priority.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-start-date">
+        <mat-form-field>
+          <mat-label>Start Date *</mat-label>
+          <input matInput [matDatepicker]="startDate" (click)="startDate.open()" formControlName="startDate">
+          <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="startDate">
+            <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #startDate></mat-datepicker>
+          <mat-error *ngIf="requirementForm.hasError('required', 'startDate')">
+            Please enter start date.
+          </mat-error>
+          <mat-error *ngIf="requirementForm.hasError('matched', 'startDate')">
+            Start date should be less than due date.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="req-end-date">
+        <mat-form-field>
+          <mat-label>Due Date</mat-label>
+          <input matInput [matDatepicker]="duedate" (click)="duedate.open()" formControlName="dueDate">
+          <mat-datepicker-toggle class="date-field-icon" matSuffix [for]="duedate">
+            <mat-icon matDatepickerToggleIcon>calendar_today_outline</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-datepicker #duedate></mat-datepicker>
+          <mat-error *ngIf="requirementForm.hasError('matched', 'dueDate')">
+            Due Date Should be greate than Start Date.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="stage-area" *ngIf="!isEditing">
+        <div class="stage-list">
+          <div class="title">Stages ({{projectDetail.projectStages.length}})</div>
+          <!-- <div class="tag-list">
+            <li class="{{stageList.includes(stage.projectStageId) ? 'active' : ''}}" *ngFor="let stage of projectDetail.projectStages" (click)="stageSelection(stage.projectStageId)">{{stage.stageName}}: {{stage.stagePercentage}}%</li>
+          </div> -->
+          <div class="stage-checkbox-list">
+            <div class="checkbox-row small-checkbox" *ngFor="let stage of projectDetail.projectStages">
+              <mat-checkbox
+                [disabled]="projectDetail.projectStages.length <= 1"
+                [checked]="stageList.includes(stage.projectStageId)"
+                [value]="stage.projectStageId"
+                (change)="stageSelection(stage.projectStageId)"
+              >{{stage.stageName}} ({{stage.stagePercentage}}%)</mat-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="stage-list platform-list">
+          <div class="title">Platforms ({{projectDetail.projectPlatforms.length}})</div>
+          <!-- <div class="tag-list">
+            <li class="{{platformList.includes(platform.projectPlatformId) ? 'active' : ''}}" *ngFor="let platform of projectDetail.projectPlatforms" (click)="platformSelection(platform.projectPlatformId)">{{platform.platformName}}: {{platform.platformPercentage}}%</li>
+          </div> -->
+          <div class="stage-checkbox-list">
+            <div class="checkbox-row small-checkbox" *ngFor="let platform of projectDetail.projectPlatforms">
+              <mat-checkbox
+                [disabled]="projectDetail.projectPlatforms.length <= 1"
+                [checked]="platformList.includes(platform.projectPlatformId)"
+                [value]="platform.projectPlatformId"
+                (change)="platformSelection(platform.projectPlatformId)"
+              >{{platform.platformName}} ({{platform.platformPercentage}}%)</mat-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="deliverables-boxes" *ngIf="!isEditing">
+        <div class="db-wrapper" *ngFor="let stage of stageList">
+          <div class="dbw-title">{{getStageNameByID(stage)}}</div>
+          <div class="dbw-row" *ngFor="let platform of platformList">
+            <div class="dbw-checkbox">
+              <mat-slide-toggle [formControl]="getPlatformToggle(stage, platform)"></mat-slide-toggle>
+            </div>
+            <div class="dbw-platform">
+              <img src="assets/images/stage-req-icon.svg"/>
+              <div class="text">{{getPlatformNameByID(platform)}}</div>
+            </div>
+            <div class="dbw-input">
+              <input type="number" (keypress)="keyPressNumeric($event)" [attr.stage]="stage" [attr.platform]="platform" value="{{getGridValue(stage, platform)}}" (change)="onGridChange($event)" [disabled]="!getPlatformToggle(stage, platform).value" />
+              <div class="percentage-sign">%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="totals" *ngIf="!isEditing">
+        <div class="row">
+          <div class="tr-title">Total</div>
+          <div class="tr-total" [class.error]="totalError">{{total}}%</div>
+        </div>
+        <div class="row">
+          <div class="tr-deliverable">Deliverable ({{getTotalDeliverable()}})</div>
+          <div class="tr-error" *ngIf="totalError">Target is larger than 100%</div>
+        </div>
+      </div>
+
+      <div class="form-buttons">
+        <button [disabled]="totalError || requirementForm.invalid || stageList.length<=0 || platformList.length<=0" (click)="onSubmit()">{{!isEditing ? 'Add' : 'Update'}} requirement</button>
+        <button (click)="onClose()" class="defaultButton outlined">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

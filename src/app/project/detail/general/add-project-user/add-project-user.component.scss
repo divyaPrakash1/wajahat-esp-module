@@ -1,0 +1,39 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.add-user-popup{width:700px;padding:0px;box-sizing:border-box;
+  @include respond-to(mobile){width: 100%;padding:0px;}
+  .header{font-size: 18px;font-weight: bold;display: flex; justify-content:space-between;padding: 12px 24px;align-items: center;border-bottom: 1px solid #f3f5f6;}
+  .fo-close{color:var(--grey-color);top: 8px;right: 26px;padding: 8px;cursor: pointer;
+    img, svg{color: var(--grey-color);}
+  }
+  .icon{padding:32px;text-align:center;
+    img{width: 128px;height: 128px;}
+  }
+}
+.au-body{padding: 12px 24px;
+  .row{display: flex;justify-content: space-between;
+    @include respond-to(mobile){flex-direction: column;}
+    .col1{width:100%;}
+    .col2{width: calc(50% - 6px);
+      @include respond-to(mobile){width:100%;}
+    }
+  }
+  .df-inputs{width:100%;
+    .mat-form-field{padding-top:15px;padding-bottom: 13px;width:100%;}
+    .mat-input-element{font-size: 16px;line-height: 1.5;font-weight: bold;}
+    textarea{resize: none;height: 80px;}
+  }
+}
+.permission-wrapper{margin-top:8px;
+  .row-header{font-size: 16px;color:var(--black-color);}
+  .permission-list{display: flex;flex-wrap: wrap;width: 85%;
+    .checkbox-row{width: calc(50% - 10px);position: relative;height: 36px;overflow: hidden;margin-right: 10px;}
+  }
+}
+.au-buttons{display: flex;width:100%;box-sizing:border-box;justify-content: flex-end;padding:16px 32px 12px;border-top: 1px solid #f3f5f6;
+  button{line-height: 36px;padding:0 64px;font-size: 14px;font-weight: 400;background:#86C04F;@include border-radius(3px);font-family: 'Lato';
+    @include respond-to(mobile){padding:0 24px;}
+  }
+  button.outlined{padding:0 32px;background: transparent;border-color: transparent;color: var(--grey-color);}
+  button:first-child{margin-left:0;}
+}

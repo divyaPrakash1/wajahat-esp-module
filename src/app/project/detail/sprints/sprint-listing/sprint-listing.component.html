@@ -1,0 +1,58 @@
+<div class="listing-area">
+  <div class="row filter-area">
+    <div class="search">
+      <input placeholder="Search" (keyup)="onKeyUp($event)" [value]="searchKey" />
+      <div class="icon"><img src="/assets/images/search.svg" /></div>
+    </div>
+    <div class="outside-filter">
+      <div class="state-filter">
+        <mat-form-field class="xfilter small">
+          <mat-label>Status</mat-label>
+          <mat-select placeholder="Status" panelClass="status-filter-panel" [formControl]="statusFilter" (selectionChange)="statusSelect($event)">
+            <mat-option *ngFor="let status of statusList" [value]="status.id">{{status.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="filters-icons">
+      <div class="list-sytle">
+        <div class="ls-item {{activeStyle=='list' ? 'active' : ''}}" (click)="changeStyle('list')">
+          <div class="icon">
+            <img src="/assets/images/list.svg" />
+          </div>
+        </div>
+        <div class="ls-item {{activeStyle=='gird' ? 'active' : ''}}" (click)="changeStyle('gird')">
+          <div class="icon">
+            <img src="/assets/images/grid.svg" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="loading" style="display: flex;height: 256px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <app-sprint-list-view
+    *ngIf="!loading && totalSprints>0 && activeStyle=='list'"
+    [list]="list"
+    [projectid]="projectid"
+    (onexpend)="onGirdExpend($event)"
+  ></app-sprint-list-view>
+  <app-sprint-gird-view
+    *ngIf="!loading && totalSprints>0 && activeStyle=='gird'"
+    [list]="list"
+    [projectid]="projectid"
+    (onexpend)="onGirdExpend($event)"
+  ></app-sprint-gird-view>
+  <div class="row projectcounts" *ngIf="!loading && list.length===0">
+    <div class="notFound">
+      <img src="/assets/images/sprint_icon.svg" />
+      <div></div>
+      <div class="text">Ops! There are no Sprint. <br /> Create your first Sprint.</div>
+      <a class="link" *ngIf="searchKey=='' && !isFilterApplied">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Create new Sprint</span>
+      </a>
+    </div>
+  </div>
+</div>

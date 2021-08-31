@@ -1,0 +1,315 @@
+<div class="pd-attachments-container count{{attachmentList.length}} {{class}}">
+  <div class="grey-header">
+    <div class="text">Attachments</div>
+    <a (click)="openAttachmentPopup()">View all ({{totalrecord}})</a>
+  </div>
+  <div class="text no-text">No Attachments</div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="no-attachment" *ngIf="!loading && attachmentList.length===0">
+    <div class="full-no-attach">
+      <img src="/assets/images/add-attachment-empty.svg" />
+      <div class="text">Ops! There are no attchment.</div>
+    </div>
+    <a class="link no-link" (click)="onUploadCliked()">
+      <mat-icon>add_circle_outline</mat-icon>
+      <span>Add Attachment</span>
+    </a>
+  </div>
+  <!-- <div class="card not-found" *ngIf="!loading && attachmentList.length<=0">
+    <img src="/assets/images/icon-empty-state-blog-links.svg" />
+    <div class="text">You didn't upload anything yet</div>
+    <input type="file" id="uploadAttachFile" (change)="onUploadChange($event)" style="display: none" />
+    <a class="defaultButton button" (click)="onUploadCliked()">Upload Attachment</a>
+  </div> -->
+  <ng-container *ngIf="!loading && attachmentList.length > 0">
+    <div class="card upload-container" *ngFor="let attachment of attachmentList">
+      <div class="row">
+        <div class="name-contianer" (click)="onFileDetail(attachment)">
+          <div class="name">{{attachment.fileName}}</div>
+        </div>
+        <div class="actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu" >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="onFileDownload(attachment)">
+              <mat-icon>file_download</mat-icon>
+              <span>Downlaod</span>
+            </button>
+            <button mat-menu-item (click)="onFileEdit(attachment)" *ngIf="attachment.metaData.UploadType==='Uploaded'">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button mat-menu-item (click)="onFileDelete(attachment)" *ngIf="attachment.metaData.UploadType==='Uploaded'">
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+      <div class="row botton-row">
+        <div class="size" [ngSwitch]="attachment.type">
+          <img *ngSwitchCase="'pptx'" src="/assets/images/files/file-pptx.svg" />
+          <img *ngSwitchCase="'img'" src="/assets/images/files/file-img.svg" />
+          <img *ngSwitchCase="'pdf'" src="/assets/images/files/file-pdf.svg" />
+          <img *ngSwitchCase="'xls'" src="/assets/images/files/file-xlsx.svg" />
+          <img *ngSwitchCase="'doc'" src="/assets/images/files/file-docx.svg" />
+          <img *ngSwitchDefault src="/assets/images/files/file-none.svg" />
+          <div>{{attachment.type}}, {{attachment.fileSize}}</div>
+        </div>
+        <div class="attach-datetime">{{attachment.submission_date}}</div>
+        <div class="attach-tag">
+          <div class="tag-item {{attachment.metaData.UploadType==='Uploaded' ? 'success' : 'shared'}}">
+            <mat-icon *ngIf="attachment.metaData.UploadType==='Uploaded'">logout</mat-icon>
+            <mat-icon *ngIf="attachment.metaData.UploadType==='Shared'" class="material-icons-outlined" style="transform: scale(-1, 1);">reply</mat-icon>
+            <div class="typer">{{attachment.metaData.UploadType}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card upload-button">
+      <div class="addrow" (click)="onUploadCliked()">
+        <div class="icon"><mat-icon>attach_file</mat-icon></div>
+        <div class="text">Upload an Attachment</div>
+      </div>
+    </div>
+  </ng-container>
+  <input type="file" id="uploadAttachFile" (change)="onUploadChange($event)" style="display: none" />
+</div>
+
+
+<div class="attachment-popup" *ngIf="attachmentPopup">
+  <div class="attachment-overlay">
+    <div class="ao-header">
+      <div class="ao-close" (click)="closeAttachementPopup($event)"><mat-icon aria-hidden="false">close</mat-icon></div>
+      <div class="ao-title">Attachments ({{totalrecord}})</div>
+    </div>
+    <div class="ao-body {{type}}">
+      <div *ngIf="popupLoading" style="display:flex;height:128px;justify-content:center;align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <ng-container *ngIf="!popupLoading && allAttachmentList.length > 0">
+        <div class="upload-scrollable">
+          <div class="card upload-container" *ngFor="let attachment of allAttachmentList">
+            <div class="row">
+              <div class="name-contianer" (click)="onFileDetail(attachment)">
+                <div class="name">{{attachment.fileName}}</div>
+              </div>
+              <div class="actions" *ngIf="attachment.metaData.UploadType==='Uploaded'">
+                <button mat-icon-button [matMenuTriggerFor]="menu" >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu class="PO-panel" #menu="matMenu" xPosition="before">
+                  <button mat-menu-item (click)="onFileEdit(attachment)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="onFileDelete(attachment)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </div>
+            <div class="row botton-row">
+              <div class="size" [ngSwitch]="attachment.type">
+                <img *ngSwitchCase="'pptx'" src="/assets/images/files/file-pptx.svg" />
+                <img *ngSwitchCase="'img'" src="/assets/images/files/file-img.svg" />
+                <img *ngSwitchCase="'pdf'" src="/assets/images/files/file-pdf.svg" />
+                <img *ngSwitchCase="'xls'" src="/assets/images/files/file-xlsx.svg" />
+                <img *ngSwitchCase="'doc'" src="/assets/images/files/file-docx.svg" />
+                <img *ngSwitchDefault src="/assets/images/files/file-none.svg" />
+                <div>{{attachment.type}}, {{attachment.fileSize}}</div>
+              </div>
+              <div class="attach-datetime">{{attachment.submission_date}}</div>
+              <div class="attach-tag">
+                <div class="tag-item {{attachment.metaData.UploadType==='Uploaded' ? 'success' : 'shared'}}">
+                  <mat-icon *ngIf="attachment.metaData.UploadType==='Uploaded'">logout</mat-icon>
+                  <mat-icon *ngIf="attachment.metaData.UploadType==='Shared'" class="material-icons-outlined" style="transform: scale(-1, 1);">reply</mat-icon>
+                  <div class="typer">{{attachment.metaData.UploadType}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card upload-button">
+          <div class="addrow" (click)="onUploadCliked()">
+            <div class="icon"><mat-icon>attach_file</mat-icon></div>
+            <div class="text">Upload an Attachment</div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+<div class="attachment-popup uploading" *ngIf="isUploading || isEditing">
+  <div class="attachment-overlay">
+    <div class="ao-header">
+      <div class="ao-close" (click)="closeAttachementPopup($event)"><mat-icon aria-hidden="false">close</mat-icon></div>
+      <div class="ao-title">Upload Attachment</div>
+    </div>
+    <div class="ao-body {{type}}">
+      <div *ngIf="uploadLoading" style="display:flex;height:96px;justify-content:center;align-items:center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      </div>
+      <ng-container>
+        <div class="tabs" *ngIf="!uploadLoading && !isEditing">
+          <div class="tab-item upload-tab {{isSharing ? '' : 'active'}}" (click)="onTabChange(false)">Upload</div>
+          <div class="tab-item share-tab {{!isSharing ? '' : 'active'}}" (click)="onTabChange(true)">Share</div>
+        </div>
+        <form [formGroup]="uploadForm" class="form-area">
+          <div class="row" *ngIf="!uploadLoading && isSharing && !isEditing">
+            <div class="col1">
+              <tag-input
+                [(ngModel)]='emails'
+                [ngModelOptions]="{standalone: true}"
+                ngDefaultControl
+                placeholder = "Enter email"
+                secondaryPlaceholder="Enter emails"
+                [errorMessages]="errorMessages"
+                [validators]="emailValidators"
+                inputClass="tagEmailInput"
+              >
+              </tag-input>
+            </div>
+          </div>
+          <div class="row" *ngIf="!uploadLoading">
+            <div class="col2">
+              <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput type="text" color="xui" class="xui" formControlName="name">
+              </mat-form-field>
+            </div>
+            <div class="col2">
+              <mat-form-field>
+                <mat-label>Version</mat-label>
+                <input matInput type="text" color="xui" class="xui" formControlName="version">
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row" *ngIf="!uploadLoading">
+            <div class="col1">
+              <mat-form-field>
+                <mat-label>Purpose</mat-label>
+                <textarea matInput type="text" color="xui" class="xui" formControlName="purpose"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row" *ngIf="!uploadLoading">
+            <div class="col1">
+              <div class="submission-area">
+                <label>Submission Date</label>
+                <div class="text-area">
+                  <mat-icon class="material-icons-outlined">calendar_today</mat-icon>
+                  <div class="text">{{todayDateDisplay}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="file-section" *ngIf="!(uploadLoading && isEditing)">
+            <div class="upload-section" *ngIf="uploadForm.hasError('required', 'file')" (click)="onUploadRowCliked()">
+              <div class="up-row">
+                <mat-icon>attach_file</mat-icon>
+                <div class="text">Browse Files</div>
+              </div>
+              <input type="file" id="uploadFileInput" (change)="onUploadFileInput($event)" style="display: none" />
+            </div>
+            <div class="file-section" *ngIf="!uploadForm.hasError('required', 'file')">
+              <div class="header">File</div>
+              <div class="file-row">
+                <div class="icon" [ngSwitch]="fileData.type">
+                  <img *ngSwitchCase="'pptx'" src="/assets/images/files/file-pptx.svg" />
+                  <img *ngSwitchCase="'img'" src="/assets/images/files/file-img.svg" />
+                  <img *ngSwitchCase="'pdf'" src="/assets/images/files/file-pdf.svg" />
+                  <img *ngSwitchCase="'xls'" src="/assets/images/files/file-xlsx.svg" />
+                  <img *ngSwitchCase="'doc'" src="/assets/images/files/file-docx.svg" />
+                  <img *ngSwitchDefault src="/assets/images/files/file-none.svg" />
+                </div>
+                <div class="info">
+                  <div class="size">{{fileData.extension}}, {{fileData.size}}</div>
+                  <div class="bar">
+                    <div class="filler" id="filler"></div>
+                  </div>
+                </div>
+                <div class="delete-icon" (click)="onUploadRemove()" *ngIf="!uploadLoading && !isEditing">
+                  <mat-icon class="material-icons-outlined">delete</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="up-buttons" *ngIf="!uploadLoading">
+          <button class="outlined" (click)="closeAttachementPopup($event)">Cancel</button>
+          <button [disabled]="isFormValid()" (click)="onUploadForm()">{{isSharing ? 'Send' : isEditing ? 'Update' : 'Add'}}</button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+
+<div class="attachment-popup attachment-detail" *ngIf="isDetail">
+  <div class="attachment-overlay">
+    <div class="atd-header">
+      <div class="atd-head">Attachment Details</div>
+      <div class="fo-close" (click)="onFileDetailClose()">
+        <mat-icon>close</mat-icon>
+      </div>
+    </div>
+    <div class="atd-body">
+      <div class="attach-tag">
+        <div class="tag-item {{selectedAttachment.metaData.UploadType==='Uploaded' ? 'success' : 'shared'}}">
+          <mat-icon *ngIf="selectedAttachment.metaData.UploadType==='Uploaded'">logout</mat-icon>
+          <mat-icon *ngIf="selectedAttachment.metaData.UploadType==='Shared'" class="material-icons-outlined" style="transform: scale(-1, 1);">reply</mat-icon>
+          <div class="typer">{{selectedAttachment.metaData.UploadType}}</div>
+        </div>
+      </div>
+      <div class="info-list">
+        <div class="info-left">
+          <div class="info-row">
+            <div class="info-head">Name</div>
+            <div class="info-value">{{selectedAttachment.fileName}}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-head">Version</div>
+            <div class="info-value">{{selectedAttachment.version}}</div>
+          </div>
+          <div class="info-row" *ngIf="selectedAttachment.purpose">
+            <div class="info-head">Purpose</div>
+            <div class="info-value">{{selectedAttachment.purpose}}</div>
+          </div>
+          <div class="info-row" *ngIf="selectedAttachment.metaData.ListOfEmails.length > 0">
+            <div class="info-head">Emails</div>
+            <div class="info-value emails">
+              <span *ngFor="let email of selectedAttachment.metaData.ListOfEmails">{{email}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="info-right">
+          <div class="info-row">
+            <div class="info-head">Submission Date</div>
+            <div class="info-value">{{selectedAttachment.submission_date}}</div>
+          </div>
+          <div class="info-row" *ngIf="selectedAttachment.metaData.uploadedBy">
+            <div class="info-head">Created By</div>
+            <div class="info-value">{{selectedAttachment.metaData.uploadedBy}}</div>
+          </div>
+          <div class="info-row" *ngIf="selectedAttachment.metaData.updatedBy">
+            <div class="info-head">Update By</div>
+            <div class="info-value">{{selectedAttachment.metaData.updatedBy}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-buttons">
+        <button>Download</button>
+        <button>Edit</button>
+        <button class="delete">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+

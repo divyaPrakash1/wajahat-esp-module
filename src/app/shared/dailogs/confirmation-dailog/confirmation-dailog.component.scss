@@ -1,0 +1,18 @@
+@import '../../../../assets/styles/css3-mixins.scss';
+
+
+.confirmation-dailog-container{
+  width:100%;height: 100%;background-color:rgba(50 ,61, 79, 0.7);position: fixed;top: 0;left: 0;z-index: 10000;display: flex;justify-content: center; align-items: center;@include transition(all ease-in-out 0.5s);
+  .cd-area{background-color: #fff;width:550px;min-height:128px;max-height: 80vh;position: relative;box-sizing: border-box;padding:30px 50px;}
+  .cd-title{color:var(--black-color);font-size: 24px;font-weight: bold;}
+  .cd-body{margin:40px 0 20px;
+    .description{font-size: 16px;}
+    .confirmation-dailog-buttons{display: flex;width:100%;padding:0 25px;margin-top:48px;box-sizing:border-box;
+      button{flex:6;line-height: 48px;padding:0 42px;background:var(--danger-color);color:#fff;}
+      button.outlined{flex:4;background: #fff;color:var(--primary-color-lighter);border-color:var(--primary-color-lighter);}
+      button:first-child{margin-left:0;}
+    }
+  }
+}
+
+

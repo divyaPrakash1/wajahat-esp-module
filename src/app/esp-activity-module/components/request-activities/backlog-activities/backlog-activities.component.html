@@ -1,0 +1,229 @@
+<!-- <xcdrs-size-detector></xcdrs-size-detector> -->
+
+<div
+  class="mine-activities-conatiner"
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  fxFlex
+  *ngIf="dataLoaded && !isLoading"
+>
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    class="actions-container"
+  >
+    <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+      <xcdrs-search-field (search)="onSearch($event)"></xcdrs-search-field>
+      <!-- *ngIf="isDefultFilterApplied" -->
+      <div class="defult-filter"></div>
+      <span
+        class="filter-icon-container"
+        (click)="openFiltersDialog()"
+      >
+        <!-- *ngIf="isDefultFilterApplied" -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#AAADB8"
+              d="M10.071 11.56c.17.183.263.422.263.669v7.276c0 .437.532.66.848.352l2.046-2.326c.274-.326.425-.487.425-.81v-4.49c0-.247.095-.486.262-.669l5.873-6.32c.44-.473.1-1.242-.55-1.242H4.748c-.65 0-.99.767-.549 1.243l5.872 6.317z"
+            />
+          </g>
+        </svg>
+     </span>
+    </div>
+
+    <div fxFlex="nogrow">
+      <button
+        fxFlex="nogrow"
+        fxHide.xs
+        fxHide.sm
+        class="add-action-btn gradient-btn"
+        mat-flat-button
+        color="primary"
+        type="submit"
+        (click)="openCreateDialog('new', 'task')"
+      >
+        Add Activity
+      </button>
+   
+    </div>
+  </div>
+
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start start"
+  >
+  
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      class="ungrouped-container"
+    >
+      <xcdrs-activities-table
+        fxFlex
+        fxHide.xs
+        fxHide.sm
+        fxShow.gt-md
+        fxShow.lt-xl
+        fxShow.lg
+        fxShow.lt-lg
+        fxShow.md
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        *ngIf="activities.length > 0"
+        [loggedInUserId]="loggedInUserId"
+        [activeTab]="activeTab"
+        [totalCount]="totalCount"
+        [lastLoadedCount]="lastLoadedCount"
+        (pageChange)="onPageChange($event, selectedFiltersIds)"
+        [activities]="activitiesSubject.asObservable()"
+        [oppProData]="null"
+        [espAddon]="null"
+        (reloadList)="reload($event)"
+        [engProLoggedInUserId]="null"
+        [isESPcomponent]="true"
+        [requestModuleName]="requestModuleName"
+        [requestName]="requestName"
+        [isMyspace]="isMyspace"
+        [pageNo]="pageIndex-1"
+      >
+      </xcdrs-activities-table>
+
+
+      <!-- <div fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md fxFlex fxLayout="column"
+        fxLayoutAlign="start stretch" *ngIf="activities.length > 0">
+        <mat-card *ngFor="let activity of activities" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+          <mat-card-header class="card-header" fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+            <mat-card-title class="clickable" (click)="openActivityDetails(activity)">
+              {{ activity.description | textTruncate: 60 }}</mat-card-title>
+          </mat-card-header>
+      
+          <mat-card-content fxFlex fxLayout="column" fxLayoutAlign="space-around stretch">
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="!!activity.createdBy">
+              <mat-label fxFlex="35">Assigned By: </mat-label>
+              <span>
+                {{
+                activity.createdBy.UserFirstName +
+                " " +
+                activity.createdBy.UserLastName
+                }}
+              </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center" *ngIf="activity.parentBoardId != null">
+              <mat-label fxFlex="35">Project: </mat-label>
+              <span> {{ activity.parentBoardName }} </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="35"><span *ngIf="activity.appType != 2">Due </span>Date:
+              </mat-label>
+              <span *ngIf="activity.dueDateLabel == 'Overdue'" class="over-due">{{ activity.dueDate }}</span>
+              <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+                activity.dueDate
+                }}</span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+              *ngIf="activity.appType == 4 && activity.requestNumber !=null">
+              <mat-label fxFlex="35">Request #: </mat-label>
+              <span>
+                {{
+                activity.requestNumber
+                }}
+              </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center"
+              *ngIf="activity.appType == 4 && activity.requestName !=null">
+              <mat-label fxFlex="35">Request Name: </mat-label>
+              <span>
+                {{
+                activity.requestName
+                }}
+              </span>
+            </p>
+      
+          </mat-card-content>
+        </mat-card>
+      </div> -->
+
+      <div fxFlex fxShow.xs fxShow.sm fxHide.gt-md fxHide.lt-xl fxHide.lg fxHide.lt-lg fxHide.md fxLayout="column"
+        fxLayoutAlign="start stretch" class="fill-bg" *ngIf="
+                !isLoading &&
+                !isError &&
+                activities.length == 0 &&
+                isSearchMode()
+              ">
+        <xcdrs-detailed-panel-placeholder [imagePath]="'./assets/images/ic_no_result.png'"
+          [title]="'Sorry we couldn\'t find any result'" [subTitle]="
+                  'Maybe your search was too specific, please try searching with another term.'
+                ">
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div fxFlex fxLayout="column" fxLayoutAlign="start stretch" class="fill-bg" *ngIf="
+                !isLoading &&
+                dataLoaded &&
+                !isError &&
+                activities.length === 0 &&
+                !isSearchMode()
+              ">
+        <xcdrs-detailed-panel-placeholder [imagePath]="''" [title]="'No activities available'"
+          [subTitle]="'It seems no activites created for you yet.'">
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div fxFlex fxLayout="column" fxLayoutAlign="start stretch" class="fill-bg" *ngIf="
+                dataLoaded &&
+                !isLoading &&
+                isError
+              ">
+        <xcdrs-detailed-panel-placeholder [imagePath]="'./assets/images/ic_error.png'" [title]="'Oops, something went wrong!'"
+          [subTitle]="
+                  'Please check your internet connect or reload the page to make sure its working.'
+                ">
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div class="fill-bg" *ngIf="
+                dataLoaded &&
+                !isLoading &&
+                !isError &&
+                activities.length === 0 &&
+                isSearchMode()
+              ">
+        <xcdrs-detailed-panel-placeholder [imagePath]="'./assets/images/news-item/no-items.svg'"
+          [title]="'Activity not found!'" [subTitle]="
+                  'Maybe your search was too specific, please try searching with another term.'
+                ">
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="fab-container" *ngIf="size == 'XS' || size == 'SM'">
+  <button
+    mat-fab
+    color="primary"
+    aria-label="create fab"
+    fxFlex="nogrow"
+    class="gradient-btn"
+    type="submit"
+    (click)="openCreateDialog('new', 'task')"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div> -->
+
+<div fxFlex fxLayout="column" *ngIf="(!dataLoaded && isLoading) || isLoadingMore" fxLayoutAlign="space-around center"
+  class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="16px" viewBox="0 0 20 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>projects_icon</title>
+    <g id="Project-List---Filter---Web" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Project_List_Status_Dropdown_Status_Manager" transform="translate(-1057.000000, -19.000000)" fill="#AAADB8">
+            <path d="M1075,21 L1067,21 L1065,19 L1059,19 C1057.9,19 1057.01,19.9 1057.01,21 L1057,33 C1057,34.1 1057.9,35 1059,35 L1075,35 C1076.1,35 1077,34.1 1077,33 L1077,23 C1077,21.9 1076.1,21 1075,21 Z M1075,33 L1059,33 L1059,23 L1075,23 L1075,33 Z" id="projects_icon"></path>
+        </g>
+    </g>
+</svg>

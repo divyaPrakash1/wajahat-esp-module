@@ -1,0 +1,35 @@
+<div class="pd-attachments-container full count{{historyList.length}}">
+  <div class="grey-header">
+    <div class="text">History</div>
+  </div>
+  <div class="text no-text">No History</div>
+  <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+  <div class="no-attachment" *ngIf="!loading && historyList.length===0">
+    <div class="full-no-attach">
+      <img src="/assets/images/history-empty.svg" />
+      <div class="text">Ops! There are no History.</div>
+    </div>
+  </div>
+  <ng-container *ngIf="!loading && historyList.length > 0">
+    <div class="card upload-container" *ngFor="let history of historyList">
+      <div class="picture">
+        <img src="{{history.userProfilePicture}}" />
+      </div>
+      <div class="name-area">
+        <div class="name-contianer">
+          <div class="name">{{history.changedByName}}</div>
+          <div class="text">{{history.descriptiveTitle}}</div>
+          <div class="text">{{history.columnName}}</div>
+        </div>
+        <div class="info-contianer">
+          <div class="old" *ngIf="history.previousValueName">{{history.previousValueName}}</div>
+          <mat-icon *ngIf="history.previousValueName" class="material-icons-round">east</mat-icon>
+          <div class="new">{{history.currentValueName}}</div>
+        </div>
+        <div class="date-contianer">{{history.datetime}}</div>
+      </div>
+    </div>
+  </ng-container>
+</div>

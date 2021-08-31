@@ -1,0 +1,42 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+.container {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+
+  .title {
+    text-align: center;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    font-size: $f24;
+    color: $main-color;
+    font-weight: 800;
+  }
+
+  .sub-title {
+    color: $main-color;
+    font-size: $f16;
+  }
+
+  //&.small {
+  //  width: 100%;
+  //
+  //  img {
+  //    width: 180px;
+  //  }
+  //
+  //  .title {
+  //    margin-top: 24px;
+  //    font-size: $f15;
+  //  }
+  //
+  //  .sub-title {
+  //    font-size: $f13;
+  //  }
+  //}
+}
+
+:host {
+  margin: auto;
+}

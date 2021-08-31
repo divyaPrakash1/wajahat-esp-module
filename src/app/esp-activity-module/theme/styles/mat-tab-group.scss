@@ -1,0 +1,27 @@
+.mat-tab-group {
+  .mat-ink-bar {
+    background-image: linear-gradient(to right, var(--primary-color-lighter) 0%, var(--primary-color) 100%);
+    height: 4px !important;
+    border-radius: 4px;
+  }
+  .mat-tab-header {
+    border-bottom: none;
+    .mat-tab-labels {
+      border-bottom: 1px solid #dfe3e9;
+      @media only screen and (max-width: 768px) {
+        justify-content: center;
+      }
+      .mat-tab-label {
+        border-bottom: none;
+        padding: 0px 42px;
+        font-weight: bold;
+        opacity: 1;
+        @media only screen and (max-width: 768px) {
+          min-width: auto;
+          padding: 0px 10px;
+          margin: 0px auto;
+        }
+      }
+    }
+  }
+}

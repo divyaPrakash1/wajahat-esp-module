@@ -1,0 +1,163 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+@import "src/app/esp-activity-module/theme/styles/mixins";
+
+:host {
+  position: relative;
+  display: block;
+}
+
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  color: #aaadb8;
+  z-index: 1;
+}
+
+
+.mat-dialog-content {
+  text-align: center;
+  position: relative;
+
+  .exceeders-icon {
+    display: block;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    //background-image: url("src/assets/images/success.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .title {
+    font-size: $f24;
+    line-height: 32px;
+    color: $main-color;
+    font-weight: 800;
+  }
+
+  .description {
+    font-size: $f16;
+    margin-top: 16px;
+    margin-bottom: 24px;
+    line-height: 24px;
+
+    p {
+      margin-bottom: 8px;
+    }
+  }
+
+  .features-list {
+    margin-top: 17px;
+    display: inline-block;
+    @include clear-list();
+    text-align: left;
+
+    .feature-list-item {
+      font-size: $f16;
+      line-height: 24px;
+      padding-left: 40px;
+      background-repeat: no-repeat;
+      color: var(--primary-color);
+
+      // &.like-item-icon {
+      //   background-image: url("src/assets/images/icons/sign-in-proposal/like.svg");
+      // }
+
+      // &.comment-item-icon {
+      //   background-image: url("src/assets/images/icons/sign-in-proposal/comment.svg");
+      // }
+
+      // &.share-item-icon {
+      //   background-image: url("src/assets/images/icons/sign-in-proposal/share.svg");
+      // }
+
+      // &.event-item-icon {
+      //   background-image: url("src/assets/images/icons/sign-in-proposal/events.svg");
+      // }
+
+      // &.request-item-icon {
+      //   background-image: url("src/assets/images/icons/sign-in-proposal/products.svg");
+      // }
+
+
+      &:not(:last-child) {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+.mat-dialog-actions {
+  margin-top: 40px;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+
+  .register-btn, .sign-in-btn {
+    font-size: $f18;
+    min-width: 328px;
+    min-height: 56px;
+    margin: 0 0 8px;
+  }
+
+  .skip-btn {
+    font-size: $f16;
+    margin: 24px 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .description {
+    font-size: $f14;
+  }
+
+  .features-list {
+    .feature-list-item {
+      font-size: $f14;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 576px) {
+  .mat-dialog-content {
+    text-align: left;
+
+    .title {
+      text-align: center;
+    }
+
+    .exceeders-icon {
+      width: 80px;
+      height: 80px;
+    }
+
+    .features-list {
+      .feature-list-item {
+        &:not(:last-child) {
+          margin-bottom: 12px;
+        }
+      }
+    }
+  }
+
+  .mat-dialog-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 32px;
+
+    .register-btn, .sign-in-btn {
+      margin: 0;
+      min-width: auto;
+      width: 49%;
+      font-size: $f16;
+      min-height: 48px;
+    }
+
+    .skip-btn {
+      margin: 50px auto 0 auto;
+    }
+  }
+}

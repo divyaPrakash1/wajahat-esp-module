@@ -1,0 +1,70 @@
+
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+$star-basic    : '\2605';
+$star-outlined : '\2606';
+
+$star-active   :$primary-color;
+$star-selected :$primary-color;
+$star-default  :#d2d2d2;
+$star-readonly :$color-light-periwinkle;
+$star-half     :$color-light-periwinkle;
+
+::ng-deep .br-default {
+    margin:10px 0 !important;
+    .br-units {
+        align-items: center;
+    }
+
+    .br-unit {
+        position   : relative;
+        font-size  : 22px;
+        line-height: 1;
+
+        &+.br-unit {
+            margin-left: 5px;
+        }
+
+        &::before {
+            content: $star-outlined;
+            color  : $star-active;
+        }
+    }
+
+    .br-selected::before,
+    .br-fraction::after {
+        color  : $star-selected;
+        content: $star-basic;
+
+    }
+
+    .br-fraction::after {
+        width   : 50%;
+        width   : calc(50%); // adds one so the half star can be easily seen
+        position: absolute;
+        top     : 0;
+        left    : 0;
+        overflow: hidden;
+    }
+
+    .br-active::before {
+        content: $star-basic;
+
+        color: $star-active;
+    }
+
+
+}
+
+.br-readonly {
+    .br-unit::before {
+        content: $star-basic !important;
+        color:$star-default;
+    }
+
+    .br-selected::before,
+    .br-fraction::after {
+        color: $star-readonly !important;
+
+    }
+}

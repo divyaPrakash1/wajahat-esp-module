@@ -1,0 +1,67 @@
+@import 'src/assets/styles/css3-mixins.scss';
+
+.gird-view{display: flex; justify-content: space-between;align-items: stretch;padding-bottom: 18px;
+  @include respond-to(mobile){flex-direction: column;}
+  .column{width:calc(33% - 5px);
+    @include respond-to(mobile){width: 100%;}
+  }
+
+  .planned-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Planned_Not Planned.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Planned_Started.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Planned_Planned with Issues.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Planned_Completed Successfully.svg');}
+    &.warning.completed{background-image: url('/assets/images/Indicator_Planned_Completed with Issues.svg');}
+  }
+  .actual-icon{width:26px;height:26px;background-image: url('/assets/images/Indicator_Actual_Not Started.svg');margin:0 3px;background-size:cover;
+    &.planned{background-image: url('/assets/images/Indicator_Actual_Activities Started.svg');}
+    &.completed{background-image: url('/assets/images/Indicator_Actual_Completed Successfully.svg');}
+    &.warning{background-image: url('/assets/images/Indicator_Actual_Completed with Issues.svg');}
+  }
+
+  .card{display: flex;flex-direction: row;margin-top:12px;
+    .req-icon{width:28px;}
+    .wrap-area{flex: 1;display: flex;flex-direction: column;}
+    .top-title-area{height: 24px;display:flex; justify-content: space-between;
+      >.title{font-size:16px;line-height: 16px;color: #303030;font-weight: 600;cursor: pointer;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;text-transform: capitalize;flex:1;display: flex;
+        img{margin-right: 6px;width: 16px;height: 16px;}
+        .text{color: #2b3443;font-size: 16px;font-weight: bold;}
+      }
+      .sprint-actions{width: 40px;margin-top: -10px;
+        button{color:var(--grey-color);background: transparent;@include border-radius(4px);padding:0 6px;
+          &:hover, &[aria-expanded="true"]{background: rgba(203, 210, 213, 0.25);}
+          .mat-icon{vertical-align: middle;}
+        }
+        .defaultButton{line-height:18px;padding: 5px 10px;}
+        label{vertical-align: super;cursor: pointer;}
+      }
+    }
+    .status{margin:10px 0;
+      .tag{padding:6px 10px 7px;display:inline-block;@include border-radius(2px);
+        &.blue{font-size:14px;line-height: 14px;}
+      }
+    }
+    .tags-area{margin-top:0px;
+      .tag{display: inline-block;font-size: 14px;color:#97a3a9; @include border-radius(2px);padding:6px 12px;margin-right:6px;margin-top:6px;background-color: #f3f5f6;}
+    }
+    .info-area{flex:1;display: flex;flex-direction:column;margin-top:6px;
+      .info{margin:4px 8px;font-size: 16px;line-height: 18px;display: flex;align-items: center; justify-content: center; max-width: 100%;
+        label{color:var(--grey-color);margin-right: 6px;width: 128px;}
+        .value{flex:1;color:var(--black-color);overflow: hidden;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+      }
+    }
+  }
+}
+
+.gr-cards{
+  .back-button{display: flex;align-items: center;padding: 12px;margin:0;width: 164px;cursor: pointer;}
+  .back-icon{color:var(--grey-color);margin-right: 8px;}
+  .back-text{font-size: 14px;color:var(--black-grey-color);}
+  .requirement-row{display: flex;justify-content: space-between; align-items: center;height: 64px;margin-top: -12px;}
+  .requirement-tag{margin-right: 8px;
+    .tag{padding:6px 10px 7px;display:inline-block;@include border-radius(2px);
+      &.blue{font-size:14px;line-height: 14px;}
+    }
+  }
+  .requirement-title{flex: 1;font-size: 20px;font-weight: bold;color:var(--black-grey-color);text-transform: capitalize; line-height: 20px;}
+  .detail-card{padding:0;margin-bottom: 16px;}
+}
