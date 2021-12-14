@@ -18,7 +18,7 @@ export interface NameValue {
 })
 export class SearchableSelectComponent implements OnInit, OnChanges  {
   @Input() selected: NameValue[] = [];
-  @Input() options: NameValue[] = [];
+  @Input() options: any[] = [];
   @Input() placeholder = 'Select';
   @Input() multi = true;
   @Input() class = '';
@@ -55,16 +55,17 @@ export class SearchableSelectComponent implements OnInit, OnChanges  {
     this.onDestroyed.complete();
   }
   onSelected(event: any): void{
-    let values = [];
+    let values: any = [];
     if(this.multi){
       event.value.map((selected: any) => {
-        const found = this.options.find((o: any) => o.id === selected);
+        const found: any = this.options.find((o: any) => o.id === selected);
         if (found){
           values.push(found);
         }
       });
     }
     else{
+      if(event && event.value)
       values = [event.value]
     }
     console.log(event, values, this.multi);

@@ -1,7 +1,7 @@
 <div class="pd-users-container">
   <div class="grey-header" *ngIf="!loading && userList.length>0">
     <div class="text">Users</div>
-    <a (click)="openAttachmentPopup()">View all ({{userList.length}})</a>
+    <a (click)="openAttachmentPopup($event)">View all ({{userList.length}})</a>
   </div>
   <div *ngIf="loading" style="display:flex;height:128px;justify-content: center; align-items: center;">
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>

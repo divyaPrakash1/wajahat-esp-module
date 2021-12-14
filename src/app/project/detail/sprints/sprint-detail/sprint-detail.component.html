@@ -96,7 +96,7 @@
             Currently, No one signed this sprint.
           </div>
           <div class="signature-body" *ngIf="!loading && detail.signedByUsers.length>0">
-            <div class="signature-box" *ngFor="let sign of detail.signatureList">
+            <div class="signature-box" *ngFor="let sign of detail?.signatureList">
               <div class="signature-area">
                 <div class="signature-by">Signed by {{sign.userName}}</div>
                 <div class="signature-style">{{sign.userName}}</div>
@@ -110,7 +110,7 @@
             [entityid]="detail.sprintId"
             (update)="updateDetail()"
             type="small"
-            top="3"
+            [top]=3
           ></app-generic-comments>
         </div>
       </div>

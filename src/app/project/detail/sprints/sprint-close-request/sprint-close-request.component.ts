@@ -31,10 +31,10 @@ export class SprintCloseRequestComponent implements OnInit {
     this.selected = this.data.selected;
     console.log(this.selected, this.data);
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     if (this.email.value){
       this.http.post(environment.baseURL + '/api/Sprint/SendCloseSprintRequest', {

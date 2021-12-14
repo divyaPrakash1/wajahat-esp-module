@@ -27,7 +27,7 @@ export class SprintAddComponent implements OnInit {
   loading = true;
   projectId = 0;
   form: FormGroup;
-  times = [];
+  times: any = [];
   ownerList = [];
   filteredOwner: Observable<User[]> | undefined;
   emails: Array<any> = [];
@@ -66,7 +66,7 @@ export class SprintAddComponent implements OnInit {
     forkJoin([optionSet, timing]).subscribe((results: any) => {
       const ownerList = results[0].result.find((r: any) => r.formType === 'ProjectOwners');
       this.ownerList = ownerList.result;
-      this.form.patchValue({owner: this.ownerList.find(o => o.id === this.authService.userId)});
+      this.form.patchValue({owner: this.ownerList.find((o: any) => o.id === this.authService.userId)});
 
       this.times = results[1].result;
 
@@ -106,7 +106,7 @@ export class SprintAddComponent implements OnInit {
   checkPerson(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: boolean} | null => {
       const controlValue = control.value;
-      const res = controlValue === null ? -1 : this.ownerList.findIndex(el => el.id === controlValue.id);
+      const res = controlValue === null ? -1 : this.ownerList.findIndex((el: any) => el.id === controlValue.id);
       return res !== -1 ? null : { matched: true };
     };
   }
@@ -138,7 +138,7 @@ export class SprintAddComponent implements OnInit {
   }
   private _filterOwner(name: string): User[] {
     const filterValue = name.toLowerCase();
-    return this.ownerList.filter(option => option.name.toLowerCase().indexOf(filterValue) === 0);
+    return this.ownerList.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) === 0);
   }
   private mustBeEmail(control: FormControl): any{
     const EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;

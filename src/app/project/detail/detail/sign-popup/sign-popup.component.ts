@@ -28,10 +28,10 @@ export class SignPopupComponent implements OnInit {
   ngOnInit(): void {
     this.projectId = this.data.projectid;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close();
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Project/AddSignature', {
       module: 'project',

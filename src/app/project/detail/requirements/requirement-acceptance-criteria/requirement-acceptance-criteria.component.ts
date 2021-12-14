@@ -26,7 +26,7 @@ export class RequirementAcceptanceCriteriaComponent implements OnInit {
   allPopup = false;
   editPopup = false;
   selected: any = {};
-
+  type: any;
   constructor(
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,

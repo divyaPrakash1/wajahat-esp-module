@@ -29,10 +29,10 @@ export class SprintRevokeComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.data.id;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Project/RevokeSignature', {
       module: 'sprints',

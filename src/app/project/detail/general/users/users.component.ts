@@ -127,5 +127,9 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  openAttachmentPopup(event: any) : void{
+
+  }
+
 
 }

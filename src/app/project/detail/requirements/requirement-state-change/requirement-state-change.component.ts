@@ -42,10 +42,10 @@ export class RequirementStateChangeComponent implements OnInit {
   radioChange(state: any): void{
     this.selected = state;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     if (this.selected === 1 || this.selected === 2){
       this.loading = true;
       this.http.post(environment.baseURL + '/api/Requirements/SetRequirementState', {

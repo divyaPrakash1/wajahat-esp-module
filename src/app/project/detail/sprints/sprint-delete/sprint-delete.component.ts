@@ -25,10 +25,10 @@ export class SprintDeleteComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.data.id;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Sprint/DeleteSprint?SprintId=1', {}).subscribe({
       next: (result: any) => {

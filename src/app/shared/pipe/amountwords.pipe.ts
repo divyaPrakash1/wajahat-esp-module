@@ -10,7 +10,7 @@ export class AmountwordsPipe implements PipeTransform {
     const suffixes = ['k', 'M', 'G', 'T', 'P', 'E'];
 
     if (Number.isNaN(value)) {
-      return null;
+      return '';
     }
 
     if (value < 1000) {

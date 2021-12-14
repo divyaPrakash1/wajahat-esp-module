@@ -49,7 +49,8 @@
       <img src="/assets/images/sprint_icon.svg" />
       <div></div>
       <div class="text">Ops! There are no Sprint. <br /> Create your first Sprint.</div>
-      <a class="link" *ngIf="searchKey=='' && !isFilterApplied">
+      <!-- <a class="link" *ngIf="searchKey=='' && !isFilterApplied"> -->
+      <a class="link" *ngIf="searchKey==''">
         <mat-icon>add_circle_outline</mat-icon>
         <span>Create new Sprint</span>
       </a>

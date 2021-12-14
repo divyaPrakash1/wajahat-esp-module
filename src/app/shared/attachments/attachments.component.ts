@@ -377,7 +377,9 @@ export class AttachmentsComponent implements OnInit {
         map((event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
             const filler = document.getElementById('filler');
-            filler.style.width = Math.round((100 / event.total) * event.loaded) + '%';
+            if(filler) {
+              filler.style.width = Math.round((100 / event.total) * event.loaded) + '%';
+            }
           } else if (event.type === HttpEventType.Response) {
             console.log(event);
             const fileInfo = event.body;

@@ -9,7 +9,7 @@
     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
   </div>
   <div class="tag-list" *ngIf="!loading">
-    <li class="{{isSelected(tag.tagId) ? 'selected' : ''}}" (click)="onClick(tag)" *ngFor="let tag of tagList">{{tag.tagText}}</li>
+    <li class="{{isSelected(tag?.tagId) ? 'selected' : ''}}" (click)="onClick(tag)" *ngFor="let tag of tagList">{{tag?.tagText}}</li>
   </div>
   <div class="tags-buttons">
     <button (click)="onSubmit()" [disabled]="selected.length<=0">Select Tag</button>

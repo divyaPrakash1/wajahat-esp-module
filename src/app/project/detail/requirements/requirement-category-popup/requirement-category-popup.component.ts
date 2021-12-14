@@ -19,9 +19,9 @@ export class RequirementCategoryPopupComponent implements OnInit {
   loading = true;
   moduleName = 'requirement-categories';
 
-  tagList = [];
-  selected = [];
-  orginalSelected = [];
+  tagList: any = [];
+  selected: any = [];
+  orginalSelected: any = [];
   resultRemove = true;
   resultadd = true;
 

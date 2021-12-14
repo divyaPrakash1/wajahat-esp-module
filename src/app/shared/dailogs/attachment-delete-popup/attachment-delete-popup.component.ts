@@ -27,10 +27,10 @@ export class AttachmentDeletePopupComponent implements OnInit {
   ngOnInit(): void {
     this.attachment = this.data.attachment;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     const guid = this.attachment.fileUniqueKey;
     if (guid){

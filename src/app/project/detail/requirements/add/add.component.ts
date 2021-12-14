@@ -227,7 +227,7 @@ export class AddComponent implements OnInit {
     }
     return result;
   }
-  getPlatformToggle(stageID: any, platformID: any): void{
+  getPlatformToggle(stageID: any, platformID: any): any{
     const form = this.platformSwitch.find((s: any) => s.stageId === stageID && s.platformId === platformID);
     if (form){
       return form.formControl;

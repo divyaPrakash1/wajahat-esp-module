@@ -38,10 +38,10 @@ export class ProjectStatePopupComponent implements OnInit {
   radioChange(state: any): void{
     this.selected = state;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close();
   }
-  change(): void{
+  change(event: any): void{
     const state = this.stateList.find((s: any) => s.id === this.selected);
     if (state){
       this.loading = true;

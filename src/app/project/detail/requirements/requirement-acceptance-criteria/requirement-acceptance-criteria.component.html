@@ -35,7 +35,7 @@
 <div class="comment-popup" *ngIf="editPopup">
   <div class="comment-overlay">
     <div class="co-header">
-      <div class="co-close" (click)="toggleEdit()"><mat-icon aria-hidden="false">close</mat-icon></div>
+      <div class="co-close" (click)="toggleEdit($event)"><mat-icon aria-hidden="false">close</mat-icon></div>
       <div class="co-title">Acceptance Criteria</div>
     </div>
     <div class="co-body {{type}}">
@@ -50,7 +50,7 @@
           </mat-form-field>
         </div>
         <div class="df-buttons">
-          <button (click)="toggleEdit()" class="defaultButton outlined">Discard</button>
+          <button (click)="toggleEdit($event)" class="defaultButton outlined">Discard</button>
           <button (click)="submitEditForm()">Save</button>
         </div>
       </div>

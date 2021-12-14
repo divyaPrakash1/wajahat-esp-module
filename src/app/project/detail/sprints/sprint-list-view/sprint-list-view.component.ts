@@ -12,7 +12,8 @@ import { SprintSignComponent } from '../sprint-sign/sprint-sign.component';
   styleUrls: ['./sprint-list-view.component.scss']
 })
 export class SprintListViewComponent implements OnInit {
-  @Input() list = [];
+  @Input() list: any = [];
+  @Input() projectid: any;
   @Output() onexpend = new EventEmitter<any>();
   expended = 0;
   selected: any = {};

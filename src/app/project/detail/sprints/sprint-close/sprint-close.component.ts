@@ -46,10 +46,10 @@ export class SprintCloseComponent implements OnInit {
   radioChange(state: any): void{
     this.selected = state;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Sprint/CloseSprint', {
       sprintId: this.id,

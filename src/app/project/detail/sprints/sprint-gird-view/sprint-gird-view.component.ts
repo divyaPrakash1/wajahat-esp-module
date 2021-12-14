@@ -13,6 +13,7 @@ import { SprintSignComponent } from '../sprint-sign/sprint-sign.component';
 })
 export class SprintGirdViewComponent implements OnInit {
   @Input() list: any;
+  @Input() projectid: any; 
   @Output() onexpend = new EventEmitter<any>();
   expended = 0;
   selected: any = {};

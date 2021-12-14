@@ -21,7 +21,7 @@ export class ProjectSettingPopupComponent implements OnInit {
   projectId = 0;
   loading = true;
   setting: any= {};
-  settingList = [];
+  settingList: any = [];
 
   constructor(
     public dialogRef: MatDialogRef<ProjectSettingPopupComponent>,
@@ -39,13 +39,13 @@ export class ProjectSettingPopupComponent implements OnInit {
         this.loading = false;
       },
       error: (error: any) => {
-        this.cancel();
+        this.cancel(error);
       }
     });
   }
   settingArrayFormatter(json: any): any{
     const array = json ? JSON.parse(json) : [];
-    let returnArray = [];
+    let returnArray: any = [];
     for (let [key, value] of Object.entries(this.setting)) {
       const found = array.find((a:any)=> a.name === `${key}`);
       returnArray.push({
@@ -57,10 +57,10 @@ export class ProjectSettingPopupComponent implements OnInit {
     }
     return returnArray;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Project/UpdateProjectSettings', {
       projectId: this.projectId,

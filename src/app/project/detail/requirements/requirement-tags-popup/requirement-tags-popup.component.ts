@@ -21,9 +21,9 @@ export class RequirementTagsPopupComponent implements OnInit {
   loading = true;
   moduleName = 'requirement-tags';
 
-  tagList = [];
-  selected = [];
-  orginalSelected = [];
+  tagList: any = [];
+  selected: any = [];
+  orginalSelected: any = [];
   resultRemove = true;
   resultadd = true;
 

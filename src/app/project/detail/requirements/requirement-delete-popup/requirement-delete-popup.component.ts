@@ -26,10 +26,10 @@ export class RequirementDeletePopupComponent implements OnInit {
   ngOnInit(): void {
     this.requirementId = this.data.requirementId;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close({});
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/Requirements/DeleteRequirement', {
       requirementId: this.requirementId

@@ -26,10 +26,10 @@ export class ProjectUserDeleteComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.data.user;
   }
-  cancel(): void{
+  cancel(event: any): void{
     this.dialogRef.close();
   }
-  change(): void{
+  change(event: any): void{
     this.loading = true;
     this.http.post(environment.baseURL + '/api/ProjectShare/DeleteSharedUserFromProject', {
       projectShareId: [this.user.projectShareId]

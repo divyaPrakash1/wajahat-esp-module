@@ -21,7 +21,8 @@ import { DeliverableReopenComponent } from '../deliverable-reopen/deliverable-re
   styleUrls: ['./sprint-detail.component.scss']
 })
 export class SprintDetailComponent implements OnInit, OnDestroy {
-  @Input() id: string;
+  @Input() id: any;
+  @Input() projectid: any;
   tabs: Array<any> = [
     {
       name: 'Details',

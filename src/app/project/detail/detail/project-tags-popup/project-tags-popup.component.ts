@@ -20,8 +20,8 @@ export class ProjectTagsPopupComponent implements OnInit {
   loading = true;
   moduleName = 'project';
 
-  tagList = [];
-  selected = [];
+  tagList: any = [];
+  selected: any = [];
   orginalSelected = [];
   resultRemove = true;
   resultadd = true;
