@@ -1,0 +1,126 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="dialog-container"
+  *ngIf="dataLoaded"
+>
+  <div class="cross-div"
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable cross" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">
+      {{'MS-Project-Online-Login' | translate}}
+    </h1>
+
+    <form
+      [formGroup]="form"
+      class="form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+    <p class="desc">
+    {{'Use-MS-Project-Online-Login-Details-To-Allow-Access' | translate}}
+    </p>
+    <mat-form-field class="custom userName-field">
+    <input
+    type="text"
+    name="userName"
+    matInput
+    formControlName="userName"
+    id="userName"
+    placeholder="{{'Username' | translate}}"
+    required
+    />
+  
+    <mat-error
+     *ngIf="form.get('userName').errors?.required && form.get('userName').touched"
+     class="invalid"
+    >
+    {{'It-Is-Required-Field' | translate}}
+    </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="custom password-field">
+        <input
+        [type]="type"
+        name="password"
+        matInput
+        formControlName="password"
+        id="password"
+        placeholder="{{'PASSWORD' | translate }}"
+        required
+    />
+    <span fxFlex="nogrow" class="material-icons" (click)="type='password'" *ngIf="type=='text'"> visibility </span>
+    <span fxFlex="nogrow" class="material-icons vis-hide" (click)="type='text'" *ngIf="type=='password'"> visibility_off </span>
+    <mat-error
+    *ngIf="form.get('password').errors?.required && form.get('password').touched"
+    class="invalid"
+    >
+    {{'It-Is-Required-Field' | translate}}
+    </mat-error>
+    </mat-form-field>
+    <mat-error *ngIf="submitErr!=null && submitErr!=2000"  class="submitErr invalid"> {{'Invalid-Credentials-Please-Try-Again' | translate}}</mat-error>
+
+
+    </form>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        {{'CANCEL' | translate}}
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        {{'SUBMIT' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

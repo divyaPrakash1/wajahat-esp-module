@@ -1,0 +1,217 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  class="stacked-cards-container"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  [ngClass]="{
+    'single-card': listItems.length == 1,
+    'two-cards': listItems.length == 2,
+    'three-cards': listItems.length == 3,
+    'four-cards': listItems.length == 4,
+    xs: size == 'XS',
+    sm: size == 'SM'
+  }"
+>
+  <div
+    class="stacked-cards-header"
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start center"
+  >
+    <div fxFlex class="header-details">
+      <span *ngIf="listType == 'assigned'">{{'New-Activities-Assigned-To-Me' | translate }}</span>
+
+      <span *ngIf="listType == 'reported'">{{'New-Activities-Reported-To-Me' | translate}}</span>
+      <!-- <a class="see-all" routerLink="/pages/activities/new/{{ listType }}" -->
+      <a class="see-all" (click)="getAssignedActivity()"
+        >{{'See-All' | translate }} {{ listItems.length | numberPipe }}</a
+      >
+    </div>
+
+    <div fxFlex="nogrow" fxLayoutAlign="end center">
+      <span class="arrow left" (click)="goToPrevCard()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path
+              d="M0 0H24V24H0z"
+              transform="matrix(-1 0 0 1 24 0) matrix(-1 0 0 1 24 0)"
+            />
+            <path
+              fill="#AAADB8"
+              d="M12.97 12.003L7.26 6.018c-.158-.165-.244-.385-.244-.62 0-.234.086-.453.244-.618l.5-.524C7.916 4.09 8.126 4 8.35 4c.225 0 .434.09.591.256l6.802 7.126c.157.166.244.386.243.621 0 .236-.086.456-.243.622l-6.795 7.12c-.157.164-.367.255-.59.255-.225 0-.434-.09-.592-.256l-.5-.524c-.326-.341-.326-.897 0-1.238l5.706-5.979z"
+              transform="matrix(-1 0 0 1 24 0)"
+            />
+          </g>
+        </svg>
+      </span>
+      <span class="arrow right" (click)="goToNextCard()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" transform="matrix(-1 0 0 1 24 0)" />
+            <path
+              fill="#AAADB8"
+              d="M12.97 12.003L7.26 6.018c-.158-.165-.244-.385-.244-.62 0-.234.086-.453.244-.618l.5-.524C7.916 4.09 8.126 4 8.35 4c.225 0 .434.09.591.256l6.802 7.126c.157.166.244.386.243.621 0 .236-.086.456-.243.622l-6.795 7.12c-.157.164-.367.255-.59.255-.225 0-.434-.09-.592-.256l-.5-.524c-.326-.341-.326-.897 0-1.238l5.706-5.979z"
+            />
+          </g>
+        </svg>
+      </span>
+    </div>
+  </div>
+  <div class="stacked-cards-list">
+    <ul class="stacked-cards">
+      <li
+        *ngFor="
+          let item of listItems;
+          let last = last;
+          let index = index;
+          let count = count
+        "
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        [ngClass]="{
+          red: item.isOverdue && !item.isShared,
+          blue: !item.isOverdue && !item.isShared,
+          orange: item.isShared,
+          central: index === 0,
+          right1: index === 1,
+          right2: index === 2,
+          left1: index === count - 1,
+          left2: index === count - 2
+        }"
+        id="{{ item.id }}"
+      >
+        <div
+          fxFlex
+          *ngIf="size != 'XS' && size != 'SM'"
+          class="description clickable"
+          (click)="openActivityDetails(item)"
+        >
+          {{ item.description | textTruncate: 50 }}
+        </div>
+
+        <div
+          fxFlex
+          *ngIf="size == 'XS' || size == 'SM'"
+          class="description clickable"
+          (click)="openActivityDetails(item)"
+        >
+          {{ item.description | textTruncate: 10 }}
+        </div>
+        <div
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayout.xs="column"
+          fxLayoutAlign.xs="center start"
+          fxLayout.sm="column"
+          fxLayoutAlign.sm="center start"
+          class="footer"
+        >
+          <!-- <div fxFlex class="item-info">
+            <span class="title">Project</span>
+            <span class="value" *ngIf="item.parentBoardId != null">{{
+              item.parentBoardName | textTruncate: 18
+            }}</span>
+            <span class="value" *ngIf="item.parentBoardId == null"
+              >Stand Alone</span
+            >
+          </div> -->
+          <div fxFlex class="item-info">
+            <span class="title" *ngIf="item.requestNumber != null">{{'REQUEST' | translate }} #</span>
+            <span class="value" *ngIf="item.requestNumber != null">
+              {{ item.requestNumber | textTruncate: 18 }}
+            </span>
+            <span class="title" *ngIf="item.requestNumber == null">{{'Project' | translate }}</span>
+            <span class="value" *ngIf="item.requestNumber == null">{{'Stand Alone' | translate }}</span>
+          </div>
+          <div fxFlex class="item-info">
+            <span class="title" *ngIf="listType == 'assigned'">{{'Due-Date' | translate }}</span>
+
+            <span class="title" *ngIf="listType == 'reported'">{{'Completed' | translate }}</span>
+            <span class="value" *ngIf="listType == 'assigned'">{{
+              item.dueDate | datePipe : "medium"
+            }}</span>
+            <span class="value" *ngIf="listType == 'reported'">{{
+              item.completedDate | datePipe : "medium"
+            }}</span>
+          </div>
+          <div fxFlex class="item-info">
+            <span class="title" *ngIf="listType == 'assigned' && !item.isShared"
+              >{{'Assigned-By' | translate }}</span
+            >
+            <span class="title" *ngIf="listType == 'reported' && !item.isShared"
+              >{{'Assigned-To' | translate }}</span
+            >
+            <span class="title" *ngIf="item.isShared"
+            >{{'Shared-By' | translate}}</span
+          >
+            <span class="value" *ngIf="listType == 'reported' && !item.isShared">{{
+              item.owner.UserFirstName + " " + item.owner.UserLastName
+                | textTruncate: 18
+            }}</span>
+            <span class="value" *ngIf="listType == 'assigned' && !item.isShared">{{
+              item.createdBy.UserFirstName + " " + item.createdBy.UserLastName
+                | textTruncate: 18
+            }}</span>
+            <span class="value" *ngIf="item.isShared">{{
+              item.createdBy.UserFirstName + " " + item.createdBy.UserLastName
+                | textTruncate: 18
+            }}</span>
+          </div>
+          <div
+            fxFlex="40"
+            fxLayoutAlign="end center"
+            fxLayoutAlign.xs="center end"
+            fxLayoutAlign.sm="center end"
+            class="card-btns"
+          >
+            <button
+              fxFlex="nogrow"
+              class="decideLater-btn gradient-btn"
+              mat-stroked-button
+              type="submit"
+              (click)="decideLater(item)"
+              disabled="{{ listItems.length == 1 }}"
+            >
+              {{'Decide-Later' | translate}}
+            </button>
+            <button
+              fxFlex="nogrow"
+              class="accept-btn gradient-btn"
+              mat-flat-button
+              type="submit"
+              (click)="accept(item)"
+              *ngIf="!item.isShared"
+            >
+              <span *ngIf="listType == 'assigned'">{{'Accept' | translate}}</span>
+              <span *ngIf="listType == 'reported'">{{'Approve' | translate }}</span>
+            </button>
+
+            <button
+            fxFlex="nogrow"
+            class="accept-btn gradient-btn"
+            mat-flat-button
+            type="submit"
+            (click)="claim(item)"
+            *ngIf="item.isShared"
+          >
+            <span>{{'Claim' | translate}}</span>
+          </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

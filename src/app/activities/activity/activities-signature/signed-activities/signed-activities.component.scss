@@ -1,0 +1,483 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.mine-activities-conatiner {
+  width: 100%;
+  xcdrs-carousel {
+    margin: 24px 0px;
+  }
+
+  .fill-bg {
+    background-color: white;
+    border-radius: 5px;
+    height: 290px;
+    @include flex-center;
+  }
+  .week-progress-card {
+    margin: 29px 0px 0px 0px;
+    padding: 12px 24px;
+    @media only screen and (max-width: 768px) {
+      mat-label {
+        margin-left: 3px;
+      }
+    }
+
+    @media only screen and (max-width: 414px) {
+      padding: 16px 0px 16px 16px;
+    }
+
+    @media only screen and (max-width: 320px) {
+      padding: 16px 10px 16px 16px;
+    }
+
+    @media only screen and (min-width: 768px) and (max-width: 1024px) {
+      padding: 16px;
+    }
+
+    .work-progress-span {
+      margin: 10px 0px;
+      white-space: nowrap;
+      .hours-span {
+        font-weight: bold;
+      }
+    }
+    .circle-progress-container {
+      margin-right: 30px;
+      margin-left: 10px;
+
+      @media only screen and (max-width: 414px) {
+        margin-right: auto;
+        margin-left: -3px;
+        .circle-progress-container.first {
+          margin-left: 0px !important;
+        }
+      }
+      @media only screen and (min-width: 415px) and (max-width: 765px) {
+        margin-right: auto;
+        margin-left: -2px;
+      }
+      @media only screen and (min-width: 768px) and (max-width: 1024px) {
+        margin-right: 8px;
+        margin-left: 2px;
+      }
+    }
+    .circle-progress-container.last {
+      margin-right: 0px !important;
+    }
+  }
+
+  .actions-container {
+    // margin:12px 0;
+    margin: 44px 0px 28px 0;
+
+    xcdrs-search-field {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .defult-filter {
+      background-color: $primary-color;
+      border-radius: 21px;
+      padding: 4px 4px;
+      font-size: 10px;
+      position: relative;
+      top: -5px;
+      right: -22px;
+      height: 8px;
+    }
+    .epm-setting-icon-container,
+    .filter-icon-container,
+    .more-icon-container {
+      cursor: pointer;
+    }
+
+    .epm-setting-icon-container {
+      margin: 10px 8px 0px 16px;
+    }
+
+    .filter-icon-container,
+    .more-icon-container {
+      margin: 5px 0px 0px 0px;
+      color: $gray;
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    }
+
+    .more-icon-container {
+      mat-icon {
+        margin-top: -5px;
+      }
+    }
+
+    .add-action-btn {
+      width: 194px;
+      height: 48px;
+    }
+  }
+
+  .filter-container {
+    width: 100%;
+
+    .filter-list {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      margin: 4px 0 12px 0;
+      padding: 0;
+      list-style: none;
+
+      .filter-list-item {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        border-radius: 4px;
+        background: $primary-color;
+        color: white;
+        font-size: $f14;
+        font-weight: normal;
+
+        .icon-close {
+          margin-left: 4px;
+          cursor: pointer;
+        }
+      }
+
+      .clear-filter-item {
+        height: 24px;
+        line-height: 24px;
+        font-size: $f16;
+        font-weight: 600;
+        margin-left: 16px;
+        color: $primary-color;
+        cursor: pointer;
+      }
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0px;
+  }
+  .view-toggle-btns-container {
+    .btns-container {
+      margin: 16px 0px;
+      .list-view-btn {
+        width: 179px;
+        height: 32px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        border: solid 1px #d6d6d6;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 32px;
+        background: white;
+        color: $primary-color;
+        font-size: $f14;
+        font-weight: bold;
+        font-stretch: normal;
+        cursor: pointer;
+      }
+      .graph-view-btn {
+        width: 179px;
+        height: 32px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border: solid 1px #d6d6d6;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 32px;
+        background: white;
+        color: $primary-color;
+        font-size: $f14;
+        font-weight: bold;
+        font-stretch: normal;
+        cursor: pointer;
+      }
+      .active {
+        background: $primary-color;
+        color: white;
+      }
+    }
+  }
+  .week-card {
+    padding: 16px 24px 24px 24px;
+    .week-name {
+      font-size: $f14;
+      text-transform: capitalize;
+    }
+
+    .week-start-end-dates {
+      font-size: $f18;
+      font-weight: bold;
+      margin-bottom: 16px;
+      margin-top: 10px;
+    }
+
+    .week-data {
+      margin: 4px 0px;
+      .efforrs,
+      .activities,
+      .overdue {
+        mat-label {
+          font-size: $f14;
+          text-transform: capitalize;
+          margin-right: 12px;
+        }
+        .efforts-val,
+        .activities-val,
+        .overdue-val {
+          // width: 60px;
+          // max-width: 60px;
+          // min-width: 60px;
+          width: auto;
+          max-width: 75px;
+          min-width: 60px;
+          margin-right: 34px;
+          display: inline-block;
+        }
+      }
+
+      .efforrs span {
+        color: $primary-color;
+        font-size: $f14;
+        font-weight: bold;
+      }
+
+      .activities span {
+        color: #f8971d;
+        font-size: $f14;
+        font-weight: bold;
+      }
+      .overdue span {
+        color: #e21d26;
+        font-size: $f14;
+        font-weight: bold;
+      }
+    }
+
+    // .week-chart {
+    // }
+  }
+
+  .small-spinner {
+    width: 100%;
+    @include flex-center;
+    margin-bottom: 10px;
+  }
+
+  .ungrouped-container {
+    width: 100%;
+    xcdrs-activities-table {
+      margin-bottom: 52px;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
+
+  .activity-progress {
+    border-radius: 4px;
+    ::ng-deep .mat-progress-bar-background {
+      fill: #f2f2f2;
+    }
+
+    ::ng-deep .mat-progress-bar-buffer {
+      background-color: #f2f2f2;
+    }
+
+    ::ng-deep .mat-progress-bar-fill::after {
+      background-color: #00a3ff;
+    }
+    &.done {
+      ::ng-deep .mat-progress-bar-fill::after {
+        background-color: #aaadb8;
+      }
+    }
+  }
+  .over-due {
+    font-size: $f14;
+    color: #e21d26;
+  }
+
+  .group-list-container {
+    max-height: 300px;
+    overflow: auto;
+  }
+  xcdrs-activities-group {
+    margin: 8px 0px;
+  }
+  mat-card {
+    margin: 4px 0px;
+    padding: 16px 0px;
+    mat-label {
+      font-size: $f14;
+    }
+
+    // .card-header {
+    //   padding: 0px 16px;
+    //   margin-bottom: 12px;
+    //   font-size: 16px;
+    // }
+    mat-card-content {
+      padding: 0px 16px;
+
+      .call {
+        border-radius: 4px;
+        background-color: rgba(0, 174, 239, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #00aeef;
+      }
+      .meeting {
+        border-radius: 4px;
+        background-color: rgba(54, 125, 255, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #367dff;
+      }
+
+      .task {
+        display: none;
+      }
+
+      .proposal {
+        border-radius: 4px;
+        background-color: rgba(248, 151, 29, 0.1);
+        padding: 4px 12px;
+        font-size: 16px;
+        color: #f8971d;
+      }
+    }
+  }
+}
+::ng-deep .more-menu.mat-menu-panel {
+  .mat-menu-item {
+    padding: 0 24px !important;
+
+    .mat-checkbox-layout .mat-checkbox-label {
+      margin-right: 35px;
+    }
+    .material-icons {
+      color: $light-gray;
+    }
+    .mat-checkbox-frame,
+    .mat-radio-outer-circle {
+      border-color: $light-gray;
+    }
+
+    &.disabled-item {
+      color: $main-color;
+      font-size: $f16;
+      font-weight: bold;
+      cursor: none;
+      pointer-events: none;
+    }
+  }
+}
+
+::ng-deep .add-menu.mat-menu-panel {
+  margin: 8px 0px;
+  min-width: 195px;
+
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .mat-menu-item {
+    padding: 0 16px !important;
+    &:not(.last) {
+      border-bottom: 1px solid #dadadb;
+    }
+    svg {
+      margin-right: 12px;
+    }
+
+    span {
+      font-size: $f16;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+  }
+}
+.fab-container {
+  margin: 8px;
+  position: absolute;
+  right: 45px;
+  .mat-fab {
+    border-radius: 20%;
+    width: 48px;
+    height: 48px;
+    position: fixed;
+    bottom: 8px;
+    z-index: 20;
+    ::ng-deep .mat-button-wrapper {
+      line-height: 0px;
+      padding: 0px;
+    }
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.mine-activities-conatiner .border-visible {
+  background: transparent;
+  font-family: Lato;
+  font-size: 18px;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #6cb33f !important;
+  border: 1px solid #6cb33f;
+}
+.mine-activities-conatiner .gradient-btn {
+  font-family: Lato;
+  font-size: 18px;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+}
+.mine-activities-conatiner .gradient-btn {
+  max-width: 170px;
+}
+
+/*------2-july-------*/
+::ng-deep .ungrouped-container.table-refined td.mat-cell.cdk-cell.cdk-column-select.mat-column-select.ng-star-inserted{
+    border-bottom-width: 0;
+    border-bottom-style: hidden;
+}
+
+/*------2-july-------*/
+
+::ng-deep body.rtl .add-menu.mat-menu-panel {
+  .mat-menu-item {
+    }
+    svg {
+      margin-right: 0 !important;
+      margin-left:12px;
+    }
+  }
+
+/*-------------------rtl-css--------------*/
+  ::ng-deep body.rtl button.rtlreject {
+    margin-left: 10px;
+  }
+  /*-------------------rtl-css--------------*/

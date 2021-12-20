@@ -1,0 +1,11 @@
+<div *ngFor="let alert of alerts" [ngClass]="className(alert)" class="alert">
+  <div class="container">
+    {{alert.message}}
+    <div (click)="close(alert)" class="icon-close icon-container">
+      <img alt="close" src="../../assets/images/icons/alert/close.svg">
+    </div>
+    <div [ngSwitch]="alert.type" class="icon-type icon-container">
+      <img *ngSwitchCase="alertTypes.Success" alt="success" src="../../assets/images/icons/alert/success.svg">
+    </div>
+  </div>
+</div>

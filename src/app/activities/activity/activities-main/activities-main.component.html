@@ -1,0 +1,94 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around stretch"
+  *ngIf="isEngProDataLoaded && isOppProDataLoaded && isEspAddonLoaded"
+  class="main-activity-container"
+>
+  <h1 *ngIf="activeBreaadcrumb == 'SimpleStrata'">{{'Activities' | translate }}</h1>
+  <div *ngIf="activeBreaadcrumb == 'ESP'" fxFlex>
+    <xcdrs-breadcrumbs class="custom-hdr-pos">
+      <a routerLink="/pages/applications" [queryParams]="{tab: tabIndex}">{{labelService.labels?.applications | translate}}</a>
+      <a [routerLink]="['/pages/applications']" [queryParams]="{tab: tabIndex}">{{applicationName}}</a>
+      <!-- <a (click)="goToDefinition()">{{applicationName}}</a> -->
+      <span>{{'Activities' | translate }}</span>
+    </xcdrs-breadcrumbs>
+  </div>
+
+  <div *ngIf="activeBreaadcrumb == 'EngPro'" fxFlex style="margin-top: 16px;">
+    <xcdrs-breadcrumbs class="custom-hdr-pos">
+      <a routerLink="/pages/engagement/project/list" [queryParams]="{tab: tabIndex}">Projects</a>
+      <a [routerLink]="['/pages/engagement/project/' + SSId ]" [queryParams]="{tab: tabIndex,
+        SourceSystemId: SourceSystemId, SourceTenantId: SourceTenantId, SourceObjectTypeId: SourceObjectTypeId, SourceObjectId: SourceObjectId}">Project Dashboard</a>
+      <span>{{'Activities' | translate }}</span>
+    </xcdrs-breadcrumbs>
+  </div>
+
+  <div *ngIf="activeBreaadcrumb == 'ScoreCard'" fxFlex style="margin-top: 16px;">
+    <xcdrs-breadcrumbs class="custom-hdr-pos">
+      <a routerLink="/pages/scoreCard" [queryParams]="{selectedTab: scoreCardSelectedTab}">Score Card</a>
+      <span>{{'Board-Activities' | translate }}</span>
+    </xcdrs-breadcrumbs>
+  </div>
+
+  <xcdrs-activities-counter  *ngIf="((SourceSystemId && !teamId) || (!SourceSystemId && teamId) || (SourceSystemId && teamId))"></xcdrs-activities-counter>
+  <mat-tab-group [selectedIndex]="tabIndex">
+    <mat-tab label="{{(!((SourceSystemId && !teamId) || (!SourceSystemId && teamId) || (SourceSystemId && teamId)) ? 'SCORECARD.Mine' : 'SCORECARD.All') | translate }}">
+      <ng-template matTabContent>
+        <xcdrs-mine-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isOppProEnabled]="isOppProEnabled"
+          [oppProData]="oppProData"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+          [isESPcomponent]="applicationId != 0 ? true : false"
+          [requestName]="applicationName"
+          [requestModuleName]="'Requests'"
+        ></xcdrs-mine-activities>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="{{'Following' | translate }}" *ngIf="!((SourceSystemId && !teamId) || (!SourceSystemId && teamId) || (SourceSystemId && teamId))">
+      <ng-template matTabContent>
+        <xcdrs-following-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+          [isESPcomponent]="applicationId != 0 ? true : false"
+          [requestName]="applicationName"
+          [requestModuleName]="'Requests'"
+        ></xcdrs-following-activities>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="{{'Backlog' | translate }}">
+      <ng-template matTabContent>
+        <xcdrs-backlog-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+          [isESPcomponent]="applicationId != 0 ? true : false"
+          [requestName]="applicationName"
+          [requestModuleName]="'Requests'"
+        ></xcdrs-backlog-activities>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div
+  fxFlex
+  fxLayout="column"
+  *ngIf="!isEngProDataLoaded && !isOppProDataLoaded && !isEspAddonLoaded"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,48 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  class="confirm-close-container"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+>
+  <div class="activity-description">{{data.form.description}}</div>
+  <div class="close-type">
+    Are you sure you want to close this activity as {{closeAs}}?
+  </div>
+  <div
+    class="action-btns"
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+  >
+    <button
+      fxFlex
+      (click)="cancel()"
+      class="action-btn cancel-btn"
+      mat-stroked-button
+      color="primary"
+    >
+      Cancel
+    </button>
+    <button
+      fxFlex
+      (click)="submit()"
+      class="action-btn gradient-btn submit-btn"
+      mat-flat-button
+      color="primary"
+    >
+      Confirm
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

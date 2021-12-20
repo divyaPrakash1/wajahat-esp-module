@@ -1,0 +1,482 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="close-dialog-container"
+>
+
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="close-ic clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">Recurring</h1>
+
+    <mat-card fxFlex class="progress" >
+      <mat-card-content
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+      >
+        <p fxFlex fxLayout="row" fxLayoutAlign="start start" >
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >Target
+          </mat-label>
+          <span  *ngIf="data.activity.targetValue != null">
+            {{ data.activity.targetValue }} {{ data.activity.targetUnit }}
+          </span>
+          <span  *ngIf="data.activity.targetValue == null">
+            100 
+          </span>
+        </p>
+        <!-- <p fxFlex fxLayout="row" fxLayoutAlign="start start">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >Start Date
+          </mat-label>
+          <span>
+            {{ startDate }} ({{ startDay}})
+          </span>
+        </p> -->
+      </mat-card-content>
+    </mat-card>
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      class="repeat-switch-container"
+    >
+      <mat-slide-toggle name="repeat" [(ngModel)]="repeat"></mat-slide-toggle>
+      <span class="repeat-lbl">Repeat</span>
+    </div>
+    <div
+      class="close-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+      *ngIf="repeat"
+    >
+    <div
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    class="fisrt-occ-on"
+  >
+    <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+      <p fxFlex class="sub-title">First Occurrence On</p>
+    </div>
+    <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+
+      <mat-form-field
+        fxFlex
+        class="custom on-start-date-field"
+      >
+        <input
+          matInput
+          [matDatepicker]="onStartDate"
+          [(ngModel)]="startDate"
+          placeholder="Date"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="onStartDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #onStartDate></mat-datepicker>
+        <mat-error
+        *ngIf="startDate == null ||  startDate ==''"
+          class="invalid"
+        >
+        It is required field
+      </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="frequency"
+      >
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <p fxFlex class="sub-title">Repeat</p>
+          <p fxFlex="70" fxLayoutAlign="end center" class="freqTxt">
+            <span class="freqTxt-span">
+              <span *ngIf="numberOfTimes != null">
+                Every {{ numberOfTimes }} {{ freqtTimesType }} </span
+              ><span
+                *ngIf="
+                  selectedshortDaysStr != null && selectedshortDaysStr != ''
+                "
+              >
+                &nbsp;on {{ selectedshortDaysStr }}.</span
+              >
+            </span>
+          </p>
+        </div>
+        <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+          <!-- <span class="every-lbl">Every</span> -->
+          <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <mat-form-field class="custom numberOfTimes-field" fxFlex="35">
+              <input
+                type="number"
+                name="numberOfTimes"
+                matInput
+                [(ngModel)]="numberOfTimes"
+                id="numberOfTimes"
+                autocomplete="numebr"
+                placeholder="every"
+                min="0"
+                required
+              />
+              <mat-error
+              *ngIf="numberOfTimes == null"
+                class="invalid"
+              >
+              It is required field
+            </mat-error>
+            </mat-form-field>
+            <div fxFlex="5"></div>
+            <div
+              fxFlex="60"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              class="freqOpts-container"
+            >
+              <button
+                *ngFor="let type of frequancyOptions"
+                color="primary"
+                [ngClass]="{
+                  'mat-stroked-button': !type.active,
+                  'mat-flat-button': type.active,
+                  active: type.active
+                }"
+                (click)="activateFrequancyType(type)"
+              >
+                {{ type.name }}
+              </button>
+            </div>
+          </div>
+          <div fxFlex fxLayout="row" fxLayoutAlign="start start" *ngIf="isWeeks">
+            <div
+              fxFlex="55"
+              fxLayout="column"
+              fxLayoutAlign="start start"
+              class="checkboxes-container"
+            >
+              <mat-checkbox
+                class="custom-filter-checkbox"
+                (change)="updateFrequncyDay(day)"
+                *ngFor="let day of days1"
+                [value]="day.id"
+                [(ngModel)]="day.checked"
+                [required]="isWeeks && isNoDaysSelected()"
+              >
+                {{ day.name }}
+              </mat-checkbox>
+            </div>
+            <div fxFlex="45">
+              <div
+                fxFlex="55"
+                fxLayout="column"
+                fxLayoutAlign="start start"
+                class="checkboxes-container"
+              >
+                <mat-checkbox
+                  class="custom-filter-checkbox"
+                  (change)="updateFrequncyDay(day)"
+                  *ngFor="let day of days2"
+                  [value]="day.id"
+                  [(ngModel)]="day.checked"
+                  [required]="isWeeks && isNoDaysSelected()"
+                >
+                  {{ day.name }}
+                </mat-checkbox>
+              </div>
+            </div>
+ 
+          </div>
+          <mat-error
+          *ngIf="isWeeks && isNoDaysSelected()"
+            class="invalid"
+          >
+          It is required field
+        </mat-error>
+          <div fxFlex fxLayout="row" fxLayoutAlign="start start" *ngIf="!isWeeks">
+   
+            <mat-radio-group
+            fxFlex=100
+            fxLayout="column"
+            fxLayoutAlign="start stretch"
+          >
+          <div fxFlex fxLayout="row" fxLayoutAlign="start start" >
+              <mat-radio-button
+                fxFlex=20
+                fxFlex.sx=25
+                fxFlex.sm=25
+                [value]="monthFreqOptions[0].id"
+                [checked]="monthFreqOptions[0].active"
+                name="{{ monthFreqOptions[0].name }}"
+                (change)="updateMonthRequncy(0)"
+                class="freq-opt-radio"
+              >
+                {{ monthFreqOptions[0].name }}
+              </mat-radio-button>
+              <div  fxFlex
+                    fxLayout="column"
+                    fxLayoutAlign="start stretch">
+                <mat-form-field fxFlex class="custom noOfDay-field">
+                  <mat-select name="type" [(ngModel)]="selectedNoOfDay" [disabled]="monthFreqOptions[1].active" [ngClass]="{'disabled': monthFreqOptions[1].active}">
+                    <mat-option *ngFor="let day of noOfDay" [value]="day">
+                      {{day}}<span *ngIf="day==1">(st)</span><span *ngIf="day==2">(nd)</span><span *ngIf="day==3">(rd)</span><span *ngIf="day!=1 && day!=2 && day!=3">(th)</span> day
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex class="custom noOfDay-field">
+                  <mat-select name="type" [(ngModel)]="selectedNoOfDayOpt" [disabled]="monthFreqOptions[1].active" [ngClass]="{'disabled': monthFreqOptions[1].active}">
+                    <mat-option *ngFor="let opt of noOfDayOpts" [value]="opt.id">
+                      {{opt.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+          </div>
+
+
+          <div fxFlex fxLayout="row" fxLayoutAlign="start start" >
+            <mat-radio-button
+              fxFlex=20
+              fxFlex.sx=25
+              fxFlex.sm=25
+              [value]="monthFreqOptions[1].id"
+              [checked]="monthFreqOptions[1].active"
+              name="{{ monthFreqOptions[1].name }}"
+              (change)="updateMonthRequncy(1)"
+              class="freq-opt-radio"
+            >
+              {{ monthFreqOptions[1].name }}
+            </mat-radio-button>
+            <div fxFlex fxLayout="row" fxLayoutAlign="start start" >
+              <mat-form-field fxFlex=35  class="custom seqOfDay-field">
+                <mat-select name="type" [(ngModel)]="selectedSeqNoOfDay" [disabled]="monthFreqOptions[0].active" [ngClass]="{'disabled': monthFreqOptions[0].active}">
+                  <mat-option *ngFor="let num of sequenceNumber" [value]="num">
+                   <span *ngIf="num!=5">{{num}}<span *ngIf="num==1">(st)</span><span *ngIf="num==2">(nd)</span><span *ngIf="num==3">(rd)</span><span *ngIf="num==4">(th)</span></span>
+                   <span *ngIf="num==5">last</span>
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field fxFlex class="custom day-field">
+                <mat-select name="type" [(ngModel)]="selectedNoOfDayOpt" [disabled]="monthFreqOptions[0].active" [ngClass]="{'disabled': monthFreqOptions[0].active}">
+                  <mat-option *ngFor="let day of weekDays" [value]="day.id">
+                    {{day.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+         
+            
+        </div>
+          </mat-radio-group>
+          </div>
+        </div>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="repeat-ends"
+      >
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <p fxFlex class="sub-title">Repeat Ends</p>
+          <p fxFlex="50" fxLayoutAlign="end center" class="endsTxt">
+            <span>
+              <span
+                *ngIf="repeatEndsOnDate != null && repeatEndsOptions[0].active"
+              >
+                On {{ repeatEndsOnDateStr }}.</span
+              >
+              <span
+                *ngIf="
+                  repeatEndsAfterTimes != null && repeatEndsOptions[1].active
+                "
+              >
+                After {{ repeatEndsAfterTimes }} times.</span
+              >
+            </span>
+          </p>
+        </div>
+        <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+          <mat-radio-group
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="start stretch"
+          >
+            <mat-radio-button
+              [value]="repeatEndsOptions[0].id"
+              [checked]="repeatEndsOptions[0].active"
+              name="{{ repeatEndsOptions[0].name }}"
+              (change)="
+                repeatEndsOptions[0].active = true;
+                repeatEndsOptions[1].active = false;
+                repeatEndsAfterTimes = null
+              "
+            >
+              {{ repeatEndsOptions[0].name }}
+            </mat-radio-button>
+
+            <mat-form-field
+              fxFlex
+              class="custom on-date-field"
+              *ngIf="repeatEndsOptions[0].active"
+            >
+              <input
+                matInput
+                [matDatepicker]="onDate"
+                [(ngModel)]="repeatEndsOnDate"
+                placeholder="Date"
+                (ngModelChange)="onChangeEvent($event)"
+                [required]="repeatEndsOptions[0].active"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="onDate"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #onDate></mat-datepicker>
+              <mat-error
+              *ngIf="repeatEndsOptions[0].active && (repeatEndsOnDate == null ||  repeatEndsOnDate =='')"
+                class="invalid"
+              >
+              It is required field
+            </mat-error>
+            </mat-form-field>
+            <mat-radio-button
+              [value]="repeatEndsOptions[1].id"
+              [checked]="repeatEndsOptions[1].active"
+              name="{{ repeatEndsOptions[1].name }}"
+              (change)="
+                repeatEndsOptions[1].active = true;
+                repeatEndsOptions[0].active = false;
+                repeatEndsOnDate = null
+              "
+            >
+              {{ repeatEndsOptions[1].name }}
+            </mat-radio-button>
+            <mat-form-field
+              class="custom number-Times-field"
+              *ngIf="repeatEndsOptions[1].active"
+            >
+              <input
+                type="number"
+                name="repeatEndsAfterTimes"
+                matInput
+                [(ngModel)]="repeatEndsAfterTimes"
+                id="repeatEndsAfterTimes"
+                autocomplete="numebr"
+                placeholder="# of times"
+                min="0"
+                [required]="repeatEndsOptions[1].active"
+              />
+              <mat-error
+              *ngIf="repeatEndsOptions[1].active && repeatEndsAfterTimes == null "
+                class="invalid"
+              >
+              It is required field
+            </mat-error>
+            </mat-form-field>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="distribution"
+      >
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <p fxFlex class="sub-title">Distribution</p>
+        </div>
+        <div fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+          <mat-radio-group
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="start stretch"
+          >
+            <mat-radio-button
+              [value]="distribution"
+              [checked]="distribution.active"
+              name="{{ distribution.name }}"
+              (change)="updateDistribution(distribution)"
+              *ngFor="let distribution of distributionOptions"
+            >
+              {{ distribution.name }}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        Cancel
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="!repeat 
+        || repeat && (
+          (startDate == null || startDate == '' ) || 
+          numberOfTimes == null || 
+          repeatEndsAfterTimes ==null && repeatEndsOptions[1].active || 
+          repeatEndsOnDate ==null && repeatEndsOptions[0].active ||
+          isWeeks && isNoDaysSelected()
+           )"
+      >
+        Save Recurring
+      </button>
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

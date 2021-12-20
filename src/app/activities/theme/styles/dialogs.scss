@@ -1,0 +1,83 @@
+.close-dialog-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 16px;
+  line-height: 14px;
+  min-width: auto;
+  cursor: pointer;
+}
+
+.cdk-overlay-dark-backdrop {
+  background-color: rgba(54, 73, 111, 0.1);
+  -webkit-backdrop-filter: blur(0.8px);
+  backdrop-filter: blur(0.8px);
+}
+
+.tag-dialog,
+.request-dialog,
+.share-link-dialog,
+.event-settings-dialog,
+.connect-calendar-dialog,
+.convert-event-dialog {
+  .mat-dialog-container {
+    position: relative;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mat-dialog-content {
+    padding: 0;
+    margin: 0;
+  }
+
+  .mat-dialog-actions {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .cdk-overlay-container {
+    &.z-999 {
+      z-index: 999;
+    }
+  }
+
+  .tag-dialog,
+  .event-settings-dialog,
+  .connect-calendar-dialog {
+    .mat-dialog-container,
+    .convert-event-dialog {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: auto;
+    }
+  }
+
+  .signin-propose-dialog {
+    .mat-dialog-container {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border-radius: 4px;
+      box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.25);
+      overflow: auto;
+      overflow-x: hidden;
+      padding: 16px;
+      width: auto;
+      height: auto;
+    }
+  }
+}
+
+.large-dialog {
+  .mat-dialog-container {
+    position: relative;
+  }
+}

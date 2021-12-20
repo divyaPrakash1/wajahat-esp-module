@@ -1,0 +1,682 @@
+<mat-accordion
+[ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+>
+<mat-expansion-panel>
+  <mat-expansion-panel-header
+    (click)="loadGroupActivities(i, group, selectedFiltersIds)"
+  >
+    <mat-panel-title *ngIf="!isArabic">
+      {{ group.groupName }} ({{ group.groupCount }})
+    </mat-panel-title>
+    <mat-panel-title *ngIf="isArabic && groupNameDateView && isWeekView">
+      {{ group.groupName | translate }} ({{ group.groupCount | numberPipe}})
+    </mat-panel-title>
+    <mat-panel-title *ngIf="isArabic && !groupNameDateView && isWeekView">
+      {{ group.startDate | datePipe: "lable" }} - {{ group.endDate | datePipe: "lable" }} ({{ group.groupCount | numberPipe}})
+    </mat-panel-title>
+    <mat-panel-title *ngIf="isArabic && !isWeekView">
+      {{ group.groupName | translate }} ({{ group.groupCount | numberPipe}})
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div *ngIf="!group.isGroupActivitiesLoading">
+    <xcdrs-activities-table
+      fxHide.xs
+      fxHide.sm
+      fxShow.gt-md
+      fxShow.lt-xl
+      fxShow.lg
+      fxShow.lt-lg
+      fxShow.md
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      *ngIf="group.groupList.length > 0"
+      [loggedInUserId]="loggedInUserId"
+      [activeTab]="activeTab"
+      [totalCount]="totalCount"
+      [lastLoadedCount]="lastLoadedCount"
+      (pageChange)="onPageChange($event, selectedFiltersIds, group, i)"
+      [activities]="activitiesSubject.asObservable()"
+      (reloadList)="reload($event)"
+      [engProLoggedInUserId]="engProLoggedInUserId"
+      [isEngProEnabled]="isEngProEnabled"
+      [oppProData]="oppProData"
+      [espAddon]="null"
+      [pageNo]="group.pageIndex-1"
+    >
+    </xcdrs-activities-table>
+
+    <div
+      fxShow.xs
+      fxShow.sm
+      fxHide.gt-md
+      fxHide.lt-xl
+      fxHide.lg
+      fxHide.lt-lg
+      fxHide.md
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      class="group-list-container group-list-{{ i }}"
+      infiniteScroll
+      [scrollWindow]="false"
+      [infiniteScrollDistance]="1"
+      [infiniteScrollThrottle]="50"
+      [alwaysCallback]="true"
+      (scrolled)="onScroll(group, i)"
+      #scrollableContainer
+    >
+    <div fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch" *ngIf="activeTab==0">
+        <mat-card
+        *ngFor="let activity of group.groupList"
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+      >
+        <mat-card-header class="card-header">
+          <mat-card-title
+            class="clickable"
+            (click)="openActivityDetails(activity)"
+          >
+            {{
+              activity.description | textTruncate: 60
+            }}</mat-card-title
+          >
+        </mat-card-header>
+        <mat-card-content
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="space-around stretch"
+        >
+          <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="!!activity.createdBy"
+          >
+            <mat-label fxFlex="35">{{'Assigned-By' | translate}}: </mat-label>
+            <span>
+              {{
+                activity.createdBy.UserFirstName +
+                  " " +
+                  activity.createdBy.UserLastName
+              }}
+            </span>
+          </p>
+          <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.parentBoardId != null"
+          >
+            <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+            <span> {{ activity.parentBoardName }} </span>
+          </p>
+          <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <mat-label fxFlex="35"
+              ><span *ngIf="activity.appType != 2">{{'Due' | translate}} </span>{{'Settings-Page.Fields.DATE' | translate }}:
+            </mat-label>
+            <span
+              *ngIf="activity.dueDateLabel == 'Overdue'"
+              class="over-due"
+              >{{ activity.dueDate | datePipe : "medium"}}</span
+            >
+            <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+              activity.dueDate | datePipe : "medium"
+            }}</span>
+          </p>
+
+          <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.appType == 4 && activity.requestNumber !=null"
+          >
+            <mat-label fxFlex="35">{{'REQUEST' | translate}} #: </mat-label>
+            <span>
+              {{
+                activity.requestNumber
+              }}
+            </span>
+          </p>
+          <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.appType == 4  && activity.requestName !=null"
+          >
+            <mat-label fxFlex="35">{{'REQUEST' | translate}} {{'Common.NAME' | translate}}: </mat-label>
+            <span>
+              {{
+                activity.requestName
+              }}
+            </span>
+          </p>
+
+          <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.appType == 2"
+          >
+            <mat-label fxFlex="35">{{'Time' | translate}}: </mat-label>
+            <span>{{ activity.oppProScheduleEndDate | datePipe : "medium" }}</span>
+            <span> - {{ activity.oppProScheduleEndDate | datePipe : "medium" }}</span>
+          </p>
+          <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <span
+              fxFlex="35"
+              [ngStyle]="{
+                color: activity.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+            >
+              <span> {{ activity.progressStatus }}</span>
+            </span>
+            <span
+              fxFlex="15"
+              *ngIf="activity.score != null && activity.status != 4"
+              [ngClass]="{ done: activity.status == 2 }"
+              [ngStyle]="{
+                color:
+                  activity.status == 2
+                    ? '#AAADB8'
+                    : activity.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+              }"
+              >{{ activity.score | numberPipe}} %</span
+            >
+            <mat-progress-bar
+              *ngIf="activity.score != null && activity.status != 4"
+              [ngClass]="{ done: activity.status == 2 }"
+              fxFlex="40"
+              class="activity-progress"
+              [value]="activity.score"
+            ></mat-progress-bar>
+            <span fxFlex fxLayoutAlign="end center"
+              ><span
+                *ngIf="activity.appType == 2"
+                [ngClass]="{
+                  task: activity.oppProActivityType == 'Task',
+                  meeting: activity.oppProActivityType == 'Meeting',
+                  call: activity.oppProActivityType == 'Call',
+                  proposal: activity.oppProActivityType == 'Proposal'
+                }"
+                >{{ activity.oppProActivityType }}</span
+              ></span
+            >
+          </p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+   
+    <div fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch" *ngIf="activeTab==1">
+        <mat-card
+        *ngFor="let activity of group.groupList"
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+        class="group-card"
+    >
+        <mat-card-header class="card-header">
+        <mat-card-title
+            class="clickable"
+            (click)="openActivityDetails(activity)"
+        >
+            {{
+            activity.description | textTruncate: 60
+            }}</mat-card-title
+        >
+        </mat-card-header>
+        <mat-card-content
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+        >
+        <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="!!activity.createdBy"
+        >
+            <mat-label fxFlex="35">{{'Assigned-By' | translate}}: </mat-label>
+            <span>
+            {{
+                activity.createdBy.UserFirstName +
+                " " +
+                activity.createdBy.UserLastName
+            }}
+            </span>
+        </p>
+        <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.parentBoardId != null"
+        >
+            <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+            <span> {{ activity.parentBoardName }} </span>
+        </p>
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <mat-label fxFlex="35"
+            ><span *ngIf="activity.appType != 2">{{'Due' | translate}} </span
+            >{{'Settings-Page.Fields.DATE' | translate }}:
+            </mat-label>
+            <span
+            *ngIf="activity.dueDateLabel == 'Overdue'"
+            class="over-due"
+            >{{ activity.dueDate | datePipe : "medium"}}</span
+            >
+            <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+            activity.dueDate | datePipe : "medium"
+            }}</span>
+        </p>
+
+        <p
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        *ngIf="activity.appType == 4"
+      >
+        <mat-label fxFlex="35">{{'Request' | translate }} {{'Common.NAME' | translate}}: </mat-label>
+        <span>
+          {{
+            activity.requestName
+          }}
+        </span>
+      </p>
+        <p
+            fxFlex
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            *ngIf="activity.appType == 2"
+        >
+            <mat-label fxFlex="35">{{'Time' | translate}}: </mat-label>
+            <span>{{ activity.oppProScheduleEndDate | datePipe : "medium" }}</span>
+            <span> - {{ activity.oppProScheduleEndDate | datePipe : "medium" }}</span>
+        </p>
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <span
+            fxFlex="35"
+            [ngStyle]="{
+                color: activity.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+            }"
+            >
+            <span *ngIf="activity.appType != 2">{{
+                activity.progressStatus
+            }}</span>
+            <span *ngIf="activity.appType == 2">{{
+                activity.oppProStatus
+            }}</span></span
+            >
+            <span
+            fxFlex="15"
+            *ngIf="
+                activity.score != null && activity.status != 4
+            "
+            [ngClass]="{ done: activity.status == 2 }"
+            [ngStyle]="{
+                color:
+                activity.status == 2
+                    ? '#AAADB8'
+                    : activity.progressStatusColor,
+                'font-weight': 'bold',
+                'white-space': 'nowrap'
+            }"
+            >{{ activity.score | numberPipe}} %</span
+            >
+            <mat-progress-bar
+            *ngIf="
+                activity.score != null && activity.status != 4
+            "
+            [ngClass]="{ done: activity.status == 2 }"
+            fxFlex="40"
+            class="activity-progress"
+            [value]="activity.score"
+            ></mat-progress-bar>
+            <span fxFlex fxLayoutAlign="end center"
+            ><span
+                *ngIf="activity.appType == 2"
+                [ngClass]="{
+                task: activity.oppProActivityType == 'task',
+                meeting:
+                    activity.oppProActivityType == 'meeting',
+                call: activity.oppProActivityType == 'call',
+                proposal:
+                    activity.oppProActivityType == 'proposal'
+                }"
+                >{{ activity.oppProActivityType }}</span
+            ></span
+            >
+        </p>
+        </mat-card-content>
+    </mat-card>
+    </div>
+
+
+    <div fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch" *ngIf="activeTab==2">
+
+
+    <mat-card
+    *ngFor="let activity of group.groupList"
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="space-around stretch"
+  >
+    <mat-card-header
+      class="card-header"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+    >
+      <mat-card-title
+        class="clickable"
+        (click)="openActivityDetails(activity)"
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <div fxFlex>
+          {{ activity.description | textTruncate: 60 }}
+        </div>
+        <div
+          class="more-duedate-icon-container"
+          fxFlex="nogrow"
+          fxLayout="row"
+          fxLayoutAlign="end center"
+        >
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation();"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu" class="schedule-menu">
+            <button
+              mat-menu-item
+              (click)="doBacklogAction('Today', activity)"
+            >
+              {{'Do-Today' | translate}}
+            </button>
+
+            <button
+              mat-menu-item
+              (click)="doBacklogAction('Schedule', activity)"
+              class="last"
+            >
+              {{'Schedule' | translate}}
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="space-around stretch"
+    >
+      <p
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        *ngIf="activity.parentBoardId != null"
+      >
+        <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+        <span> {{ activity.parentBoardName }} </span>
+      </p>
+      <p
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      *ngIf="activity.appType == 4"
+    >
+      <mat-label fxFlex="35">{{'Request' | translate }} {{'Common.NAME' | translate}}: </mat-label>
+      <span>
+        {{
+          activity.requestName
+        }}
+      </span>
+    </p>
+
+    </mat-card-content>
+  </mat-card>
+
+
+    </div>
+
+    <div fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch" *ngIf="activeTab==3">
+
+    <mat-card
+    *ngFor="let activity of group.groupList"
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="space-around stretch"
+  >
+    <mat-card-header
+      class="card-header"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+    >
+      <mat-card-title
+        class="clickable"
+        (click)="openActivityDetails(activity)"
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+      >
+        <div fxFlex>
+          {{ activity.description | textTruncate: 60 }}
+        </div>
+        <div
+          class="more-duedate-icon-container"
+          fxFlex="nogrow"
+          fxLayout="row"
+          fxLayoutAlign="end center"
+        >
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation();"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu" class="schedule-menu">
+            <button
+              mat-menu-item
+              (click)="doBacklogAction('Today', activity)"
+            >
+              {{'Do-Today' | translate}}
+            </button>
+
+            <button
+              mat-menu-item
+              (click)="doBacklogAction('Schedule', activity)"
+              class="last"
+            >
+            {{'Schedule' | translate}}
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="space-around stretch"
+    >
+      <p
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        *ngIf="activity.parentBoardId != null"
+      >
+        <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+        <span> {{ activity.parentBoardName }} </span>
+      </p>
+    </mat-card-content>
+  </mat-card>
+
+
+  
+</div>
+
+
+<div fxFlex
+fxLayout="column"
+fxLayoutAlign="start stretch" *ngIf="activeTab==4">
+<mat-card
+*ngFor="let activity of group.groupList"
+fxFlex
+fxLayout="column"
+fxLayoutAlign="space-around stretch"
+>
+<mat-card-header class="card-header">
+  <mat-card-title
+    class="clickable"
+    (click)="openActivityDetails(activity)"
+  >
+    {{
+      activity.description | textTruncate: 60
+    }}</mat-card-title
+  >
+</mat-card-header>
+<mat-card-content
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around stretch"
+>
+  <p
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    *ngIf="!!activity.createdBy"
+  >
+    <mat-label fxFlex="35">{{'Assigned-By' | translate}}: </mat-label>
+    <span>
+      {{
+        activity.createdBy.UserFirstName +
+          " " +
+          activity.createdBy.UserLastName
+      }}
+    </span>
+  </p>
+  <p
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    *ngIf="activity.parentBoardId != null"
+  >
+    <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+    <span> {{ activity.parentBoardName }} </span>
+  </p>
+  <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+    <mat-label fxFlex="35"
+      ><span *ngIf="activity.appType != 2">{{'Due' | translate}} </span>{{'Settings-Page.Fields.DATE' | translate }}:
+    </mat-label>
+    <span
+      *ngIf="activity.dueDateLabel == 'Overdue'"
+      class="over-due"
+      >{{ activity.dueDate | datePipe: "medium" }}</span
+    >
+    <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+      activity.dueDate | datePipe: "medium" 
+    }}</span>
+  </p>
+
+  <p
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    *ngIf="activity.appType == 2"
+  >
+    <mat-label fxFlex="35">{{'Time' | translate}}: </mat-label>
+    <span>{{ activity.oppProScheduleEndDate  | datePipe: "medium" }}</span>
+    <span> - {{ activity.oppProScheduleEndDate  | datePipe: "medium" }}</span>
+  </p>
+  <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+    <span
+      fxFlex="35"
+      [ngStyle]="{
+        color: activity.progressStatusColor,
+        'font-weight': 'bold',
+        'white-space': 'nowrap'
+      }"
+    >
+      <span *ngIf="activity.appType != 2">{{
+        activity.progressStatus
+      }}</span>
+      <span *ngIf="activity.appType == 2">{{
+        activity.oppProStatus
+      }}</span></span
+    >
+    <span
+      fxFlex="15"
+      *ngIf="activity.score != null && activity.status != 4"
+      [ngClass]="{ done: activity.status == 2 }"
+      [ngStyle]="{
+        color:
+          activity.status == 2
+            ? '#AAADB8'
+            : activity.progressStatusColor,
+        'font-weight': 'bold',
+        'white-space': 'nowrap'
+      }"
+      >{{ activity.score | numberPipe}} %</span
+    >
+    <mat-progress-bar
+      *ngIf="activity.score != null && activity.status != 4"
+      [ngClass]="{ done: activity.status == 2 }"
+      fxFlex="40"
+      class="activity-progress"
+      [value]="activity.score"
+    ></mat-progress-bar>
+    <span fxFlex fxLayoutAlign="end center"
+      ><span
+        *ngIf="activity.appType == 2"
+        [ngClass]="{
+          task: activity.oppProActivityType == 'task',
+          meeting: activity.oppProActivityType == 'meeting',
+          call: activity.oppProActivityType == 'call',
+          proposal:
+            activity.oppProActivityType == 'proposal'
+        }"
+        >{{ activity.oppProActivityType }}</span
+      ></span
+    >
+  </p>
+</mat-card-content>
+</mat-card>
+</div>
+    </div>
+
+    <div
+fxFlex
+fxLayout="column"
+*ngIf="group.isLoadingMore"
+fxLayoutAlign="space-around center"
+class="spinner-container"
+>
+<mat-spinner></mat-spinner>
+</div>
+
+  </div>
+
+  <div *ngIf="group.isGroupActivitiesLoading" class="small-spinner">
+    <mat-spinner [diameter]="24"></mat-spinner>
+  </div>
+</mat-expansion-panel>
+</mat-accordion>

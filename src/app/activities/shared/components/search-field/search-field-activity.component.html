@@ -1,0 +1,9 @@
+<div class="txt-search-field-container">
+  <input 
+    class="txt-search-field" 
+    type="text" 
+    [(ngModel)]="searchText" 
+    [placeholder]="'ExdrCommon.Search' | translate" 
+    ngModel (ngModelChange)="onInputChange($event)"
+  >
+</div>

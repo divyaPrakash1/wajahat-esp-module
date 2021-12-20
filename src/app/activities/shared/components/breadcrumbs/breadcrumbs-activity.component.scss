@@ -1,0 +1,72 @@
+@import "../../../theme/styles/variables";
+
+// :host {
+//   font-weight: bold;
+//   display: block;
+//   margin-bottom: 24px;
+
+//   & ::ng-deep {
+//     & > * {
+//       color: $main-color;
+//       font-size: $f16;
+//       line-height: 24px;
+
+//       &:last-child {
+//         color: $gray;
+//       }
+
+//       &:not(:last-child)::after {
+//         display: inline-block;
+//         content: '';
+//         width: 20px;
+//         height: 20px;
+//         margin: 0 8px -5px;
+//         background-image: url('/assets/images/icons/next.svg');
+//       }
+//     }
+//   }
+// }
+.esp-breadcrumb{
+
+  display: flex;
+  font-weight: bold;
+  margin-bottom: 24px;
+  & ::ng-deep {
+    & > * {
+      color: $main-color;
+      font-size: $f16;
+      line-height: 24px;
+      &:last-child {
+        color: $gray;
+      }
+
+
+    }
+  }
+}
+.breadcrumb-ltr{
+  & ::ng-deep {
+    & > * {
+  &:not(:last-child)::after{
+    display: inline-block;
+    content: '';
+    width: 20px;
+    height: 20px;
+    margin: 0 8px -5px;
+    background-image: url('../../../assets/images/icons/next.svg');
+  }
+}}}
+
+.breadcrumb-rtl{
+  & ::ng-deep {
+    & > * {
+  &:not(:last-child)::after{
+    display: inline-block;
+    content: '';
+    width: 20px;
+    height: 20px;
+    margin: 0 8px -5px;
+    background-image: url('../../../assets/images/icons/next.svg');
+    transform: rotate(180deg);
+  }
+}}}

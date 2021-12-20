@@ -1,0 +1,213 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.reject-dialog-container {
+  max-width: 100%;
+  .content {
+    margin: 0px 168px;
+    &.xs,
+    .sm {
+      margin: 0px;
+    }
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 12px;
+    }
+
+    .reject-desc {
+      margin: 0 0 24px;
+      font-size: $f16;
+    }
+
+    .action-btns {
+      .action-btn {
+        height: 48px;
+      }
+      margin-bottom: 24px;
+      &.xs,
+      .sm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        background: #fff;
+        margin-bottom: 0px;
+      }
+    }
+    .reject-form {
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      &.xs,
+      .sm {
+        margin: 20px 0px 70px 0px;
+      }
+
+      margin: 20px 0px 16px 0px;
+      mat-form-field {
+        margin-bottom: 24px;
+      }
+    }
+  }
+
+  mat-icon {
+    color: $gray;
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.Activity-group {
+    padding: 0 42px;
+}
+.Activity-group h1 {
+    font-family: Lato;
+    font-size: 24px;
+    font-weight: 800;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.33;
+    letter-spacing: normal;
+    float: left;
+    margin-bottom: 30px;
+    color: #303030;
+}
+.Activity-group .activity-container {
+    padding: 16px 14px 16px 14px;
+    border-radius: 4px;
+    background-color:#f6f7f9;
+    margin-bottom:32px;
+}
+.activity-container .mar-area .mat-label {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    color: #94959c;
+    min-width:100px;
+}
+
+.activity-container .mar-area span.mat-span {
+    font-family: Lato;
+    font-size: 14px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.71;
+    letter-spacing: normal;
+    color: #303030;
+    min-width: 300px;
+}
+
+.activity-container .mat-area{
+  margin: 0 0 4px 0;
+}
+.activity-container .mat-label {
+  min-width: 93px;
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  color: #94959c;
+  margin-bottom: 2px;
+}
+.action-btns button.action-btn {
+  max-width: 30% !important;
+  padding: 3px;
+  margin: 0 10px;
+}
+.activity-section {
+  float: left;
+}
+.sign-activity-icon {
+  float: right;
+}
+.sign-activity-icon {
+  width: 40px;
+  height: 32px;
+  background: rgba(141, 198, 63, 0.15);
+  text-align: center;
+  border-radius: 5px;
+}
+.sign-activity-icon img {
+  padding: 4px;
+}
+.span-sm {
+  font-size: 18px;
+  line-height: 24px;
+  color: #94959c;
+  font-weight: normal;
+}
+@media screen and (max-width: 767px) {
+  .Activity-group {
+    padding: 0;
+  }
+  .action-btns button.action-btn {
+    max-width: 40% !important;
+  }
+  .activity-container .mar-area span.mat-span {
+    min-width: 200px;
+  }
+  .Activity-group h1 {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .activity-container .mat-label,.activity-container .mar-area span.mat-span {
+    min-width:100%;
+  }
+  .activity-container .mar-area span.mat-span {
+    margin-bottom: 15px;  
+  }
+  .action-btns button.action-btn {
+    max-width: 100% !important;
+  }
+  .sign-activity-icon {
+    float: left;
+    margin-top: 15px;
+  }
+}
+
+/*-----------rtl-css---------------*/
+::ng-deep body.rtl .Activity-group h1 {
+  text-align: right;
+}
+::ng-deep body.rtl .activity-section {
+  float: right;
+}
+::ng-deep body.rtl .activity-container .mat-area {
+  flex-direction: row-reverse;
+}
+::ng-deep body.rtl .activity-container .mat-label {
+  text-align: right;
+}
+::ng-deep body.rtl .activity-section span {
+  display: flex;
+  align-items: center;
+}
+/*-----------rtl-css---------------*/

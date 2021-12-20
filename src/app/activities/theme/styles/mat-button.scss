@@ -1,0 +1,26 @@
+@import "src/app/esp-activity-module/theme/styles/variables";
+
+.mat-flat-button {
+  &.gradient-btn {
+    background: linear-gradient(to right, var(--primary-color-lighter), var(--primary-color));
+    font-weight: bold;
+    &:disabled {
+      background: $light-gray;
+      color: $white-color;
+    }
+  }
+  &.cdk-program-focused .mat-button-focus-overlay {
+    opacity: 0 !important;
+  }
+}
+
+.mat-stroked-button {
+  font-weight: bold;
+  &:not(disabled) {
+    border: 1px solid;
+    border-color: var(--primary-color) !important;
+  }
+  &.cdk-program-focused .mat-button-focus-overlay {
+    opacity: 0 !important;
+  }
+}

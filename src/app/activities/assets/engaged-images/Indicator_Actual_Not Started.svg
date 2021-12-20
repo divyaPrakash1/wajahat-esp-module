@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Indicator_Actual_Not Started</title>
+    <g id="Indicator_Actual_Not-Started" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M9,1 C13.418278,1 17,4.581722 17,9 C17,13.418278 13.418278,17 9,17 C4.581722,17 1,13.418278 1,9 C1,4.581722 4.581722,1 9,1 Z M9,2 C5.13400675,2 2,5.13400675 2,9 C2,12.8659932 5.13400675,16 9,16 C12.8659932,16 16,12.8659932 16,9 C16,5.13400675 12.8659932,2 9,2 Z" id="Combined-Shape" fill="#CBD2D5" fill-rule="nonzero"></path>
+        <path d="M7.32631579,12 L7.74135338,10.8583691 L10.2496241,10.8583691 L10.6646617,12 L12,12 L9.73533835,6 L8.26466165,6 L6,12 L7.32631579,12 Z M10,10 L8,10 L9,7 L10,10 Z" id="A" fill="#CBD2D5" fill-rule="nonzero"></path>
+    </g>
+</svg>

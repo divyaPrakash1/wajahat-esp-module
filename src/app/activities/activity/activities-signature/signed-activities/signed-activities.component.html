@@ -1,0 +1,216 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  class="mine-activities-conatiner"
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  fxFlex
+  *ngIf="dataLoaded && !isLoading"
+>
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    class="actions-container"
+  >
+    <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+      <xcdrs-search-field (search)="onSearch($event)"></xcdrs-search-field>
+      <span
+        class="epm-setting-icon-container"
+        (click)="openEPMSettingsDialog()"
+      >
+      </span>
+      <div class="combined-filter-active-dot">
+      <div class="defult-filter"></div>
+      <span
+        class="filter-icon-container"
+        (click)="openFiltersDialog()"
+        [ngClass]="{ disabled: groupByAppliedFilter == 5 }"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0H24V24H0z" />
+            <path
+              fill="#AAADB8"
+              d="M10.071 11.56c.17.183.263.422.263.669v7.276c0 .437.532.66.848.352l2.046-2.326c.274-.326.425-.487.425-.81v-4.49c0-.247.095-.486.262-.669l5.873-6.32c.44-.473.1-1.242-.55-1.242H4.748c-.65 0-.99.767-.549 1.243l5.872 6.317z"
+            />
+          </g>
+        </svg>
+      </span>
+      </div>
+    </div>
+
+    <div fxFlex="nogrow" *ngIf="allSelectedActivity.length > 1">
+      <!-- <button  *ngIf="!isAnyActivitySigned"
+        fxFlex="nogrow"
+        fxHide.xs
+        fxHide.sm
+        class="add-action-btn gradient-btn border-visible mr-3 rtlreject"
+        mat-flat-button
+        type="submit"
+        (click)="rejectAll()"
+      >
+        Reject
+      </button> -->
+
+      <button
+        fxFlex="nogrow"
+        fxHide.xs
+        fxHide.sm
+        class="add-action-btn gradient-btn"
+        mat-flat-button
+        color="primary"
+        type="submit"
+        (click)="revokeAll()"
+      >
+        {{ 'Revoke' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div
+    fxFlex
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    *ngIf="isListViewActive"
+    class="action-table"
+  >
+
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      class="ungrouped-container table-refined"
+      *ngIf="
+        groupByAppliedFilter == 0 ||
+        (groupByAppliedFilter == 5 && isSearchMode())
+      "
+    >
+      <xcdrs-activities-table
+        fxFlex
+        fxHide.xs
+        fxHide.sm
+        fxShow.gt-md
+        fxShow.lt-xl
+        fxShow.lg
+        fxShow.lt-lg
+        fxShow.md
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        *ngIf="activitiesByGroup.ungrouped.length > 0"
+        [loggedInUserId]="loggedInUserId"
+        [activeTab]="activeTab"
+        [totalCount]="totalCount"
+        [lastLoadedCount]="lastLoadedCount"
+        (pageChange)="onPageChange($event, selectedFiltersIds)"
+        [activities]="activitiesSubject.asObservable()"
+        [oppProData]="oppProData"
+        [espAddon]="espAddon"
+        (reloadList)="reload($event)"
+        (selectedActivity)="selectedActivity($event)"
+        [engProLoggedInUserId]="engProLoggedInUserId"
+        [pageNo]="pageIndex - 1"
+        [isSignature]="true"
+      >
+      </xcdrs-activities-table>
+      <div
+        fxShow.xs
+        fxShow.sm
+        fxHide.gt-md
+        fxHide.lt-xl
+        fxHide.lg
+        fxHide.lt-lg
+        fxHide.md
+        class="fill-bg"
+        *ngIf="
+          !isReloadingList &&
+          !isLoading &&
+          !isError &&
+          activitiesByGroup.ungrouped.length == 0 &&
+          isSearchMode()
+        "
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="'../../../assets/images/ic_no_result.png'"
+          [title]="'Sorry-We-Could-Not-Find-Any-Aesult' | translate"
+          [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div
+        class="fill-bg"
+        *ngIf="
+          !isReloadingList &&
+          !isLoading &&
+          dataLoaded &&
+          !isError &&
+          activitiesByGroup.ungrouped.length === 0 &&
+          !isSearchMode()
+        "
+      >
+      <xcdrs-detailed-panel-placeholder
+        [imagePath]="'../../../assets/images/empty-states/icon-empty-state-general.svg'"
+        [subTitle]="'There-Are-No-Signed-Activities-Yet' | translate"
+      >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div
+        class="fill-bg"
+        *ngIf="
+          !isReloadingList &&
+          dataLoaded &&
+          !isLoading &&
+          isError &&
+          activitiesByGroup.ungrouped.length == 0
+        "
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="'../../../assets/images/ic_error.png'"
+          [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+          [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+
+      <div
+        class="fill-bg"
+        *ngIf="
+          !isReloadingList &&
+          dataLoaded &&
+          !isLoading &&
+          !isError &&
+          activitiesByGroup.ungrouped.length === 0 &&
+          isSearchMode()
+        "
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="'../../../assets/images/news-item/no-items.svg'"
+          [title]="'Activity-Not-Found' | translate"
+          [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  fxFlex
+  fxLayout="column"
+  *ngIf="
+    isReloadingList ||
+    (!isReloadingList && !dataLoaded && isLoading) ||
+    isLoadingMore ||
+    isLoading
+  "
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

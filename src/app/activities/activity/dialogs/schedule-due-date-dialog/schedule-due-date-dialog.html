@@ -1,0 +1,104 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="reject-dialog-container"
+  *ngIf="!isLoading"
+>
+  <div
+    class="cross-div"
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable cross" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title"><span *ngIf="data.isBacklog">{{'Schedule' | translate}}</span><span *ngIf="!data.isBacklog">{{'Extend Due Date' | translate}}</span></h1>
+    <div class="info-text" fxFlex fxLayout="column" fxLayoutAlign="start start">
+      <div fxFlex class="activity-type"><span *ngIf="data.isBacklog">{{'Backlog' | translate}} </span>{{'Activity' | translate}}</div>
+      <div fxFlex>{{data.activity.description}}.</div>
+    </div>
+    <form
+      [formGroup]="form"
+      class="reject-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <mat-form-field fxFlex class="custom due-date-field">
+        <input
+          matInput
+          [matDatepicker]="dueDate"
+          formControlName="dueDate"
+          placeholder="{{'Activity-Due-Date' | translate}}"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="dueDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #dueDate></mat-datepicker>
+        <mat-error
+          *ngIf="form.get('dueDate').errors?.required && form.get('dueDate').touched"
+          class="invalid"
+        >
+          {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        {{'CANCEL' | translate}}
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+       <span *ngIf="data.isBacklog">{{'Schedule' | translate}}</span><span *ngIf="!data.isBacklog">{{'Extend Due Date' | translate}}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

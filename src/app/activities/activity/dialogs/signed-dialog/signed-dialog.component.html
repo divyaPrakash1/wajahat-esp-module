@@ -1,0 +1,45 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div fxFlex fxShow.xs fxShow.sm fxShow.gt-md fxShow.lt-xl fxShow.lg fxShow.lt-lg fxShow.md fxLayout="column"
+    fxLayoutAlign="start stretch" class="reject-dialog-container" *ngIf="!isLoading">
+    <div fxFlex="nogrow" fxLayout="row" fxLayoutAlign="end center" fxHide.xs fxHide.sm>
+        <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+    </div>
+
+    <div class="Activity-group" [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}" fxLayout="column"
+        fxLayoutAlign="start stretch">
+        <h1 mat-dialog-title class="title mt-0 ml-0 mr-0">
+            {{'Sign-Activities' | translate}} <span class="span-sm">({{activities?.length | numberPipe}})</span>
+        </h1>
+
+        <div class="activity-container" *ngFor="let activity of activities">
+            <div class="activity-section">
+            <div class="mat-area d-flex flex-wrap w-100"><mat-label class="mat-label">{{'Activity' | translate}}</mat-label><span class="mat-span">{{activity.description}}</span></div>
+            <div class="mat-area d-flex flex-wrap w-100"><mat-label class="mat-label">{{'Efforts' | translate}}</mat-label>          
+                <!-- <span class="mat-span">{{activity.effortSum}}</span> -->
+                <span *ngIf="!activity.effortSum">{{'None' | translate}}</span>
+                <span *ngIf="activity.effortSum">{{activity.effortInHour | numberPipe}}{{'HR' | translate}} {{activity.effortInMinute | numberPipe}}{{'MIN' | translate}}</span>
+            </div>
+
+            <!-- <span *ngIf="!element.effortSum">None</span>
+        <span *ngIf="element.effortSum">{{element.effortInHour}}h {{element.effortInMinute}}min</span> -->
+            <div class="mat-area d-flex flex-wrap w-100"><mat-label class="mat-label">{{'Signed-By' | translate}}</mat-label><span class="mat-span">{{activity.createdBy.UserFirstName}} {{activity.createdBy.UserLastName}}</span></div>
+            </div>
+            <div class="sign-activity-icon">
+                <img src="../../../assets/images/icon-other-signed-green.png" alt="sign-icon">
+            </div>
+        </div>
+        <div class="action-btns" fxFlex fxLayout="row" fxLayoutAlign="center"
+            [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}">
+            <button fxFlex="43" (click)="cancel()" class="action-btn cancel-btn" mat-stroked-button color="primary">
+                {{ 'CANCEL' | translate }}
+            </button>
+            <button fxFlex="54" (click)="submit()" class="action-btn gradient-btn submit-btn" mat-flat-button color="primary">
+                {{ 'Sign' | translate }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isLoading" fxFlex fxLayout="column" fxLayoutAlign="space-around center" class="spinner-container">
+    <mat-spinner></mat-spinner>
+</div>

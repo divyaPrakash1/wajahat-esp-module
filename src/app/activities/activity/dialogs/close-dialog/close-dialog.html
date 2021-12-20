@@ -1,0 +1,341 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="close-dialog-container"
+  *ngIf="dataLoaded && !isLoading"
+>
+  <div
+    class="cross-div"
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable cross" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">{{'Complete Activity' | translate}}</h1>
+    <!-- <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-around center"
+      class="close-options"
+    >
+      <div fxFlex *ngFor="let option of closeOptions">
+        <mat-radio-group [(ngModel)]="closeAs">
+          <mat-radio-button
+            [checked]="closeAs == option.id"
+            [value]="option.id"
+            (change)="updateCloseOption(option.id)"
+          >
+            {{ option.name }}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div> -->
+
+    <mat-card fxFlex class="progress">
+      <mat-card-content
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+      >
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center" class="reversing">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >{{'Target' | translate}}
+          </mat-label>
+          <span>
+            {{target | numberPipe}}
+            <span *ngIf="activity.tacticId != null"
+              >{{ activity.tactic.unit }}</span
+            ></span
+          >
+        </p>
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center" class="reversing">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >{{'LOG-ACTUALS.Logged-Actuals' | translate}}
+          </mat-label>
+          <span>
+            {{ actualValue ? (actualValue | numberPipe) : 'None' | translate }}
+            <span *ngIf="activity.tacticId != null && actualValue"
+              >{{ activity.tactic.unit }}</span
+            >
+          </span>
+        </p>
+
+        <p fxFlex fxLayout="row" fxLayoutAlign="start center" class="reversing">
+          <mat-label fxFlex="40" fxFlex.xs="50" fxFlex.sm="50"
+            >{{'Logged-Efforts' | translate}}
+          </mat-label>
+          <span
+            *ngIf="activity.effortInHour != null && activity.effortInHour != 0"
+            >{{ activity.effortInHour | numberPipe}}
+            <span *ngIf="activity.effortInHour == 1"> {{'HR' | translate}}</span
+            ><span *ngIf="activity.effortInHour > 1"> {{'HRS' | translate}}</span>
+          </span>
+          <span
+            *ngIf="activity.effortInMinute != null && activity.effortInMinute != 0"
+          >
+            &nbsp; {{ activity.effortInMinute | numberPipe }}
+            <span *ngIf="activity.effortInMinute == 1"> {{'MIN' | translate}}</span
+            ><span *ngIf="activity.effortInMinute > 1"> {{'MINS' | translate}}</span>
+          </span>
+          <span *ngIf="(activity.effortInHour == null || activity.effortInHour == 0) && (activity.effortInMinute == null || activity.effortInMinute == 0)">
+            {{'None' | translate}}
+          </span>
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <form
+      [formGroup]="form"
+      class="close-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <!--mat-form-field-should-float-->
+      <p class="sub-title">{{'LOG-ACTUALS.Update-The-Actuals' | translate}}</p>
+      <mat-form-field class="custom actual-value-field">
+        <input
+          fxFlex
+          type="number"
+          name="actualValue"
+          matInput
+          formControlName="actualValue"
+          id="actualValueInput"
+          autocomplete="numebr"
+          placeholder="{{'Actual-Value' | translate}}"
+          min="0"
+        />
+        <span
+          fxFlex="nogrow"
+          fxLayoutAlign="end center"
+          class="unit-box"
+          *ngIf="activity.tacticId != null"
+        >
+          {{activity.tactic.unit}}
+        </span>
+      </mat-form-field>
+      <p class="sub-title">{{'Efforts' | translate}}</p>
+      <mat-form-field
+        class="custom mat-form-field-should-float close-date-field"
+      >
+        <input
+          matInput
+          [matDatepicker]="closeDateValue"
+          formControlName="closeDate"
+          placeholder="{{'Close-Date' | translate}}"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="closeDateValue"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #closeDateValue></mat-datepicker>
+      </mat-form-field>
+
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field
+          class="custom time-field"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            type="number"
+            name="effortInHour"
+            matInput
+            formControlName="effortInHour"
+            id="effortInHour"
+            autocomplete="numebr"
+            placeholder="{{'Hours' | translate}}"
+            max="200"
+          />
+          <mat-error
+            *ngIf="form.get('effortInHour').errors?.max && form.get('effortInHour').touched"
+            class="invalid"
+          >
+            {{'Hours-Must-Be-Less-Than-Or-Equal-To-200' | translate}}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field
+          class="custom time-field"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            type="number"
+            name="effortInMinute"
+            matInput
+            formControlName="effortInMinute"
+            id="effortInMinute"
+            autocomplete="numebr"
+            placeholder="{{'Minutes' | translate}}"
+            max="59"
+          />
+          <mat-error
+            *ngIf="form.get('effortInMinute').errors?.max && form.get('effortInMinute').touched"
+            class="invalid"
+          >
+            {{'Minutes-Must-Be-Less-60' | translate}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        class="divider-container"
+      >
+        <mat-divider></mat-divider><span class="or-span"> or </span
+        ><mat-divider></mat-divider>
+      </div>
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+        <mat-form-field
+          class="custom time-field timer"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            matInput
+            formControlName="startTime"
+            [owlDateTime]="dt1"
+            [owlDateTimeTrigger]="dt1"
+            placeholder="{{'Start-Time' | translate}}"
+            [required]="this.form.get('endTime').value != null &&
+            this.form.get('endTime').value != ''"
+          />
+          <span
+            fxFlex="nogrow"
+            [owlDateTimeTrigger]="dt1"
+            class="trigger material-icons"
+          >
+            access_time
+          </span>
+          <owl-date-time
+            hour12Timer="true"
+            pickerType="timer"
+            #dt1
+          ></owl-date-time>
+
+          <mat-error
+            *ngIf="form.get('startTime').errors?.required && form.get('startTime').touched"
+            class="invalid"
+          >
+            {{'Please-Fill-Efforts-Start-Time' | translate}}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field
+          class="custom time-field timer"
+          fxFlex="47"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+        >
+          <input
+            fxFlex
+            matInput
+            formControlName="endTime"
+            [owlDateTime]="dt2"
+            [owlDateTimeTrigger]="dt2"
+            placeholder="{{'End-Time' | translate}}"
+            [required]="this.form.get('startTime').value != null &&
+            this.form.get('startTime').value != ''"
+          />
+          <span
+            fxFlex="nogrow"
+            [owlDateTimeTrigger]="dt2"
+            class="trigger material-icons"
+          >
+            access_time
+          </span>
+          <owl-date-time
+            hour12Timer="true"
+            pickerType="timer"
+            #dt2
+          ></owl-date-time>
+          <mat-error
+            *ngIf="form.get('endTime').errors?.incorrect && (form.get('endTime').touched || form.get('endTime').dirty)"
+            class="invalid"
+          >
+            {{'End-Time-Must-Be-After-Start-Time' | translate}}
+          </mat-error>
+          <mat-error
+            *ngIf="form.get('endTime').errors?.required && form.get('endTime').touched"
+            class="invalid"
+          >
+            {{'Please-Fill-Efforts-End-Time' | translate}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="custom comment-field">
+        <input
+          type="text"
+          name="comment"
+          matInput
+          formControlName="comment"
+          id="comment"
+          placeholder="{{'Add-Your-Comments-Here' | translate}}"
+        />
+      </mat-form-field>
+    </form>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        {{'CANCEL' | translate}}
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        {{'Settings-Page.MANAGE-ROLES.Add-User.COMPLETE' | translate}}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="!dataLoaded && isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,183 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="Filters-dialog-container"
+  *ngIf="dataLoaded"
+>
+  <div class="close-div"
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable " (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">{{'ExdrCommon.Filter' | translate}}</h1>
+
+    <form
+      [formGroup]="form"
+      class="Filters-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    >
+      <div fxFlex fxLayout="row wrap" fxLayoutAlign="start center" class="alignment">
+        <mat-form-field
+          class="custom mat-form-field-should-float due-date-field from-date"
+        >
+          <input
+            matInput
+            [matDatepicker]="fromDateValue"
+            formControlName="fromDate"
+            placeholder="{{'From' | translate}}"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            (click)="clearSelectedDate(0)"
+            *ngIf="form.get('fromDate').value != null"
+          >
+            <mat-icon matDatepickerToggleIcon class="date-clear-btn"
+              >clear</mat-icon
+            >
+          </mat-datepicker-toggle>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="fromDateValue"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #fromDateValue></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field
+          class="custom mat-form-field-should-float due-date-field"
+        >
+          <input
+            matInput
+            [matDatepicker]="toDateValue"
+            formControlName="toDate"
+            placeholder="{{'Add-Action.TO' | translate}}"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            (click)="clearSelectedDate(1)"
+            *ngIf="form.get('toDate').value != null"
+          >
+            <mat-icon matDatepickerToggleIcon class="date-clear-btn"
+              >clear</mat-icon
+            >
+          </mat-datepicker-toggle>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="toDateValue"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #toDateValue></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <p class="sub-title" *ngIf="!isBacklog">{{'Common.Status' | translate}}</p>
+      <div
+        fxFlex
+        fxLayout="row wrap"
+        fxLayoutAlign="start center"
+        class="status-container"
+      >
+        <button
+          class="mat-button filter-btn"
+          *ngFor="let status of statusFilter"
+          (click)="status.selected = !status.selected"
+          [ngClass]="{ active: status.selected }"
+        >
+          <span class="btn-lbl"> {{ status.name }}</span>
+        </button>
+      </div>
+
+      <p class="sub-title" *ngIf="!data.notShowSigned">{{'SIGNED' | translate}}</p>
+      <div
+      *ngIf="!data.notShowSigned"
+        fxFlex
+        fxLayout="row wrap"
+        fxLayoutAlign="start center"
+        class="status-container"
+      >
+        <button
+          class="mat-button filter-btn"
+          *ngFor="let status of signedFilter"
+          (click)="status.selected = !status.selected"
+          [ngClass]="{ active: status.selected }"
+        >
+          <span class="btn-lbl"> {{ status.name }}</span>
+        </button>
+      </div>
+      <p class="sub-title" *ngIf="!isBacklog">{{'Employee' | translate}}</p>
+     <!-- <mat-form-field fxFlex class="custom assigned-to-field employee">
+        <input
+          #autoCompleteInputAssignedTo
+          type="text"
+          placeholder="Employee"
+          formControlName="employee"
+          matInput
+          [matAutocomplete]="reviewAuto"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #reviewAuto="matAutocomplete">
+          <mat-option
+            *ngFor="let employee of employees"
+            [value]="employee.UserName"
+            (click)="selectedEmployee = employee.UserId"
+          >
+            {{ employee.UserName }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field> -->
+      <mat-form-field fxFlex class="custom assigned-to-field employee">
+        <mat-select formControlName="employee" multiple>
+           <mat-option *ngFor="let employee of employees" [value]="employee.UserId"> {{employee.UserName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="center center"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    >
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        {{ 'Apply-Filters' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,390 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div class="main-container">
+  <div class="data-contanier">
+    <div
+      class="following-activities-conatiner"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      fxFlex
+      *ngIf="dataLoaded && !isLoading"
+    >
+      <xcdrs-carousel
+        *ngIf="activitiesByGroup && activitiesByGroup.newReported && activitiesByGroup.newReported.length > 0"
+        [listItems]="activitiesByGroup.newReported"
+        [listType]="'reported'"
+        (activity)="addActivityToFollowing($event)"
+      ></xcdrs-carousel>
+  
+      <mat-tab-group
+        (selectedTabChange)="onTabClick($event)"
+        [selectedIndex]="tabIndex"
+      >
+        <mat-tab label="{{ 'By-People' | translate }}">
+          <ng-template matTabContent>
+            <div
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+              *ngIf="dataLoaded && !isLoading"
+            >
+              <div
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                class="actions-container"
+              >
+                <!-- start crad slider & srearch-->
+                <div fxFlex>
+                  <xcdrs-search-field
+                    (search)="onSearch($event)"
+                  ></xcdrs-search-field>
+                </div>
+  
+                <!-- end card slider & search-->
+                <button
+                  fxFlex="nogrow"
+                  fxHide.xs
+                  fxHide.sm
+                  class="assign-action-btn gradient-btn"
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  (click)="openAssignDialog('new')"
+                >
+                  {{'Create-Activity' | translate}}
+                </button>
+              </div>
+              <mat-card
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+              class="user-group-card"
+              *ngIf="!!activitiesByGroup.sharedGroup && !teamId"
+            >
+              <mat-card-content
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                fxLayout.xs="column"
+                fxLayoutAlign.xs="space-around stretch"
+                fxLayout.sm="column"
+                fxLayoutAlign.sm="space-around stretch"
+              >
+                <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          
+                  <div class="share-ic-container" fxFlex="nogrow">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+                      <g fill="none" fill-rule="evenodd">
+                          <g>
+                              <g>
+                                  <g>
+                                      <g>
+                                          <path d="M0 0H14V14H0z" transform="translate(-29 -261) translate(8 240) translate(16 16) translate(5 5)"/>
+                                          <path fill="#AAADB8" d="M8.705 11.893c-.11.12-.266.188-.428.188-.323 0-.584-.261-.584-.583v-2.1l-.302.012c-2.12.08-4.12.995-5.552 2.543-.106.114-.253.178-.408.178-.307 0-.556-.248-.556-.555v-.985c0-3.315 2.721-6.003 6.08-6.003h.738V2.495c0-.162.068-.318.188-.428.236-.219.605-.204.824.032l4.525 4.897-4.525 4.897z" transform="translate(-29 -261) translate(8 240) translate(16 16) translate(5 5)"/>
+                                      </g>
+                                  </g>
+                              </g>
+                          </g>
+                      </g>
+                    </svg>
+  
+                  </div>
+                  <p fxFlex class="user-group-label">
+                    <span
+                      class="clickable"
+                      (click)="openSharedGroupDetails()"
+                    >
+                    {{ 'Shared-Activities' | translate }}
+                    </span>
+                  </p>
+                </div>
+  
+                <div
+                  fxFlex="30"
+                  fxLayout="row" fxLayoutAlign="space-between center" 
+                  class="counter-container"
+                  [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+                >
+                  <p fxFlex="nogrow">
+                    <span class="counter">
+                      {{ activitiesByGroup.sharedGroup.ActivityCount | numberPipe }}
+                    </span>
+                    <mat-label> {{'activities' | translate }} </mat-label>
+                  </p>   
+          
+              
+                  <p fxFlex="nogrow" class="counter-container">
+                    <span class="counter">
+                      {{activitiesByGroup.sharedGroup.OverdueCount | numberPipe }}
+                    </span>
+                    <mat-label> {{'overdue' | translate }} </mat-label>
+                  </p>
+                  <p fxFlex="nogrow" class="counter-container last">
+                    <span class="counter">
+                      {{ activitiesByGroup.sharedGroup.NotClaimedCount | numberPipe }}
+                    </span>
+                    <mat-label> {{'not-claimed' | translate}} </mat-label>
+                  </p>
+            
+                </div>
+              </mat-card-content>
+            </mat-card>
+  
+              <mat-card
+                *ngFor="let userGroup of activitiesByGroup.groupByPeople"
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="space-around stretch"
+                class="user-group-card"
+              >
+                <mat-card-content
+                  fxFlex
+                  fxLayout="row"
+                  fxLayoutAlign="start center"
+                  fxLayout.xs="column"
+                  fxLayoutAlign.xs="space-around stretch"
+                  fxLayout.sm="column"
+                  fxLayoutAlign.sm="space-around stretch"
+                >
+                  <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                    <ngx-avatar
+                      fxFlex="nogrow"
+                      name="{{
+                        userGroup.UserFirstName + ' ' + userGroup.UserLastName
+                      }}"
+                      [src]="userGroup.UserProfilePictureUrl"
+                      initialsSize="2"
+                      bgColor="#00C853"
+                      fgColor="#FFFFFF"
+                      size="24"
+                      textSizeRatio="2.5"
+                      [round]="true"
+                    ></ngx-avatar>
+                    <p fxFlex class="user-group-label">
+                      <span
+                        class="clickable"
+                        (click)="openUserGroupDetails(userGroup)"
+                      >
+                        {{ userGroup.UserFirstName + " " + userGroup.UserLastName }}
+                      </span>
+                    </p>
+                  </div>
+  
+                  <div
+                    fxFlex="30"
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center" 
+                    class="counter-container"
+                    [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+                  >
+                    <p fxFlex="nogrow">
+                      <span class="counter">
+                        {{ userGroup.AssignedCount | numberPipe}}
+                      </span>
+                      <mat-label> {{'assigned' | translate}} </mat-label>
+                    </p>
+                    <p fxFlex="nogrow" class="counter-container">
+                      <span class="counter">
+                        {{ userGroup.OverdueCount | numberPipe}}
+                      </span>
+                      <mat-label> {{'overdue' | translate }} </mat-label>
+                    </p>
+                    <p fxFlex="nogrow" class="counter-container last">
+                      <span class="counter">
+                        {{ userGroup.ClosedCount  | numberPipe}}
+                      </span>
+                      <mat-label> {{'review' | translate}} </mat-label>
+                    </p>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+              <div
+              style="height: 300px !important;"
+                class="fill-bg"
+                *ngIf="
+                  !isLoading &&
+                  !isError &&
+                  activitiesByGroup.groupByPeople.length == 0 &&
+                  isSearchMode()
+                "
+              >
+                <xcdrs-detailed-panel-placeholder
+                  [imagePath]="'../../../assets/images/ic_no_result.png'"
+                  [title]="'Sorry-We-Could-Not-Find-Any-Aesult' | translate"
+                  [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+                >
+                </xcdrs-detailed-panel-placeholder>
+              </div>
+  
+              <div
+                
+                class="fill-bg"
+                *ngIf="
+                
+                  !isLoading &&
+                  !isError &&
+                  !isSearchMode() &&
+                  activitiesByGroup.groupByPeople.length == 0
+                "
+              >
+                <xcdrs-detailed-panel-placeholder
+                  [imagePath]="''"
+                  [title]="'No-Groups-Available' | translate"
+                  [subTitle]="'It-Seems-No-Activites-Followed-By-You' | translate"
+                >
+                </xcdrs-detailed-panel-placeholder>
+              </div>
+              <div
+              style="height: 300px !important;"
+                class="fill-bg"
+                *ngIf=" !isLoading && isError"
+              >
+                <xcdrs-detailed-panel-placeholder
+                  [imagePath]="'../../../assets/images/ic_error.png'"
+                  [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+                  [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+                >
+                </xcdrs-detailed-panel-placeholder>
+              </div>
+            </div>
+          </ng-template>
+        </mat-tab>
+        <mat-tab label="{{'By-Due-Dates' | translate }}">
+          <ng-template matTabContent>
+            <div
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+              *ngIf="dataLoaded && !isLoading"
+            >
+              <div
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                class="actions-container"
+              >
+                <!-- start crad slider & srearch-->
+                <div fxFlex>
+                  <xcdrs-search-field
+                    (search)="onSearch($event)"
+                  ></xcdrs-search-field>
+                </div>
+  
+                <!-- end card slider & search-->
+                <button
+                  fxFlex="nogrow"
+                  fxHide.xs
+                  fxHide.sm
+                  class="assign-action-btn gradient-btn"
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  (click)="openAssignDialog('new')"
+                >
+                  {{'Assign-Activity' | translate }}
+                </button>
+              </div>
+  
+  
+              <div
+                *ngIf="activitiesByGroup.groups.length > 0"
+                fxFlex
+                fxLayout="column"
+                fxLayoutAlign="start stretch"
+              >
+              <xcdrs-activities-group
+              *ngFor="let group of activitiesByGroup.groups; let i = index"
+              [group]="group"
+              [i]="i"
+              [selectedFiltersIds]="selectedFiltersIds"
+              [search]="search"
+              [loggedInUserId]="loggedInUserId"
+              [activeTab]="activeTab"
+              [totalCount]="totalCount"
+              [lastLoadedCount]="lastLoadedCount"
+              [size]="size"
+              [groupByAppliedFilter]="groupType"
+              (reloadList)="reload($event)"
+              [engProLoggedInUserId]="engProLoggedInUserId"
+              [isEngProEnabled]="isEngProEnabled"
+              ></xcdrs-activities-group>
+              </div>
+              <div
+              
+                class="fill-bg"
+                *ngIf="
+                  !isLoading &&
+                  !isError &&
+                  activitiesByGroup.groups.length === 0 &&
+                  !isSearchMode()
+                "
+              >
+                <xcdrs-detailed-panel-placeholder
+                  [imagePath]="''"
+                  [title]="'No-Groups-Available' | translate"
+                  [subTitle]="'It-Seems-No-Activites-Belong-To-Any-Groups' | translate"
+                >
+                </xcdrs-detailed-panel-placeholder>
+              </div>
+              <div
+              style="height: 300px !important;"
+                class="fill-bg"
+                *ngIf="
+                
+                  !isLoading &&
+                  isError &&
+                  activitiesByGroup.groups.length == 0
+                "
+              >
+                <xcdrs-detailed-panel-placeholder
+                  [imagePath]="'../../../assets/images/ic_error.png'"
+                  [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+                  [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+                >
+                </xcdrs-detailed-panel-placeholder>
+              </div>
+            </div>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+  
+      <div
+        fxFlex
+        fxShow.xs
+        fxShow.sm
+        fxHide.gt-md
+        fxHide.lt-xl
+        fxHide.lg
+        fxHide.lt-lg
+        fxHide.md
+        fxLayout="column"
+        fxLayoutAlign="space-around end"
+        class="fab-container"
+      >
+        <button
+          mat-fab
+          color="primary"
+          aria-label="assign fab"
+          fxFlex="nogrow"
+          class="gradient-btn"
+          type="submit"
+          (click)="openAssignDialog('new')"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="spinner-main-container" *ngIf="isLoading">
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="space-around center"
+      class="spinner-container"
+    >
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+</div>

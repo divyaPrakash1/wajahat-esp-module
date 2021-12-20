@@ -1,0 +1,1186 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="add-dialog-container"
+  *ngIf="!isLoading && dataLoaded"
+>
+  <div class="close-div"
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='new' && !isArabic">
+      Add a <span class="form-type-lbl">{{formType}}</span>
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='new' && isArabic && formType =='call'">
+      {{'Add-Call' | translate }}
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='new' && isArabic && formType =='proposal'">
+      {{'Add-Proposal' | translate}}
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='new' && isArabic && formType =='meeting'">
+      {{'Add-Meeting' | translate}}
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='edit' && !isArabic">
+      Edit a <span class="form-type-lbl">{{formType}}</span>
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='edit' && isArabic && formType =='call'">
+      {{'Edit-Call' | translate }}
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='edit' && isArabic && formType =='proposal'">
+      {{'Edit-Proposal' | translate}}
+    </h1>
+
+    <h1 mat-dialog-title class="title" *ngIf="formMode=='edit' && isArabic && formType =='meeting'">
+      {{'Edit-Meeting' | translate}}
+    </h1>
+
+    <div
+      class="info-text"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      *ngIf="formMode=='new'"
+    >
+      <div fxFlex="nogrow" class="call-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path d="M0 0L24 0 24 24 0 24z" />
+            <path
+              fill="#AAADB8"
+              d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm0-2c-4.415 0-8-3.585-8-8s3.585-8 8-8 8 3.585 8 8-3.585 8-8 8zm1-11V7h-2v2h2zm0 8v-6h-2v6h2z"
+            />
+          </g>
+        </svg>
+      </div>
+      <div fxFlex class="call-text" *ngIf="!isArabic">
+        This <span class="form-type-lbl">{{formType}}</span> will be
+        automatically added to<br /><b>OpportunityPro</b>.
+      </div>
+
+      <div fxFlex class="call-text" *ngIf="isArabic && formType =='call'">
+        {{'This-Call-Will-Be-Automatically-Added' | translate }}<br /> 
+        <b>{{'OpportunityPro' | translate}}</b>.
+      </div>
+      <div fxFlex class="call-text" *ngIf="isArabic && formType =='proposal'">
+        {{'This-Proposal-Will-Be-Automatically-Added' | translate }}<br />
+        <b>{{'OpportunityPro' | translate}}</b>.
+      </div>
+      <div fxFlex class="call-text" *ngIf="isArabic && formType =='meeting'">
+        {{'This-Meeting-Will-Be-Automatically-Added' | translate }}<br />
+        <b>{{'OpportunityPro' | translate}}</b>.
+      </div>
+    </div>
+    <!--start call form-->
+    <form
+      [formGroup]="form"
+      class="add-form"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+      *ngIf="formType =='call'"
+    >
+      <!--Title-->
+      <mat-form-field fxFlex class="custom title-field">
+        <input
+          fxFlex
+          type="text"
+          name="title"
+          matInput
+          formControlName="title"
+          id="title"
+          autocomplete="title"
+          placeholder="{{'Common.TITLE' | translate}}"
+          required
+        />
+        <mat-error
+          *ngIf="form.get('title').errors?.required && form.get('title').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field
+        fxFlex
+        appearance="outline"
+        class="custom-outline notes-field"
+      >
+        <mat-label class="notes-label">{{'Notes' | translate}}</mat-label>
+        <textarea
+          matInput
+          name="notes"
+          formControlName="notes"
+          id="notes"
+        ></textarea>
+      </mat-form-field>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="for-field"
+        *ngIf="formMode=='new'"
+      >
+        <mat-label class="rtl-label">{{'For' | translate}}</mat-label>
+        <div class="rtl-btn-reverse" fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <button
+            *ngFor="let type of types; let i=index;"
+            color="primary"
+            [ngClass]="{'mat-stroked-button': !type.active, 'mat-flat-button': type.active, 'active':type.active}"
+            (click)="activateType(type)"
+          >
+          {{ (i==0 ? 'Opportunity' : 'Customer') | translate}}
+          </button>
+        </div>
+      </div>
+
+      <mat-form-field
+        class="custom opportunity-field"
+        *ngIf="isOpportunity==true"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="opportunity"
+          matInput
+          id="opportunity"
+          autocomplete="opportunity"
+          [matAutocomplete]="autoOpportunity"
+          placeholder="{{'Opportunity' | translate }}"
+          formControlName="opportunity"
+          [required]="isOpportunity==true"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoOpportunity="matAutocomplete">
+          <mat-option
+            *ngFor="let opportunity of oppotunities"
+            [value]="opportunity.name"
+            (click)="updateRelatedFields(opportunity,'opportunity')"
+          >
+            {{opportunity.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('opportunity').errors?.required && form.get('opportunity').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field
+        class="custom customer-field"
+        *ngIf="isOpportunity==false"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="customer"
+          matInput
+          id="customer"
+          autocomplete="customer"
+          [matAutocomplete]="autoCustomer"
+          placeholder="{{'Customer' | translate}}"
+          formControlName="customer"
+          [required]="isOpportunity==false"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCustomer="matAutocomplete">
+          <mat-option
+            *ngFor="let customer of customers"
+            [value]="customer.name"
+            (click)="updateRelatedFields(customer,'customer')"
+          >
+            {{customer.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('customer').errors?.required && form.get('customer').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom purpose-field">
+        <input
+          fxFlex
+          type="text"
+          name="purpose"
+          matInput
+          id="purpose"
+          autocomplete="purpose"
+          [matAutocomplete]="autoPurpose"
+          placeholder="{{'Purpose' | translate}}"
+          formControlName="purpose"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoPurpose="matAutocomplete">
+          <mat-option
+            *ngFor="let purpose of callToActions"
+            [value]="purpose.name"
+            (click)="selectedCallToAction = purpose.id;"
+          >
+            {{purpose.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('purpose').errors?.required && form.get('purpose').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom callFrom-field">
+        <input
+          fxFlex
+          type="text"
+          name="callFrom"
+          matInput
+          id="callFrom"
+          autocomplete="callFrom"
+          [matAutocomplete]="autoCallFrom"
+          placeholder="{{'Call-From' | translate}}"
+          formControlName="callFrom"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCallFrom="matAutocomplete">
+          <mat-option
+            *ngFor="let user of callFromUsers"
+            [value]="user.name"
+            (click)="selectedCallFromUser = user.id;"
+          >
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('callFrom').errors?.required && form.get('callFrom').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom callTo-field">
+        <input
+          fxFlex
+          type="text"
+          name="callTo"
+          matInput
+          id="callTo"
+          autocomplete="callTo"
+          [matAutocomplete]="autoCallTo"
+          placeholder="{{'Call-To' | translate}}"
+          formControlName="callTo"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCallTo="matAutocomplete">
+          <mat-option
+            *ngFor="let user of callToUsers"
+            [value]="user.name"
+            (click)="selectedCallToUser = user.id;"
+          >
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('callTo').errors?.required && form.get('callTo').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom priority-field">
+        <input
+          fxFlex
+          type="text"
+          name="priority"
+          matInput
+          id="priority"
+          autocomplete="priority"
+          [matAutocomplete]="autoPriority"
+          placeholder="{{'Priority' | translate }}"
+          formControlName="priority"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoPriority="matAutocomplete">
+          <mat-option
+            *ngFor="let priority of !isArabic ? priorities : arabicPriorities"
+            [value]="priority.name"
+            (click)="selectedPriority = priority.id;"
+          >
+            {{priority.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('priority').errors?.required && form.get('priority').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom direction-field">
+        <input
+          fxFlex
+          type="text"
+          name="direction"
+          matInput
+          id="direction"
+          autocomplete="direction"
+          [matAutocomplete]="autoDirection"
+          placeholder="{{'Direction' | translate}}"
+          formControlName="direction"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoDirection="matAutocomplete">
+          <mat-option
+            *ngFor="let direction of !isArabic ? callDirections : arabicCallDirections"
+            [value]="direction.name"
+            (click)="selectedDirection = direction.id;"
+          >
+            {{direction.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('direction').errors?.required && form.get('direction').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex class="custom due-date-field">
+        <input
+          matInput
+          [matDatepicker]="dueDate"
+          formControlName="dueDate"
+          placeholder="{{'Settings-Page.Fields.DATE' | translate}}"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="dueDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #dueDate></mat-datepicker>
+        <mat-error
+          *ngIf="form.get('dueDate').errors?.required && form.get('dueDate').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom time-field timer">
+        <input
+          fxFlex
+          matInput
+          formControlName="startTime"
+          [owlDateTime]="dt1"
+          [owlDateTimeTrigger]="dt1"
+          placeholder="{{'Start-Time' | translate}}"
+          required
+        />
+        <span
+          fxFlex="nogrow"
+          [owlDateTimeTrigger]="dt1"
+          class="trigger material-icons"
+        >
+          access_time
+        </span>
+        <owl-date-time
+          hour12Timer="true"
+          pickerType="timer"
+          #dt1
+        ></owl-date-time>
+
+        <mat-error
+          *ngIf="form.get('startTime').errors?.required && form.get('startTime').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom time-field timer">
+        <input
+          fxFlex
+          matInput
+          formControlName="endTime"
+          [owlDateTime]="dt2"
+          [owlDateTimeTrigger]="dt2"
+          placeholder="{{'End-Time' | translate}}"
+          required
+        />
+        <span
+          fxFlex="nogrow"
+          [owlDateTimeTrigger]="dt2"
+          class="trigger material-icons"
+        >
+          access_time
+        </span>
+        <owl-date-time
+          hour12Timer="true"
+          pickerType="timer"
+          #dt2
+        ></owl-date-time>
+        <mat-error
+          *ngIf="form.get('endTime').errors?.incorrect && (form.get('endTime').touched || form.get('endTime').dirty)"
+          class="invalid"
+        >
+          {{'End-Time-Must-Be-After-Start-Time' | translate}}
+        </mat-error>
+        <mat-error
+          *ngIf="form.get('endTime').errors?.required && form.get('endTime').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <!--end call form-->
+    <!--start proposal form-->
+    <form
+      [formGroup]="form"
+      class="add-form"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+      *ngIf="formType =='proposal'"
+    >
+      <!--Title-->
+      <mat-form-field fxFlex class="custom title-field">
+        <input
+          fxFlex
+          type="text"
+          name="title"
+          matInput
+          formControlName="title"
+          id="title"
+          autocomplete="title"
+          placeholder="{{'Common.TITLE' | translate}}"
+          required
+        />
+        <mat-error
+          *ngIf="form.get('title').errors?.required && form.get('title').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field
+        fxFlex
+        appearance="outline"
+        class="custom-outline notes-field"
+      >
+        <mat-label class="notes-label">{{'Notes' | translate}} </mat-label>
+        <textarea
+          matInput
+          name="notes"
+          formControlName="notes"
+          id="notes"
+        ></textarea>
+      </mat-form-field>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="for-field"
+        *ngIf="formMode=='new'"
+      >
+        <mat-label class="rtl-label">{{'For' | translate}}</mat-label>
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="rtl-btn-reverse">
+          <button
+            *ngFor="let type of types; let i= index;"
+            color="primary"
+            [ngClass]="{'mat-stroked-button': !type.active, 'mat-flat-button': type.active, 'active':type.active}"
+            (click)="activateType(type)"
+          >
+            {{ (i==0 ? 'Opportunity' : 'Customer') | translate}}
+          </button>
+        </div>
+      </div>
+
+      <mat-form-field
+        class="custom opportunity-field"
+        *ngIf="isOpportunity==true"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="opportunity"
+          matInput
+          id="opportunity"
+          autocomplete="opportunity"
+          [matAutocomplete]="autoOpportunity"
+          placeholder="{{'Opportunity' | translate}}"
+          formControlName="opportunity"
+          [required]="isOpportunity==true"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoOpportunity="matAutocomplete">
+          <mat-option
+            *ngFor="let opportunity of oppotunities"
+            [value]="opportunity.name"
+            (click)="updateRelatedFields(opportunity,'opportunity')"
+          >
+            {{opportunity.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('opportunity').errors?.required && form.get('opportunity').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        class="custom customer-field"
+        *ngIf="isOpportunity==false"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="customer"
+          matInput
+          id="customer"
+          autocomplete="customer"
+          [matAutocomplete]="autoCustomer"
+          placeholder="{{'Customer' | translate}}"
+          formControlName="customer"
+          [required]="isOpportunity==false"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCustomer="matAutocomplete">
+          <mat-option
+            *ngFor="let customer of customers"
+            [value]="customer.name"
+            (click)="updateRelatedFields(customer,'customer')"
+          >
+            {{customer.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('customer').errors?.required && form.get('customer').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom callTo-field">
+        <input
+          fxFlex
+          type="text"
+          name="callTo"
+          matInput
+          id="callTo"
+          autocomplete="callTo"
+          [matAutocomplete]="autoCallTo"
+          placeholder="{{'Contact' | translate}}"
+          formControlName="callTo"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCallTo="matAutocomplete">
+          <mat-option
+            *ngFor="let user of callToUsers"
+            [value]="user.name"
+            (click)="this.selectedCallToUser = user.id;
+            this.selectedCallToUserEmails = user.emails;"
+          >
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('callTo').errors?.required && form.get('callTo').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom purpose-field">
+        <input
+          fxFlex
+          type="text"
+          name="purpose"
+          matInput
+          id="purpose"
+          autocomplete="purpose"
+          [matAutocomplete]="autoPurpose"
+          placeholder="{{'Purpose' | translate}}"
+          formControlName="purpose"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoPurpose="matAutocomplete">
+          <mat-option
+            *ngFor="let purpose of callToActions"
+            [value]="purpose.name"
+            (click)="selectedCallToAction = purpose.id;"
+          >
+            {{purpose.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('purpose').errors?.required && form.get('purpose').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field fxFlex class="custom due-date-field">
+        <input
+          matInput
+          [matDatepicker]="dueDate"
+          formControlName="dueDate"
+          placeholder="{{'Settings-Page.Fields.DATE' | translate}}"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="dueDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #dueDate></mat-datepicker>
+        <mat-error
+          *ngIf="form.get('dueDate').errors?.required && form.get('dueDate').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom callFrom-field">
+        <input
+          fxFlex
+          type="text"
+          name="callFrom"
+          matInput
+          id="callFrom"
+          autocomplete="callFrom"
+          [matAutocomplete]="autoCallFrom"
+          placeholder="{{'Assigned-To' | translate}}"
+          formControlName="callFrom"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCallFrom="matAutocomplete">
+          <mat-option
+            *ngFor="let user of callFromUsers"
+            [value]="user.name"
+            (click)="selectedCallFromUser = user.id;
+            this.selectedCallFromUserEmail = user.email;"
+          >
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('callFrom').errors?.required && form.get('callFrom').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <!--end proposal form-->
+
+    <!--start meeting form-->
+    <form
+      [formGroup]="form"
+      class="add-form"
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+      *ngIf="formType =='meeting'"
+    >
+      <!--Title-->
+      <mat-form-field fxFlex class="custom title-field">
+        <input
+          fxFlex
+          type="text"
+          name="title"
+          matInput
+          formControlName="title"
+          id="title"
+          autocomplete="title"
+          placeholder="{{'Common.TITLE' | translate}}"
+          required
+        />
+        <mat-error
+          *ngIf="form.get('title').errors?.required && form.get('title').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field
+        fxFlex
+        appearance="outline"
+        class="custom-outline notes-field"
+      >
+        <mat-label class="notes-label">{{'Notes' | translate}} </mat-label>
+        <textarea
+          matInput
+          name="notes"
+          formControlName="notes"
+          id="notes"
+        ></textarea>
+      </mat-form-field>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="for-field"
+        *ngIf="formMode=='new'"
+      >
+        <mat-label class="rtl-label">{{'For' | translate}}</mat-label>
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center" class="rtl-btn-reverse">
+          <button
+            *ngFor="let type of types; let i= index;"
+            color="primary"
+            [ngClass]="{'mat-stroked-button': !type.active, 'mat-flat-button': type.active, 'active':type.active}"
+            (click)="activateType(type)"
+          >
+          {{ (i==0 ? 'Opportunity' : 'Customer') | translate}}
+          </button>
+        </div>
+      </div>
+
+      <mat-form-field
+        class="custom opportunity-field"
+        *ngIf="isOpportunity==true"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="opportunity"
+          matInput
+          id="opportunity"
+          autocomplete="opportunity"
+          [matAutocomplete]="autoOpportunity"
+          placeholder="{{'Opportunity' | translate}}"
+          formControlName="opportunity"
+          [required]="isOpportunity==true"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoOpportunity="matAutocomplete">
+          <mat-option
+            *ngFor="let opportunity of oppotunities"
+            [value]="opportunity.name"
+            (click)="updateRelatedFields(opportunity,'opportunity')"
+          >
+            {{opportunity.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('opportunity').errors?.required && form.get('opportunity').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field
+        class="custom customer-field"
+        *ngIf="isOpportunity==false"
+        [ngClass]="{'disabled': formMode=='edit'}"
+      >
+        <input
+          fxFlex
+          type="text"
+          name="customer"
+          matInput
+          id="customer"
+          autocomplete="customer"
+          [matAutocomplete]="autoCustomer"
+          placeholder="{{'Customer' | translate}}"
+          formControlName="customer"
+          [required]="isOpportunity==false"
+          [readonly]="formMode=='edit'"
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCustomer="matAutocomplete">
+          <mat-option
+            *ngFor="let customer of customers"
+            [value]="customer.name"
+            (click)="updateRelatedFields(customer,'customer')"
+          >
+            {{customer.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('customer').errors?.required && form.get('customer').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom purpose-field">
+        <input
+          fxFlex
+          type="text"
+          name="purpose"
+          matInput
+          id="purpose"
+          autocomplete="purpose"
+          [matAutocomplete]="autoPurpose"
+          placeholder="{{'Purpose' | translate}}"
+          formControlName="purpose"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoPurpose="matAutocomplete">
+          <mat-option
+            *ngFor="let purpose of callToActions"
+            [value]="purpose.name"
+            (click)="selectedCallToAction = purpose.id;"
+          >
+            {{purpose.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('purpose').errors?.required && form.get('purpose').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom callFrom-field">
+        <input
+          fxFlex
+          type="text"
+          name="callFrom"
+          matInput
+          id="callFrom"
+          autocomplete="callFrom"
+          [matAutocomplete]="autoCallFrom"
+          placeholder="{{'Meeting-Host' | translate}}"
+          formControlName="callFrom"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoCallFrom="matAutocomplete">
+          <mat-option
+            *ngFor="let user of callFromUsers"
+            [value]="user.name"
+            (click)="selectedCallFromUser = user.id;"
+          >
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('callFrom').errors?.required && form.get('callFrom').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="isOpportunity && form.get('opportunity').value !=null || !isOpportunity && form.get('customer').value !=null "
+        class="custom participant-field select-with-chips"
+      >
+        <mat-chip-list #chipList aria-label="participant selection">
+          <mat-chip *ngFor="let participant of participants">
+            {{participant.name}}
+          </mat-chip>
+          <input
+            placeholder="{{'Participants' | translate}}"
+            #participantsInput
+            formControlName="callTo"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            required
+          />
+        </mat-chip-list>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="toggleSelection($event)"
+          class="participant-autocomplete"
+        >
+          <mat-option
+            *ngFor="let participant of filteredParticipants "
+            [value]="participant"
+          >
+            <mat-checkbox [checked]="participant.selected">
+              <!-- {{ participant.name | textHighlight: participantSearch}} -->
+
+              <span [innerHTML]="highlight(participant.name)"></span>
+            </mat-checkbox>
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-error
+          *ngIf="form.get('callTo').errors?.required && form.get('callTo').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- 
+      <mat-form-field
+        class="custom mat-form-field-should-float select-with-chips"
+      >
+        <mat-label
+          >Participants</mat-label
+        >
+        <mat-select
+          [formControl]="participantsControl"
+          placeholder="Participants"
+          multiple
+          panelClass="custom-options-list"
+          disableOptionCentering
+          required
+        >
+          <mat-select-trigger>
+            <mat-chip-list>
+              <mat-chip *ngFor="let user of participantsControl.value">
+                {{ user.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </mat-select-trigger>
+
+          <mat-option
+            class="opt"
+            (click)="toggleSelection()"
+            *ngFor="let user of callToUsers"
+            [value]="user"
+            >{{user.name}}</mat-option
+          >
+        </mat-select>
+
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </mat-form-field> -->
+
+      <mat-form-field class="custom channel-field">
+        <input
+          fxFlex
+          type="text"
+          name="channel"
+          matInput
+          id="channel"
+          autocomplete="channel"
+          [matAutocomplete]="autoChannel"
+          placeholder="{{'Channel' | translate}}"
+          formControlName="channel"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-autocomplete #autoChannel="matAutocomplete">
+          <mat-option
+            *ngFor="let channel of !isArabic ? meetingChannels : arabicMeetingChannels"
+            [value]="channel.name"
+            (click)="selectedChannel = channel.id;"
+          >
+            {{channel.name}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-error
+          *ngIf="form.get('channel').errors?.required && form.get('channel').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex class="custom due-date-field">
+        <input
+          matInput
+          [matDatepicker]="dueDate"
+          formControlName="dueDate"
+          placeholder="{{'Settings-Page.Fields.DATE' | translate}}"
+          required
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="dueDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #dueDate></mat-datepicker>
+        <mat-error
+          *ngIf="form.get('dueDate').errors?.required && form.get('dueDate').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="custom time-field timer">
+        <input
+          fxFlex
+          matInput
+          formControlName="startTime"
+          [owlDateTime]="dt1"
+          [owlDateTimeTrigger]="dt1"
+          placeholder="{{'Start-Time' | translate}}"
+          required
+        />
+        <span
+          fxFlex="nogrow"
+          [owlDateTimeTrigger]="dt1"
+          class="trigger material-icons"
+        >
+          access_time
+        </span>
+        <owl-date-time
+          hour12Timer="true"
+          pickerType="timer"
+          #dt1
+        ></owl-date-time>
+
+        <mat-error
+          *ngIf="form.get('startTime').errors?.required && form.get('startTime').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="custom time-field timer">
+        <input
+          fxFlex
+          matInput
+          formControlName="endTime"
+          [owlDateTime]="dt2"
+          [owlDateTimeTrigger]="dt2"
+          placeholder="{{'End-Time' | translate}}"
+          required
+        />
+        <span
+          fxFlex="nogrow"
+          [owlDateTimeTrigger]="dt2"
+          class="trigger material-icons"
+        >
+          access_time
+        </span>
+        <owl-date-time
+          hour12Timer="true"
+          pickerType="timer"
+          #dt2
+        ></owl-date-time>
+        <mat-error
+          *ngIf="form.get('endTime').errors?.incorrect && (form.get('endTime').touched || form.get('endTime').dirty)"
+          class="invalid"
+        >
+        {{'End-Time-Must-Be-After-Start-Time' | translate}}
+        </mat-error>
+        <mat-error
+          *ngIf="form.get('endTime').errors?.required && form.get('endTime').touched"
+          class="invalid"
+        >
+        {{'It-Is-Required-Field' | translate}}
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <!--end meeting form-->
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{'xs': size =='XS', 'sm': size=='SM'}"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        {{'CANCEL' | translate}}
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+        [disabled]="form.invalid"
+      >
+        <span *ngIf="formMode=='new'"
+          >{{'ApplicantProfile.ADD' | translate }} <span class="form-type-lbl">{{formType | translate }}</span></span
+        >
+        <span *ngIf="formMode=='edit'"
+          >{{'Common.UPDATE' | translate }} <span class="form-type-lbl">{{formType | translate }}</span></span
+        >
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading && !dataLoaded"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,102 @@
+@import "../../theme/styles/mixins";
+@import "../../theme/styles/mixins";
+::ng-deep .mat-expansion-panel-body {
+  padding: 0px;
+}
+
+.over-due {
+  font-size: $f14;
+  color: #e21d26;
+}
+
+.group-list-container {
+  max-height: 300px;
+  overflow: auto;
+}
+mat-card {
+  margin: 4px 0px;
+  padding: 16px 0px;
+  mat-label {
+    font-size: $f14;
+  }
+
+  // .card-header {
+  //   padding: 0px 16px;
+  //   margin-bottom: 12px;
+  //   font-size: 16px;
+  // }
+  mat-card-content {
+    padding: 0px 16px;
+
+    .call {
+      border-radius: 4px;
+      background-color: rgba(0, 174, 239, 0.1);
+      padding: 4px 12px;
+      font-size: 16px;
+      color: #00aeef;
+    }
+    .meeting {
+      border-radius: 4px;
+      background-color: rgba(54, 125, 255, 0.1);
+      padding: 4px 12px;
+      font-size: 16px;
+      color: #367dff;
+    }
+
+    .task {
+      display: none;
+    }
+
+    .proposal {
+      border-radius: 4px;
+      background-color: rgba(248, 151, 29, 0.1);
+      padding: 4px 12px;
+      font-size: 16px;
+      color: #f8971d;
+    }
+  }
+}
+
+.small-spinner {
+  width: 100%;
+  @include flex-center;
+  margin-bottom: 10px;
+}
+
+.fill-bg {
+  background-color: white;
+  border-radius: 5px;
+  height: 450px;
+  @include flex-center;
+}
+
+.activity-progress {
+  border-radius: 4px;
+  ::ng-deep .mat-progress-bar-background {
+    fill: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-buffer {
+    background-color: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-fill::after {
+    background-color: #00a3ff;
+  }
+  &.done {
+    ::ng-deep .mat-progress-bar-fill::after {
+      background-color: #aaadb8;
+    }
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}

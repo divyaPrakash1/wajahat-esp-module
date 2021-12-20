@@ -1,0 +1,59 @@
+.reject-content {
+  width: 340px;
+  margin: 0 auto 30px auto;
+}
+.reject-content h1 {
+  font-family: Lato;
+  font-size: 24px;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  color: #303030;
+  margin: 0 0 24px 0;
+}
+.reject-form p {
+  font-family: Lato;
+  font-size: 16px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #303030;
+  margin-bottom: 24px;
+}
+.action-btns button.action-btn {
+  font-family: Lato;
+  font-size: 18px;
+  font-weight: 800;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  padding: 13px;
+}
+.action-btns button.action-btn span.mat-button-wrapper {
+  white-space: normal;
+}
+@media screen and (max-width:575px) {
+  .reject-content {
+    width: 100%;
+  }
+  .action-btns button.action-btn {
+    font-size: 14px;
+  }
+}
+/*------------------rtl-css----------*/
+::ng-deep body.rtl .reject-content h1 {
+  text-align: right;
+}
+::ng-deep body.rtl .reject-form p {
+  text-align: right;
+}
+::ng-deep body.rtl .action-btns {
+  flex-direction: row-reverse !important;
+}
+/*------------------rtl-css----------*/

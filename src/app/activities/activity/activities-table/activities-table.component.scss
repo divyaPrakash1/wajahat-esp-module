@@ -1,0 +1,352 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+mat-table {
+  box-shadow: none !important;
+  mat-header-row {
+    margin: 0px 24px;
+    &.first-row {
+      border-bottom: 0px;
+    }
+  }
+
+  mat-row {
+    margin: 0px 24px;
+    max-height: 48px;
+    &:hover {
+      padding: 0px 24px;
+      margin: 0px;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      background: rgba(0, 0, 0, 0.04);
+    }
+    &:last-of-type {
+      border-bottom: 0px;
+    }
+    .mat-cell:first-of-type,
+    .mat-footer-cell:first-of-type {
+      font-size: $f16;
+      font-weight: bold;
+    }
+    &.row-before {
+      border-bottom: 0px;
+    }
+  }
+
+  .mat-cell:first-of-type,
+  .mat-header-cell:first-of-type,
+  .mat-footer-cell:first-of-type {
+    padding-left: 0px;
+  }
+  .mat-header-cell {
+    color: $sub-title-color;
+    font-size: $f14;
+  }
+
+  // .mat-cell.description.backlog-description,
+  // .mat-header-cell.description.backlog-description {
+  //   // flex: 0 0 33% !important;
+  //   flex: 0 0 100% !important;
+  // }
+  .mat-cell.linkedTo,
+  .mat-header-cell.linkedTo {
+    // flex: 0 0 10% !important;
+    flex: 0 0 12% !important;
+  }
+  .mat-cell.assignedBy,
+  .mat-header-cell.assignedBy,
+  .mat-cell.assignedTo,
+  .mat-header-cell.assignedTo {
+    // flex: 0 0 10% !important;
+    flex: 0 0 12% !important;
+    max-width: 10%;
+  }
+
+  .mat-cell.dueDate,
+  .mat-header-cell.dueDate {
+    // flex: 0 0 10% !important;
+    flex: 0 0 13% !important;
+  }
+
+  .mat-cell.status,
+  .mat-header-cell.status {
+    // flex: 0 0 8% !important;
+    flex: 0 0 10% !important;
+    justify-content: flex-start !important;
+    padding-right: 20px !important;
+  }
+
+  .mat-cell.review,
+  .mat-header-cell.review {
+    // flex: 0 0 8% !important;
+    flex: 0 0 14% !important;
+  }
+  .mat-cell.progress,
+  .mat-header-cell.progress {
+    flex: 0 0 5% !important;
+    justify-content: flex-end;
+    padding: 0px 5px;
+  }
+  .mat-cell.progressBar,
+  .mat-header-cell.progressBar {
+    flex: 0 0 10% !important;
+    padding-right: 20px;
+  }
+
+  .mat-cell.actions,
+  .mat-header-cell.actions {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+    justify-content: flex-end !important;
+    padding-right: 20px !important;
+    svg {
+      margin: 0 8px 0 4px;
+    }
+    xcdrs-activities-actions {
+      // margin-left: 20px;
+      min-width: 17px;
+    }
+  }
+  .mat-cell.efforts,
+  .mat-header-cell.efforts {
+    // flex: 0 0 2% !important;
+    flex: 0 0 7% !important;
+  }
+  .mat-cell.completed,
+  .mat-header-cell.completed {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.claimed,
+  .mat-header-cell.claimed {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.started,
+  .mat-header-cell.started {
+    // flex: 0 0 2% !important;
+    flex: 0 0 10% !important;
+  }
+  .mat-cell.hover,
+  .mat-header-cell.hover {
+    flex: 0 0 0% !important;
+  }
+  .mat-cell {
+    padding: 16px 0px;
+  }
+}
+
+.more-duedate-icon-container {
+  margin-right: -15px;
+  color: $gray;
+}
+.activity-progress {
+  border-radius: 4px;
+  ::ng-deep .mat-progress-bar-background {
+    fill: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-buffer {
+    background-color: #f2f2f2;
+  }
+
+  ::ng-deep .mat-progress-bar-fill::after {
+    background-color: #00a3ff;
+  }
+  &.done {
+    ::ng-deep .mat-progress-bar-fill::after {
+      background-color: #aaadb8;
+    }
+  }
+}
+
+::ng-deep .schedule-menu.mat-menu-panel {
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .mat-menu-item {
+    font-weight: bold;
+    &:not(.last) {
+      border-bottom: 1px solid #dadadb;
+    }
+  }
+}
+
+.over-due {
+  // font-size: $f14;
+  // color: #e21d26;
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  color:#303030;
+}
+
+/*----03-05-2021----*/
+.actions-table .mat-header-cell label.mat-checkbox-layout > div {
+  width: 24px !important;
+  height: 24px !important;
+}
+.actions-table th.mat-header-cell {
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+  color: #94959c;
+}
+.action-table td.mat-cell {
+  margin-right: 24px;
+}
+.actions-table .description {
+  min-width: 25%;
+}
+.actions-table .description span {
+  padding-left: 24px;
+}
+.actions-table th.mat-header-cell {
+  padding-right: 0;
+}
+.actions-table .description span {
+  font-family: Lato;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #303030;
+}
+.actions-table .mat-header-cell.description {
+  padding-left: 24px;
+}
+.actions-table .owner {
+  min-width: 150px !important;
+}
+.actions-table .actions{
+  justify-content:center !important;
+}
+.actions-table .mat-cell span {
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+}
+.actions-table .mat-header-cell {
+  font-family: Lato;
+  font-size: 14px !important;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.71;
+  letter-spacing: normal;
+}
+.signed img {
+  background: rgba(141, 198, 63, 0.15);
+  width: 25px;
+  height: 24px;
+  padding: 2px;
+  margin: 0 10px;
+}
+
+/*------------------rtl-css--------------------*/
+
+span.text-break {
+  max-width: 90%;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+::ng-deep body.rtl mat-cell.mat-cell.cdk-cell.linkedTo.cdk-column-linkedTo {
+  margin-right: 6px;
+}
+::ng-deep body.rtl mat-table .mat-cell.progressBar, mat-table .mat-header-cell.progressBar {
+  padding-right: 2px;
+}
+::ng-deep body.rtl mat-cell.mat-cell.cdk-cell.progressBar.cdk-column-progressBar.mat-column-progressBar {
+  padding-right: 3px !important;
+  padding-left: 15px;
+}
+::ng-deep body.rtl mat-table .mat-cell.actions svg {
+  margin: 0 4px 0 8px !important;
+}
+::ng-deep body.rtl .actions-table .mat-header-cell.description{
+  padding-left: 24px;
+  padding-right: 0;
+}
+/*------------------rtl-css--------------------*/
+.progress-bar-container {
+  border-radius: 10px;
+  background-color: #eee;
+  position: relative;
+  width: 100%;
+  margin-left: 8px;
+  max-width: 240px;
+}
+.progress-bar {
+  height: 4px;
+  border-radius: 10px;
+  width: 0;
+}
+
+.progress-bar.green {
+	background-color: #33ba70;
+}
+.progress-bar.orange {
+	background-color: #f8971d;
+
+}
+.progress-bar.red {
+	background-color: #e21b24;
+}
+
+.vertical {
+	border-radius: 10px;
+	border-left: 4px solid #cdd0d8;
+	height: 12px;
+	width:4px;
+	position: absolute;
+	margin-top: -8px;
+	background-color: #ebecef;
+	border-radius: 4px;
+}
+
+
+td.td-width {
+  min-width: 17px;
+}
+
+::ng-deep .actions-table mat-cell .progress-bar-container {
+  margin-left: 0;
+}
+// ::ng-deep .mat-cell.status, .mat-header-cell.status {
+//     justify-content: flex-end !important;
+//     padding-right: 20px !important;
+//   }
+
+.actions-table.for-project .mat-cell.assignedBy,
+.mat-header-cell.assignedBy,
+.mat-cell.assignedTo,
+.mat-header-cell.assignedTo{
+  max-width: 14% !important;
+}
+mat-table.for-project .mat-cell.progress, mat-table.for-project .mat-header-cell.progress {
+  flex: 0 0 9% !important;
+  justify-content: flex-start;
+  padding-left: 7px;
+}
+mat-table.for-project .mat-cell.efforts, mat-table.for-project .mat-header-cell.efforts{
+  flex: 0 0 10% !important;
+}
+.actions-table.for-project .description {
+  max-width: 35%;
+}

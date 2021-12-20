@@ -1,0 +1,808 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  *ngIf="isEngProDataLoaded && dataLoaded && !isLoading"
+  class="followed-user-details-container"
+>
+  <div fxFlex>
+    <xcdrs-breadcrumbs [hidden]="!activitiesByGroup">
+      <a routerLink="/pages/activities" 
+      [queryParams]="{fromTab: fromTab, teamId: teamId, selectedTab: scoreCardSelectedTab, SourceSystemId: SourceSystemId, SourceTenantId: SourceTenantId, SourceObjectTypeId: SourceObjectTypeId, SourceObjectId: SourceObjectId}"
+      >{{'Activities' | translate}}</a>
+      <a routerLink="/pages/activities" 
+      [queryParams]="{activeTab:1, fromTab: fromTab, teamId: teamId, selectedTab: scoreCardSelectedTab, SourceSystemId: SourceSystemId, SourceTenantId: SourceTenantId, SourceObjectTypeId: SourceObjectTypeId, SourceObjectId: SourceObjectId}">{{'Following' | translate}}</a>
+      <span>{{
+        activitiesByGroup.userFirstName + " " + activitiesByGroup.userLastName
+      }}</span>
+    </xcdrs-breadcrumbs>
+  </div>
+  <div fxFlex class="followed-user-main-info">
+    <mat-card fxFlex fxLayout="column" fxLayoutAlign="start stretch">
+      <mat-card-content
+        fxFlex
+        fxLayout="row"
+        fxHide.xs
+        fxHide.sm
+        fxShow.gt-md
+        fxShow.lt-xl
+        fxShow.lg
+        fxShow.lt-lg
+        fxShow.md
+        fxLayoutAlign="start center"
+        [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+      >
+        <ngx-avatar
+          fxFlex="nogrow"
+          name="{{
+            activitiesByGroup.userFirstName +
+              ' ' +
+              activitiesByGroup.userLastName
+          }}"
+          [src]="activitiesByGroup.userProfilePictureurl"
+          initialsSize="2"
+          bgColor="#00C853"
+          fgColor="#FFFFFF"
+          size="80"
+          textSizeRatio="2.5"
+          [round]="true"
+        ></ngx-avatar>
+
+        <div
+          fxFlex
+          fxFlex.xs
+          fxFlex.sm
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          class="user-info"
+        >
+          <p class="user-group-label">
+            {{
+              activitiesByGroup.userFirstName +
+                " " +
+                activitiesByGroup.userLastName
+            }}
+          </p>
+          <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <mat-label fxFlex class="position">{{
+              activitiesByGroup.userPosition
+            }}</mat-label>
+            <span
+              fxFlex="nogrow"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              class="counter-container"
+            >
+              <p fxFlex="nogrow">
+                <span class="counter">
+                  {{ activitiesByGroup.assignedCount | numberPipe }}
+                </span>
+                <mat-label> {{'assigned' | translate }} </mat-label>
+              </p>
+              <p fxFlex="nogrow" class="counter-container">
+                <span class="counter">
+                  {{ activitiesByGroup.overdueCount | numberPipe}}
+                </span>
+                <mat-label> {{'overdue' | translate }} </mat-label>
+              </p>
+              <p fxFlex="nogrow" class="counter-container last">
+                <span class="counter">
+                  {{ activitiesByGroup.closedCount | numberPipe}}
+                </span>
+                <mat-label> {{'review' | translate }} </mat-label>
+              </p>
+        
+            </span>
+          </p>
+        </div>
+      </mat-card-content>
+      <mat-card-content
+        fxShow.xs
+        fxShow.sm
+        fxHide.gt-md
+        fxHide.lt-xl
+        fxHide.lg
+        fxHide.lt-lg
+        fxHide.md
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+      >
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+          <ngx-avatar
+            fxFlex="nogrow"
+            name="{{
+              activitiesByGroup.userFirstName +
+                ' ' +
+                activitiesByGroup.userLastName
+            }}"
+            [src]="activitiesByGroup.userProfilePictureurl"
+            initialsSize="2"
+            bgColor="#00C853"
+            fgColor="#FFFFFF"
+            size="54"
+            textSizeRatio="2.5"
+            [round]="true"
+          ></ngx-avatar>
+          <p
+            class="user-group-label"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="start stretch"
+          >
+            {{
+              activitiesByGroup.userFirstName +
+                " " +
+                activitiesByGroup.userLastName
+            }}
+            <mat-label class="position">{{
+              activitiesByGroup.userPosition
+            }}</mat-label>
+          </p>
+        </div>
+
+        <div fxFlex>
+          <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <span
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              class="counter-container"
+            >
+              <p fxFlex="nogrow">
+                <span class="counter">
+                  {{ activitiesByGroup.assignedCount | numberPipe }}
+                </span>
+                <mat-label> {{'assigned' | translate }} </mat-label>
+              </p>
+              <p fxFlex="nogrow" class="counter-container">
+                <span class="counter">
+                  {{ activitiesByGroup.closedCount | numberPipe }}
+                </span>
+                <mat-label> {{'review' | translate }} </mat-label>
+              </p>
+              <p fxFlex="nogrow" class="counter-container last">
+                <span class="counter">
+                  {{ activitiesByGroup.overdueCount | numberPipe }}
+                </span>
+                <mat-label> {{'overdue' | translate }} </mat-label>
+              </p>
+            </span>
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div
+    class="mine-activities-conatiner"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    fxFlex
+    *ngIf="dataLoaded && !isLoading"
+  >
+    <!-- start crad slider & srearch-->
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start start"
+      class="actions-container"
+    >
+      <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+        <xcdrs-search-field (search)="onSearch($event)"></xcdrs-search-field>
+        <!-- *ngIf="isDefultFilterApplied" -->
+        <div class="defult-filter"></div>
+        <span
+          class="filter-icon-container"
+          (click)="openFiltersDialog()"
+          [ngClass]="{ disabled: groupByAppliedFilter == 5 }"
+        >
+          <!-- *ngIf="isDefultFilterApplied" -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <path d="M0 0H24V24H0z" />
+              <path
+                fill="#AAADB8"
+                d="M10.071 11.56c.17.183.263.422.263.669v7.276c0 .437.532.66.848.352l2.046-2.326c.274-.326.425-.487.425-.81v-4.49c0-.247.095-.486.262-.669l5.873-6.32c.44-.473.1-1.242-.55-1.242H4.748c-.65 0-.99.767-.549 1.243l5.872 6.317z"
+              />
+            </g>
+          </svg>
+          <!-- <svg
+            *ngIf="!isDefultFilterApplied"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <path d="M0 0H24V24H0z" />
+              <path
+                fill="#6cb33f"
+                d="M10.071 11.56c.17.183.263.422.263.669v7.276c0 .437.532.66.848.352l2.046-2.326c.274-.326.425-.487.425-.81v-4.49c0-.247.095-.486.262-.669l5.873-6.32c.44-.473.1-1.242-.55-1.242H4.748c-.65 0-.99.767-.549 1.243l5.872 6.317z"
+              />
+            </g>
+          </svg> -->
+        </span>
+        <span class="more-icon-container">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu"  class="more-menu">
+            <button
+              mat-menu-item
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+            >
+              <mat-checkbox [(ngModel)]="showImportant"
+                >{{'Show-Important-First' | translate }}</mat-checkbox
+              >
+              <span fxFlex="nogrow" class="material-icons"> {{'flag' | translate }} </span>
+            </button>
+            <button mat-menu-item class="disabled-item" disabled>
+              <span>{{'Grouping' | translate }}</span>
+            </button>
+            <button
+              mat-menu-item
+              (click)="applyGrouping(option)"
+              *ngFor="let option of !isArabic ? groupByOptions : arabicGroupByOptions"
+            >
+              <mat-radio-group [(ngModel)]="groupByAppliedFilter">
+                <mat-radio-button
+                  [checked]="groupByAppliedFilter == option.id"
+                  [value]="option.id"
+                  (change)="applyGrouping(option)"
+                >
+                  {{ option.name }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </button>
+          </mat-menu>
+          <!-- <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <rect width="24" height="24" fill="#FFF" fill-opacity="0" rx="4" />
+            <path
+              fill="#AAADB8"
+              d="M12 16c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2zm0-6c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2zm0-6c1.105 0 2 .895 2 2s-.895 2-2 2-2-.895-2-2 .895-2 2-2z"
+            />
+          </g>
+        </svg> -->
+        </span>
+      </div>
+      <div fxFlex="nogrow"></div>
+    </div>
+    <!-- end card slider & search-->
+    <!-- <div
+      class="filter-container"
+      fxFlex
+      fxLayout="row wrap"
+      fxLayoutAlign="start start"
+      *ngIf="selectedFilters.length > 0 && !isDefultFilterApplied"
+    >
+      <ul class="filter-list">
+        <li class="filter-list-item" *ngFor="let filter of selectedFilters">
+          {{ filter.name }}
+          <svg
+            (click)="onFilterClose(filter)"
+            class="icon-close"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+          >
+            <g fill="none" fill-rule="evenodd">
+              <path d="M0 0L24 0 24 24 0 24z" />
+              <path
+                fill="white"
+                d="M12 10.236L6.764 5c-.196-.195-.512-.195-.708 0L5 6.056c-.195.196-.195.512 0 .708L10.236 12 5 17.236c-.195.196-.195.512 0 .708L6.056 19c.196.195.512.195.708 0L12 13.764 17.236 19c.196.195.512.195.708 0L19 17.944c.195-.196.195-.512 0-.708L13.764 12 19 6.764c.195-.196.195-.512 0-.708L17.944 5c-.196-.195-.512-.195-.708 0L12 10.236z"
+              />
+            </g>
+          </svg>
+        </li>
+        <li
+          (click)="onClearFilterS()"
+          class="clear-filter-item"
+          *ngIf="selectedFilters.length"
+        >
+          Clear Filter
+        </li>
+      </ul>
+    </div> -->
+
+    <!--start groups accordion-->
+
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      *ngIf="isListViewActive"
+    >
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="groups-container"
+        *ngIf="groupByAppliedFilter != 0 && groupByAppliedFilter != 5"
+      >
+        <div
+          *ngIf="activitiesByGroup.groups.length > 0"
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+        >
+        <xcdrs-activities-group
+        *ngFor="let group of activitiesByGroup.groups; let i = index"
+        [group]="group"
+        [i]="i"
+        [selectedFiltersIds]="selectedFiltersIds"
+        [search]="search"
+        [loggedInUserId]="loggedInUserId"
+        [activeTab]="activeTab"
+        [totalCount]="totalCount"
+        [lastLoadedCount]="lastLoadedCount"
+        [size]="size"
+        [groupByAppliedFilter]="groupByAppliedFilter"
+        (reloadList)="reload($event)"
+        [userId]="userId"
+        [engProLoggedInUserId]="engProLoggedInUserId"
+        [isEngProEnabled]="isEngProEnabled"
+        ></xcdrs-activities-group>
+        </div>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="ungrouped-container"
+        *ngIf="
+          groupByAppliedFilter == 0 ||
+          (groupByAppliedFilter == 5 && isSearchMode())
+        "
+      >
+        <!--start group table-->
+
+        <xcdrs-activities-table
+          fxFlex
+          fxHide.xs
+          fxHide.sm
+          fxShow.gt-md
+          fxShow.lt-xl
+          fxShow.lg
+          fxShow.lt-lg
+          fxShow.md
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          *ngIf="activitiesByGroup.ungrouped.length > 0"
+          [loggedInUserId]="loggedInUserId"
+          [activeTab]="activeTab"
+          [totalCount]="totalCount"
+          [lastLoadedCount]="lastLoadedCount"
+          (pageChange)="onPageChange($event, selectedFiltersIds)"
+          [activities]="activitiesSubject.asObservable()"
+          [oppProData]="null"
+          [espAddon]="null"
+          (reloadList)="reload($event)"
+          [engProLoggedInUserId]="engProLoggedInUserId"
+          [pageNo]="pageIndex-1"
+        >
+        </xcdrs-activities-table>
+        <div
+          fxShow.xs
+          fxShow.sm
+          fxHide.gt-md
+          fxHide.lt-xl
+          fxHide.lg
+          fxHide.lt-lg
+          fxHide.md
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          *ngIf="activitiesByGroup.ungrouped.length > 0"
+        >
+          <mat-card
+            *ngFor="let activity of activitiesByGroup.ungrouped"
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="space-around stretch"
+          >
+            <mat-card-header
+              class="card-header"
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+            >
+              <mat-card-title
+                class="clickable"
+                (click)="openActivityDetails(activity)"
+              >
+                {{ activity.description | textTruncate: 60 }}</mat-card-title
+              >
+            </mat-card-header>
+
+            <mat-card-content
+              fxFlex
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+            >
+              <p
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                *ngIf="!!activity.createdBy"
+              >
+                <mat-label fxFlex="35">{{'Assigned-By' | translate }}: </mat-label>
+                <span>
+                  {{
+                    activity.createdBy.UserFirstName +
+                      " " +
+                      activity.createdBy.UserLastName
+                  }}
+                </span>
+              </p>
+              <p
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                *ngIf="activity.parentBoardId != null"
+              >
+                <mat-label fxFlex="35">{{'Project' | translate }}: </mat-label>
+                <span> {{ activity.parentBoardName }} </span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <mat-label fxFlex="35"
+                  ><span *ngIf="activity.appType != 2">{{'Due' | translate}} </span>{{'Date'| translate}}:
+                </mat-label>
+                <span
+                  *ngIf="activity.dueDateLabel == 'Overdue'"
+                  class="over-due"
+                  >{{ activity.dueDate | datePipe :  "medium"}}</span
+                >
+                <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+                  activity.dueDate | datePipe : "medium"
+                }}</span>
+              </p>
+
+              <p
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              *ngIf="activity.appType == 4 && activity.requestNumber !=null"
+            >
+              <mat-label fxFlex="35">{{'REQUEST' | translate}} #: </mat-label>
+              <span>
+                {{
+                  activity.requestNumber | numberPipe
+                }}
+              </span>
+            </p>
+            <p
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              *ngIf="activity.appType == 4 && activity.requestName !=null"
+            >
+              <mat-label fxFlex="35">{{'REQUEST' | translate}} {{'Common.NAME' | translate }}: </mat-label>
+              <span>
+                {{
+                  activity.requestName
+                }}
+              </span>
+            </p>
+              <p
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                *ngIf="activity.appType == 2"
+              >
+                <mat-label fxFlex="35">{{'Time' | translate}}: </mat-label>
+                <span>{{ activity.oppProScheduleEndDate | datePipe :  "medium" }}</span>
+                <span> - {{ activity.oppProScheduleEndDate | datePipe :  "medium" }}</span>
+              </p>
+              <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+                <span
+                  fxFlex="35"
+                  [ngStyle]="{
+                    color: activity.progressStatusColor,
+                    'font-weight': 'bold',
+                    'white-space': 'nowrap'
+                  }"
+                >
+                  <span *ngIf="activity.appType != 2">{{
+                    activity.progressStatus
+                  }}</span>
+                  <span *ngIf="activity.appType == 2">{{
+                    activity.oppProStatus
+                  }}</span></span
+                >
+                <span
+                  fxFlex="15"
+                  *ngIf="activity.score != null && activity.status != 4"
+                  [ngClass]="{ done: activity.status == 2 }"
+                  [ngStyle]="{
+                    color:
+                      activity.status == 2
+                        ? '#AAADB8'
+                        : activity.progressStatusColor,
+                    'font-weight': 'bold',
+                    'white-space': 'nowrap'
+                  }"
+                  >{{ activity.score | numberPipe }} %</span
+                >
+                <mat-progress-bar
+                  *ngIf="activity.score != null && activity.status != 4"
+                  [ngClass]="{ done: activity.status == 2 }"
+                  fxFlex="40"
+                  class="activity-progress"
+                  [value]="activity.score"
+                ></mat-progress-bar>
+                <span fxFlex fxLayoutAlign="end center">
+                  <span
+                    *ngIf="activity.appType == 2"
+                    [ngClass]="{
+                      task: activity.oppProActivityType == 'task',
+                      meeting: activity.oppProActivityType == 'meeting',
+                      call: activity.oppProActivityType == 'call',
+                      proposal: activity.oppProActivityType == 'proposal'
+                    }"
+                    >{{ activity.oppProActivityType }}</span
+                  ></span
+                >
+              </p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          class="fill-bg box-height"
+          *ngIf="
+            !isReloadingList &&
+            !isLoading &&
+            dataLoaded &&
+            !isError &&
+            activitiesByGroup.ungrouped.length === 0 &&
+            !isSearchMode()
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="''"
+            [title]="'No-Activities-Available' | translate"
+            [subTitle]="'It-Seems-No-Activites-Created-For-You-Yet' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          class="fill-bg"
+          *ngIf="
+            !isReloadingList &&
+            dataLoaded &&
+            !isLoading &&
+            isError &&
+            activitiesByGroup.ungrouped.length == 0
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="'../../../../assets/images/ic_error.png'"
+            [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+            [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+
+        <div
+          class="fill-bg"
+          *ngIf="
+            !isReloadingList &&
+            dataLoaded &&
+            !isLoading &&
+            !isError &&
+            activitiesByGroup.ungrouped.length === 0 &&
+            isSearchMode()
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="'../../../../assets/images/news-item/no-items.svg'"
+            [title]="'Activity-Not-Found' | translate"
+            [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+        <!-- end group table-->
+      </div>
+    </div>
+
+    <!-- end groups accordion-->
+
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      *ngIf="!isListViewActive"
+    >
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+        *ngIf="!isReloadingList && listReloaded"
+      >
+        <mat-card
+          fxFlex
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayout.xs="column"
+          fxLayoutAlign.xs="space-around stretch"
+          fxLayout.sm="column"
+          fxLayoutAlign.sm="space-around stretch"
+          class="week-card"
+          id="{{ 'week-' + week.weekName }}"
+          *ngFor="
+            let week of activitiesByGroup.weeksGroup.weeks;
+            let index = index
+          "
+        >
+          <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+            <div
+              fxFlex="50"
+              fxLayout="column"
+              fxLayoutAlign="space-around stretch"
+            >
+              <div>
+                <mat-label class="week-name"> {{ week.weekName }}</mat-label>
+                <p class="week-start-end-dates">
+                  {{ week.weekStartDateStr }} - {{ week.weekEndDateStr }}
+                </p>
+              </div>
+              <div
+                fxFlex
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                class="week-data"
+              >
+                <div class="efforrs">
+                  <mat-label>{{'Efforts' | translate }}</mat-label>
+                  <span class="efforts-val">
+                    <span
+                      [hidden]="
+                        week.effortSumHours == 0 || week.effortSumHours == null
+                      "
+                      >{{ week.effortSumHours | numberPipe}}{{'HR' | translate}}&nbsp;
+                    </span>
+                    <span
+                      [hidden]="
+                        week.effortSumMinutes == 0 ||
+                        week.effortSumMinutes == null
+                      "
+                      >{{ week.effortSumMinutes | numberPipe}}{{'MIN' | translate}}</span
+                    >
+                  </span>
+                </div>
+                <div class="activities">
+                  <mat-label>{{'Activities' | translate}}</mat-label>
+
+                  <span class="activities-val">{{ week.indicatorCount | numberPipe}}</span>
+                </div>
+                <div class="overdue">
+                  <mat-label>{{'Overdue' | translate }}</mat-label>
+                  <span class="overdue-val">{{ week.overdueCount | numberPipe}}</span>
+                </div>
+              </div>
+            </div>
+            <div fxFlex="50" class="week-chart">
+              <xcdrs-week-graph
+                id="{{ 'graph-' + index + '-' + week.weekNumber }}"
+                *ngIf="week.indicators.length > 0"
+                [indicators]="week.indicators"
+                [weekNumber]="week.weekNumber"
+                [weekIdx]="index"
+              ></xcdrs-week-graph>
+            </div>
+          </div>
+        </mat-card>
+
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          class="fill-bg box-height"
+          *ngIf="
+            !isReloadingList &&
+            !isLoading &&
+            dataLoaded &&
+            !isError &&
+            activitiesByGroup.weeksGroup.weeks.length === 0 &&
+            !isSearchMode()
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="''"
+            [title]="'No-Activities-Available' | translate"
+            [subTitle]="'It-Seems-No-Activites-Created-For-You-Yet' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+
+        <div
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="start stretch"
+          class="fill-bg"
+          *ngIf="
+            !isReloadingList &&
+            dataLoaded &&
+            !isLoading &&
+            isError &&
+            activitiesByGroup.weeksGroup.weeks.length == 0
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="'../../../../assets/images/ic_error.png'"
+            [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+            [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+
+        <div
+          class="fill-bg"
+          *ngIf="
+            !isReloadingList &&
+            dataLoaded &&
+            !isLoading &&
+            !isError &&
+            activitiesByGroup.weeksGroup.weeks.length === 0 &&
+            isSearchMode()
+          "
+        >
+          <xcdrs-detailed-panel-placeholder
+            [imagePath]="'../../../../assets/images/news-item/no-items.svg'"
+            [title]="'Activity-Not-Found' | translate"
+            [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+          >
+          </xcdrs-detailed-panel-placeholder>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    fxFlex
+    fxLayout="column"
+    *ngIf="isReloadingList || (!isReloadingList && !dataLoaded && isLoading)"
+    fxLayoutAlign="space-around center"
+    class="spinner-container"
+  >
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
+
+<div
+  fxFlex
+  fxLayout="column"
+  *ngIf="
+    !isEngProDataLoaded ||
+    isReloadingList ||
+    (!isReloadingList && !dataLoaded && isLoading)
+  "
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

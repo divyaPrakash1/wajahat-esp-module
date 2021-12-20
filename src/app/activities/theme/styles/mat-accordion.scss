@@ -1,0 +1,37 @@
+/****expantion styles ****/
+mat-accordion {
+  margin: 8px 0px;
+  // mat-panel-title {
+  //   padding: 18px 0px 14px 0px;
+  // }
+  &:not(.xs) {
+    .mat-expansion-panel-content {
+      background-color: #ffffff;
+    }
+  }
+  .mat-expansion-panel:not([class*="mat-elevation-z"]) {
+    box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.25);
+  }
+  .mat-expansion-panel-header-description,
+  .mat-expansion-indicator::after {
+    color: #aaadb8;
+  }
+
+  &.xs,
+  &.sm {
+    .mat-expansion-panel,
+    .mat-expansion-panel-header-title {
+      background-color: transparent;
+      color: #4d586e;
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0px 6px;
+    }
+    .mat-expansion-panel-content,
+    .mat-expansion-panel:not(.mat-expanded):not([aria-disabled="true"])
+      .mat-expansion-panel-header:hover {
+      background-color: transparent;
+    }
+  }
+}

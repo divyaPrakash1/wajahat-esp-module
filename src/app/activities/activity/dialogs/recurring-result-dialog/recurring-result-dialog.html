@@ -1,0 +1,153 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="close-dialog-container"
+>
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="close-ic clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content"
+    [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">Recurring Details</h1>
+
+    <mat-card fxFlex class="progress">
+      <mat-card-content
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="space-around stretch"
+      >
+        <p>
+        Every {{data.numberOfTimes}} {{data.freqtTimesType}} on 
+        <span *ngIf="data.frequancyOption !=null && data.frequancyOption ==false">
+          <span *ngIf="data.selectedSeqNoOfDay!=5">{{data.selectedSeqNoOfDay}}
+            <span *ngIf="data.selectedSeqNoOfDay==1">(st)</span>
+            <span *ngIf="data.selectedSeqNoOfDay==2">(nd)</span>
+            <span *ngIf="data.selectedSeqNoOfDay==3">(rd)</span>
+            <span *ngIf="data.selectedSeqNoOfDay==4">(th)</span>
+          </span>
+          <span *ngIf="data.selectedSeqNoOfDay==5">last</span>
+          {{weekDays[data.selectedNoOfDayOpt]}}
+        </span>
+        <span *ngIf="data.frequancyOption !=null && data.frequancyOption ==true">
+          <span>{{data.selectedNoOfDay}}
+            <span *ngIf="data.selectedNoOfDay==1">(st)</span>
+            <span *ngIf="data.selectedNoOfDay==2">(nd)</span>
+            <span *ngIf="data.selectedNoOfDay==3">(rd)</span>
+            <span *ngIf="data.selectedNoOfDay>=4">(th)</span>
+          </span>
+          {{noOfDayOpts[data.selectedNoOfDayOpt]}}
+        </span>
+        <span *ngIf="data.frequancyOption == null">{{daysString}}</span>
+        <br/>
+        
+        
+        Till 
+        <span *ngIf="data.repeatEndsAfterTimes == null">{{data.repeatEndsDate}}</span>
+        <span *ngIf="data.repeatEndsAfterTimes !=null">{{data.repeatEndsAfterTimes}} times</span>
+        <br/>
+        {{distributionOptions[data.distribution]}} Distribution<br/>
+        </p>
+      </mat-card-content>
+    </mat-card>
+    
+
+    <div  
+    fxFlex
+    fxLayout="column"
+    fxLayoutAlign="space-around stretch"
+    class="results-container"
+    *ngIf="data.results.length>0">
+    <mat-card fxFlex class="result-record" [ngClass]="{'last': last}"
+    *ngFor="let result of data.results; let last=last">
+      <mat-card-content
+        fxFlex
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+      >
+
+       <span class="dueDate">{{result.DueDate|date: 'd MMM y'}}</span>
+       <span class="day">{{result.DueDate|date: 'EEEE'}}</span>
+       <span class="target"><mat-label>Target:</mat-label>{{result.TargetValue!=null ? result.TargetValue : 100}}</span>
+      </mat-card-content>
+    </mat-card>
+
+    </div>
+
+
+    
+    <div
+    fxFlex
+   
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    class="fill-bg"
+    *ngIf="data.results.length==0"
+  >
+    <xcdrs-detailed-panel-placeholder
+      [imagePath]="'../../../assets/images/ic_no_result.png'"
+      [title]="'No recurrences found'"
+      [subTitle]="
+        ''
+      "
+    >
+    </xcdrs-detailed-panel-placeholder>
+  </div>
+   
+  </div>
+  
+  <div
+  class="action-btns"
+  fxFlex
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+  [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+>
+  <!-- <button
+    fxFlex="43"
+    (click)="cancel()"
+    class="action-btn cancel-btn"
+    mat-stroked-button
+    color="primary"
+  >
+    Cancel
+  </button> -->
+  <button
+    fxFlex
+    (click)="submit()"
+    class="action-btn gradient-btn submit-btn"
+    mat-flat-button
+    color="primary"
+  >
+    Save Recurring
+  </button>
+</div>
+</div>
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

@@ -1,0 +1,47 @@
+<div class="container" [ngClass]="{'small':smallSize}" *ngIf="!isFromScoreCard">
+  <img [src]="imagePath" [ngStyle]='customStyle' *ngIf="!boardType"/>
+  <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"  *ngIf="boardType">
+    <g fill="none" fill-rule="evenodd">
+      <g>
+        <g>
+          <g>
+            <path d="M0 0H80V80H0z" transform="translate(-873 -176) translate(782 176) translate(91)"></path>
+            <path fill="#E5E6E9" d="M67.4 16.8c.884 0 1.6.716 1.6 1.6v52.8c0 .884-.716 1.6-1.6 1.6H22.6c-.884 0-1.6-.716-1.6-1.6v-5.4h40.4c.835 0 1.52-.639 1.593-1.454L63 64.2V16.8h4.4z" transform="translate(-873 -176) translate(782 176) translate(91)"></path>
+            <path fill="#CDD0D8" d="M58.6 7c.884 0 1.6.716 1.6 1.6v52.8c0 .884-.716 1.6-1.6 1.6H13.8c-.884 0-1.6-.716-1.6-1.6V8.6c0-.884.716-1.6 1.6-1.6h44.8zM38.2 45.4H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h18.2c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm14.2-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm0-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm0-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4V18c0-.773-.627-1.4-1.4-1.4z" transform="translate(-873 -176) translate(782 176) translate(91)"></path>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+  
+  <div class="title">{{title}}</div>
+  <div class="sub-title">{{subTitle}}</div>
+</div>
+
+<div class="container" [ngClass]="{'small':smallSize}" *ngIf="isFromScoreCard">
+  <img class="measure-image" src="../../../../../../../assets/images/measures1.png.png" *ngIf="boardType=='measures'">
+  <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" *ngIf="boardType!='measures'">
+    <g fill="none" fill-rule="evenodd">
+        <g>
+            <g>
+                <g>
+                    <path d="M0 0H80V80H0z" transform="translate(-873 -176) translate(782 176) translate(91)"/>
+                    <path fill="#E5E6E9" d="M67.4 16.8c.884 0 1.6.716 1.6 1.6v52.8c0 .884-.716 1.6-1.6 1.6H22.6c-.884 0-1.6-.716-1.6-1.6v-5.4h40.4c.835 0 1.52-.639 1.593-1.454L63 64.2V16.8h4.4z" transform="translate(-873 -176) translate(782 176) translate(91)"/>
+                    <path fill="#CDD0D8" d="M58.6 7c.884 0 1.6.716 1.6 1.6v52.8c0 .884-.716 1.6-1.6 1.6H13.8c-.884 0-1.6-.716-1.6-1.6V8.6c0-.884.716-1.6 1.6-1.6h44.8zM38.2 45.4H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h18.2c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm14.2-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm0-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4v-.4c0-.773-.627-1.4-1.4-1.4zm0-9.6H20c-.773 0-1.4.627-1.4 1.4v.4c0 .773.627 1.4 1.4 1.4h32.4c.773 0 1.4-.627 1.4-1.4V18c0-.773-.627-1.4-1.4-1.4z" transform="translate(-873 -176) translate(782 176) translate(91)"/>
+                </g>
+            </g>
+        </g>
+    </g>
+  </svg>
+  <div class="title">{{'EMPTY-SCREEN.NO-RECORDS-FOR-SCORE-CARD-LABLE' | translate : ({labelTitle:labelTitle})}}</div>
+  <button  
+    fxFlex="nogrow" 
+    fxHide.xs 
+    fxHide.sm 
+    class="add-action-btn gradient-btn styled-add-btn" 
+    mat-flat-button 
+    color="primary" 
+    (click)="addAction()">
+    {{'Add-Key-Result' | translate : ({keyResultLable:keyResultLabl})}}
+  </button>
+</div>

@@ -1,0 +1,49 @@
+<div fxFlex fxLayout="column" fxLayoutAlign="space-around stretch"
+    *ngIf="isEngProDataLoaded && isOppProDataLoaded && isEspAddonLoaded">
+  <h1>{{ 'Signature-Activities' | translate }}</h1>
+
+  <mat-tab-group [selectedIndex]="tabIndex">
+    <mat-tab [label]="'Closed' | translate">
+      <ng-template matTabContent>
+        <xcdrs-closed-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isOppProEnabled]="isOppProEnabled"
+          [oppProData]="oppProData"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+        ></xcdrs-closed-activities>
+      </ng-template>
+    </mat-tab>
+    <mat-tab [label]="'SIGNED' | translate">
+      <ng-template matTabContent>
+        <xcdrs-signed-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+        ></xcdrs-signed-activities>
+      </ng-template>
+    </mat-tab>
+    <mat-tab [label]="'Rejected' | translate">
+      <ng-template matTabContent>
+        <xcdrs-rejected-activities
+          [isEngProEnabled]="isEngProEnabled"
+          [engProLoggedInUserId]="engagementProLoggedInUserId"
+          [engProUsers]="engagementProUsers"
+          [engProTeams]="engagementProTeams"
+          [isEspEnabled]="isEspEnabled"
+          [espAddon]="espAddon"
+        ></xcdrs-rejected-activities>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div fxFlex fxLayout="column" *ngIf="!isEngProDataLoaded && !isOppProDataLoaded && !isEspAddonLoaded"
+    fxLayoutAlign="space-around center" class="spinner-container">
+    <mat-spinner></mat-spinner>
+</div>

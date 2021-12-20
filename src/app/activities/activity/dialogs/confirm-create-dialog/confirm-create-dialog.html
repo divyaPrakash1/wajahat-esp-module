@@ -1,0 +1,35 @@
+<div
+  class="confirm-create-container"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  *ngIf="!isLoading"
+>
+  <div class="activity-description">{{data.form.title}}</div>
+  <div class="close-type">
+    You have successfully <span *ngIf="data.isPlanned">planned</span
+    ><span *ngIf="!data.isPlanned && !data.isReassigned">updated</span
+    ><span *ngIf="data.isReassigned">reassigned</span> this Activity!
+  </div>
+  <div class="action-btn">
+    <button
+      fxFlex
+      (click)="submit()"
+      class="action-btn gradient-btn submit-btn"
+      mat-flat-button
+      color="primary"
+    >
+      Ok
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

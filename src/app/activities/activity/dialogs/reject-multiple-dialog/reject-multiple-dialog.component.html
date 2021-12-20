@@ -1,0 +1,94 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+<div
+  fxFlex
+  fxShow.xs
+  fxShow.sm
+  fxShow.gt-md
+  fxShow.lt-xl
+  fxShow.lg
+  fxShow.lt-lg
+  fxShow.md
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  class="reject-dialog-container"
+  *ngIf="!isLoading"
+>
+  <div
+    fxFlex="nogrow"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    fxHide.xs
+    fxHide.sm
+  >
+    <mat-icon class="clickable" (click)="onNoClick()">close</mat-icon>
+  </div>
+
+  <div
+    class="content reject-content"
+    [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+  >
+    <h1 mat-dialog-title class="title">
+      {{'Sure-To-Reject-This-Activity' | translate}}
+    </h1>
+
+    <div
+      class="reject-form"
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    >
+      <p class="reject-desc">
+        {{ 'After-Rejection-No-Longer' | translate }}
+      </p>
+      <!-- <mat-form-field class="custom reject-reason-field">
+        <input
+          type="text"
+          name="rejectReason"
+          matInput
+          formControlName="rejectReason"
+          id="rejectReason"
+          placeholder="Reason for your rejection"
+          required
+        />
+      </mat-form-field> -->
+    </div>
+    <div
+      class="action-btns"
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      [ngClass]="{ xs: size == 'XS', sm: size == 'SM' }"
+    >
+      <button
+        fxFlex="43"
+        (click)="cancel()"
+        class="action-btn cancel-btn"
+        mat-stroked-button
+        color="primary"
+      >
+        {{'CANCEL' | translate}}
+      </button>
+      <button
+        fxFlex="54"
+        (click)="submit()"
+        class="action-btn gradient-btn submit-btn"
+        mat-flat-button
+        color="primary"
+      >
+        {{ 'Reject-Activity' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

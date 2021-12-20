@@ -1,0 +1,325 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.close-dialog-container {
+  max-width: 100%;
+  .content {
+    // margin: 0px 192px;
+    &.xs {
+      margin: 0px;
+      h1,
+      .distribution,
+      .fisrt-occ-on,
+      .repeat-switch-container,
+      .frequency,
+      .repeat-ends,
+      .action-btns {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+      .progress {
+        margin-left: 24px;
+        margin-right: 24px;
+      }
+      .freqOpts-container {
+        button {
+          width: 144px !important;
+        }
+      }
+      .day-field {
+        width: 130px;
+      }
+    }
+    &.sm {
+      .day-field {
+        width: 120px;
+      }
+      .freqOpts-container {
+        button {
+          width: 144px !important;
+        }
+      }
+    }
+    h1 {
+      padding-top: 0px;
+      margin-top: 0px;
+      padding-bottom: 24px;
+      padding-left: 192px;
+      padding-right: 192px;
+    }
+
+    .progress {
+      background-color: #f6f7f9;
+      padding-bottom: 24px;
+      box-shadow: none !important;
+      margin-left: 192px;
+      margin-right: 192px;
+      margin-bottom: 24px;
+      span {
+        white-space: nowrap;
+      }
+    }
+    .distribution,
+    .repeat-ends,
+    .frequency,
+    .fisrt-occ-on {
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+    .fisrt-occ-on {
+      padding-bottom: 0px;
+      margin-top: 0px;
+    }
+
+    .distribution,
+    .frequency,
+    .repeat-ends,
+    .fisrt-occ-on {
+      padding-left: 192px;
+      padding-right: 192px;
+      border-bottom: 1px solid #dadadb;
+      .freqTxt,
+      .endsTxt {
+        font-size: $f16;
+        // max-width: 70%;
+        .freqTxt-span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          -o-text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 90%;
+        }
+      }
+      ::ng-deep mat-radio-button {
+        margin-bottom: 16px;
+        .mat-radio-label-content {
+          padding-left: 16px;
+        }
+      }
+      .checkboxes-container {
+        mat-checkbox {
+          font-size: $f16;
+          margin-bottom: 16px;
+          ::ng-deep .mat-checkbox-frame {
+            border-width: 1px;
+            border-color: $light-gray !important;
+          }
+          ::ng-deep .mat-checkbox-background,
+          ::ng-deep .mat-checkbox-label,
+          ::ng-deep .mat-checkbox-frame {
+            width: 24px;
+            height: 24px;
+          }
+
+          ::ng-deep .mat-checkbox-label {
+            margin-left: 12px;
+            line-height: 32px;
+          }
+        }
+      }
+      .number-Times-field,
+      .on-date-field {
+        margin-left: 35px;
+      }
+      .number-Times-field,
+      .on-date-field,
+      .on-start-date-field {
+        // margin-top: 16px;
+        ::ng-deep .mat-form-field-wrapper {
+          ::ng-deep .mat-form-field-suffix {
+            mat-datepicker-toggle {
+              .mat-icon-button {
+                margin-right: $f14;
+                svg {
+                  width: 24px;
+                  height: 24px;
+                  fill: $main-color;
+                  margin-top: -14px;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .every-lbl {
+        margin-bottom: 4px;
+      }
+      .freqOpts-container {
+        margin-bottom: 24px;
+        button {
+          width: 106px;
+          height: 48px;
+          border-radius: 0px;
+
+          background-color: #fff;
+          &:first-of-type {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+          }
+
+          &:last-of-type {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+          }
+
+          &.active {
+            background-color: $primary-color;
+            color: #fff;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    .repeat-switch-container {
+      padding-bottom: 32px;
+      padding-left: 192px;
+      padding-right: 192px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #dadadb;
+
+      ::ng-deep mat-slide-toggle {
+        .mat-slide-toggle-bar {
+          height: 22px;
+          width: 48px;
+          border-radius: 12px;
+          .mat-slide-toggle-thumb-container {
+            width: 20px;
+            height: 20px;
+            top: 3px;
+            left: 4px;
+
+            .mat-slide-toggle-thumb {
+              background-color: white;
+              width: 16px;
+              height: 16px;
+            }
+          }
+        }
+
+        &.mat-checked {
+          .mat-slide-toggle-bar {
+            background: linear-gradient(to right, #a0da6c, #6cb33f);
+            .mat-slide-toggle-thumb-container {
+              left: 12px;
+            }
+          }
+        }
+      }
+
+      .repeat-lbl {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0px 16px;
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+    }
+    .action-btns {
+      .action-btn {
+        height: 48px;
+      }
+      // margin-bottom: 24px;
+      padding-left: 192px;
+      padding-right: 192px;
+
+      &.xs,
+      &.sm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        background: #fff;
+        // margin-bottom: 0px;
+      }
+    }
+    .freq-opt-radio {
+      margin-top: 12px;
+    }
+    .day-field {
+      width: 176px;
+    }
+    .seqOfDay-field {
+      width: 102px;
+      margin-right: 8px;
+    }
+    // .noOfDay-field {
+    //   width: 286px;
+    // }
+    .close-form {
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .sub-title {
+        font-size: $f16;
+        font-weight: bold;
+        margin-bottom: 24px;
+      }
+      &.xs {
+        margin: 0px 0px 70px 0px;
+      }
+
+      margin: 0px 0px 16px 0px;
+      mat-form-field {
+        margin-bottom: 24px;
+      }
+    }
+  }
+
+  mat-icon {
+    color: $gray;
+  }
+  .close-ic {
+    margin-right: 24px;
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+::ng-deep .large-dialog .mat-dialog-container {
+  padding: 24px 0px;
+}
+
+::ng-deep .small-dialog .mat-dialog-container {
+  padding: 0px;
+}

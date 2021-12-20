@@ -1,0 +1,62 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.activities-counters-container {
+  .counters-container {
+    // width: 1128px;
+    // height: 96px;
+    width:100%;
+    height:auto;
+    // margin: 24px 156px 24px 45px;
+    padding: 24px;
+    border-radius: 4px;
+    box-shadow: 0 10px 20px 0 rgba(198, 201, 210, 0.25);
+    background-color: $white-color;
+    .title {
+      font-size: $f18;
+    }
+    .counter {
+      .lbl {
+        font-size: $f14;
+      }
+      .val {
+        color: $primary-color;
+        &.overdue {
+          color: $lipstick-color;
+        }
+      }
+    }
+  }
+  .spinner-container {
+    width: 100%;
+    @include flex-center;
+    margin-bottom: 10px;
+  }
+}
+.counter span{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  justify-content:center !important;
+  width:50%;
+}
+.counter span.counter-col {
+  padding: 0 2px;
+  float:left;
+}
+@media screen and (max-width:991px){
+  .activities-counters-container {
+    .counters-container {
+      display: grid !important;
+      grid-template-columns: 1fr;
+    }
+     div {
+      margin-bottom: 10px;
+  }
+  }
+}
+@media screen and (max-width:767px){
+  .counters-container div {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+  }
+}

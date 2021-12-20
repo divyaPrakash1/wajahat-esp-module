@@ -1,0 +1,82 @@
+@import "./variables";
+
+$hamburger-layer-color: $gray;
+$hamburger-layer-width: 24px;
+$hamburger-layer-height: 2px;
+
+.burger-menu-backdrop + .cdk-overlay-connected-position-bounding-box {
+  left: 0 !important;
+  right: 0 !important;
+  top: 56px !important;
+  width: 100% !important;
+
+  .cdk-overlay-pane {
+    width: 100%;
+    right: 0 !important;
+    top: 0 !important;
+  }
+
+  .burger-menu {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
+
+    .burger-menu-item {
+      display: flex;
+      align-items: center;
+      font-size: $f16;
+      font-weight: bold;
+      color: $gray;
+
+      .header-tab-icon {
+        display: flex;
+        margin-right: 4px;
+        margin-left: 16px;
+
+        &:after {
+          display: none;
+        }
+      }
+
+      span {
+        margin-left: 16px;
+      }
+
+      &.active {
+
+        svg {
+          path.icon-path {
+            fill: var(--primary-color);
+          }
+        }
+
+        span {
+          color: var(--primary-color);
+        }
+      }
+    }
+
+    .mat-menu-item-submenu-trigger::after {
+      display: none;
+    }
+
+    .menu-btn {
+      margin-left: 16px;
+
+      a {
+        font-size: $f16;
+      }
+    }
+  }
+
+  .mat-menu-item {
+    padding: 0;
+  }
+}
+
+.hamburger-inner {
+  color: red;
+}
+
+@import "./node_modules/hamburgers/_sass/hamburgers/hamburgers";

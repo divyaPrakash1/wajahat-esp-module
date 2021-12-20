@@ -1,0 +1,97 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+:host {
+  display: block;
+  position: fixed;
+  overflow: hidden;
+  left: 0;
+  right: 0;
+  top: 56px;
+  z-index: 999;
+}
+
+.container {
+  max-width: 1128px;
+  min-height: 40px;
+  line-height: 24px;
+  padding: 8px 68px;
+  font-size: $f16;
+  color: white;
+  font-weight: bold;
+  position: relative;
+
+  .icon-close {
+    position: absolute;
+    right: 32px;
+    top: 20%;
+    cursor: pointer;
+  }
+
+  .icon-type {
+    position: absolute;
+    left: 32px;
+    top: 20%;
+  }
+
+  .icon-container {
+    width: 24px;
+    height: 24px;
+  }
+
+}
+
+
+.success {
+  background-image: linear-gradient(to right, var(--primary-color-lighter) 0%, var(--primary-color) 100%);
+}
+
+.error {
+  background-image: linear-gradient(to right, #fe5659 0%, $lipstick-color 100%);
+}
+
+.warning {
+  background-image: linear-gradient(to right, #f8b357 0%, $secondary-color 100%);
+}
+
+.info {
+  background-image: linear-gradient(to right, $info-color-2 0%, $info-color 100%);
+
+  .container {
+    color: $main-color;
+  }
+}
+
+
+@media only screen and (max-width: 576px) {
+  .container {
+    font-size: $f14;
+  }
+}
+
+
+@media only screen and (max-width: 452px) {
+  .container {
+    font-size: $f14;
+
+    .icon-type {
+      top: 31.25%;
+    }
+
+    .icon-close {
+      top: 31.25%;
+    }
+  }
+}
+
+
+/*----------------rtl-css-----------------------*/
+::ng-deep body.rtl .container .icon-close {
+  right: auto !important;
+  left: 32px !important;
+}
+::ng-deep body.rtl .container .icon-type {
+  left: auto !important;
+  right: 32px !important;
+}
+/*----------------rtl-css-----------------------*/

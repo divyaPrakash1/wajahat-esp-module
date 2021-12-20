@@ -1,0 +1,121 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.dialog-container {
+  max-width: 100%;
+  .content {
+    margin: 0px 168px;
+    &.xs,
+    .sm {
+      margin: 0px;
+    }
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 12px;
+    }
+
+    .desc {
+      margin: 0 0 24px;
+      font-size: $f16;
+    }
+
+    .action-btns {
+      .action-btn {
+        height: 48px;
+      }
+      margin-bottom: 24px;
+      &.xs,
+      .sm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        background: #fff;
+        margin-bottom: 0px;
+      }
+    }
+    .form {
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      &.xs,
+      .sm {
+        margin: 20px 0px 70px 0px;
+      }
+
+      margin: 20px 0px 16px 0px;
+      mat-form-field {
+        margin-bottom: 24px;
+        .material-icons {
+          color: $main-color;
+          margin-top: -5px;
+        }
+      }
+    }
+  }
+
+  mat-icon {
+    color: $gray;
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+/*------------------rtl-css--------------------*/
+::ng-deep body.rtl h1#mat-dialog-title-1 {
+  text-align: right;
+}
+::ng-deep body.rtl p.desc {
+  text-align: right;
+}
+::ng-deep body.rtl input#accountLink {
+  text-align: right;
+  padding-right: 10px;
+    margin-top: -4px;
+}
+::ng-deep body.rtl span.material-icons.ng-tns-c106-19 {
+  float: left;
+  position: absolute;
+}
+::ng-deep body.rtl mat-form-field-subscript-wrapper {
+  right: 0;
+  text-align: right;
+}
+::ng-deep body.rtl .mat-form-field.custom .mat-form-field-label {
+  right: -5px;
+  left: auto;
+}
+
+::ng-deep body.rtl .dialog-container.ng-star-inserted {
+  position: relative;
+}
+::ng-deep body.rtl .cross-div {
+  height: 20px;
+}
+::ng-deep body.rtl mat-icon.mat-icon.notranslate.clickable.cross {
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+::ng-deep body.rtl .mat-form-field-subscript-wrapper.ng-tns-c106-41 {
+  right: 0;
+}
+/*------------------rtl-css--------------------*/

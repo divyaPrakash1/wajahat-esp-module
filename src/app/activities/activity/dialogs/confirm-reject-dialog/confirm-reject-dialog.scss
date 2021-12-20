@@ -1,0 +1,18 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+.confirm-reject-container {
+  .activity-description {
+    font-weight: bold;
+    margin: 12px 0px;
+    font-size: $f16;
+  }
+  .reject-type {
+    margin: 12px 0px;
+  }
+  .action-btn {
+    margin-top: 12px;
+    button {
+      width: 252px;
+    }
+  }
+}

@@ -1,0 +1,219 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.mine-activities-conatiner {
+  xcdrs-carousel {
+    margin: 24px 0px;
+  }
+  .fill-bg {
+    background-color: white;
+    border-radius: 5px;
+    height: 200px;
+    @include flex-center;
+  }
+
+  .actions-container {
+    margin: 12px 0px;
+    xcdrs-search-field {
+      width: 100%;
+      max-width: 320px;
+    }
+    .defult-filter {
+      background-color: $primary-color;
+      border-radius: 21px;
+      padding: 4px 4px;
+      font-size: 10px;
+      position: relative;
+      top: -4px;
+      right: -39px;
+      height: 8px;
+    }
+    .filter-icon-container,
+    .more-icon-container {
+      cursor: pointer;
+    }
+
+    .filter-icon-container {
+      margin: 10px 8px 0px 16px;
+    }
+
+    .more-icon-container {
+      margin: 5px 0px 0px 0px;
+      color: $gray;
+    }
+    .add-action-btn {
+      width: 194px;
+      height: 48px;
+    }
+  }
+  .filter-container {
+    width: 100%;
+
+    .filter-list {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      margin: 4px 0 12px 0;
+      padding: 0;
+      list-style: none;
+
+      .filter-list-item {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        border-radius: 4px;
+        background: $primary-color;
+        color: white;
+        font-size: $f14;
+        font-weight: normal;
+
+        .icon-close {
+          margin-left: 4px;
+          cursor: pointer;
+        }
+      }
+
+      .clear-filter-item {
+        height: 24px;
+        line-height: 24px;
+        font-size: $f16;
+        font-weight: 600;
+        margin-left: 16px;
+        color: $primary-color;
+        cursor: pointer;
+      }
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0px;
+  }
+  xcdrs-activities-group {
+    margin: 8px 0px;
+  }
+  .small-spinner {
+    width: 100%;
+    @include flex-center;
+    margin-bottom: 10px;
+  }
+  .group-list-container {
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  .ungrouped-container {
+    mat-table {
+      padding: 0px;
+      margin-bottom: 52px;
+      border-radius: 4px;
+    }
+  }
+
+  mat-card {
+    margin: 4px 0px;
+    padding: 16px 0px;
+    mat-label {
+      font-size: $f14;
+    }
+
+    .more-duedate-icon-container {
+      margin-right: -15px;
+      color: $gray;
+    }
+
+    mat-card-content {
+      padding: 0px 16px;
+    }
+  }
+
+  .fab-container {
+    margin: 8px;
+    .mat-fab {
+      border-radius: 20%;
+      width: 48px;
+      height: 48px;
+      position: fixed;
+      bottom: 8px;
+      z-index: 20;
+      ::ng-deep .mat-button-wrapper {
+        line-height: 0px;
+        padding: 0px;
+      }
+    }
+  }
+}
+::ng-deep .mat-menu-panel {
+  .mat-menu-item {
+    padding: 0 24px !important;
+
+    .mat-checkbox-layout .mat-checkbox-label {
+      margin-right: 35px;
+    }
+    .material-icons {
+      color: $light-gray;
+    }
+    .mat-checkbox-frame,
+    .mat-radio-outer-circle {
+      border-color: $light-gray;
+    }
+
+    &.disabled-item {
+      color: $main-color;
+      font-size: $f16;
+      font-weight: bold;
+      cursor: none;
+      pointer-events: none;
+    }
+  }
+}
+
+::ng-deep .schedule-menu.mat-menu-panel {
+  .mat-menu-content:not(:empty) {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .mat-menu-item {
+    font-weight: bold;
+    &:not(.last) {
+      border-bottom: 1px solid #dadadb;
+    }
+  }
+}
+
+// .main-container .spinner-main-container{ 
+//   position: relative;
+//   height: 100vh;
+// }
+.main-container .spinner-main-container{ 
+  position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: #ffffff9e;
+}
+.spinner-main-container .spinner-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  // right: 0;
+  // bottom: 0;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  @include flex-center;
+  z-index: 999;
+  height: 100%;
+  // background-color: rgba(255, 255, 255, 0.7);
+}
+
+
+::ng-deep body.rtl .mine-activities-conatiner .actions-container .filter-icon-container {
+  margin: 10px 16px 0px 8px !important;
+}
+::ng-deep body.rtl .actions-table .mat-header-cell.description {
+  padding-right: 0 !important;
+}

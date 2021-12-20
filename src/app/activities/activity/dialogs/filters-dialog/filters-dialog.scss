@@ -1,0 +1,310 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.Filters-dialog-container {
+  max-width: 100%;
+  .content {
+    margin: 0px 96px;
+    &.xs,
+    .sm {
+      margin: 0px;
+    }
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 12px;
+    }
+
+    .action-btns {
+      .action-btn {
+        height: 48px;
+      }
+      margin-bottom: 24px;
+      margin-top: 40px;
+      &.xs,
+      .sm {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 24px;
+        background: #fff;
+        margin-bottom: 0px;
+      }
+    }
+    .Filters-form {
+      .checkbox-container {
+        margin: 8px 0px;
+        &.following-checkbox,
+        &.backlog-important {
+          margin-bottom: 28px;
+        }
+        mat-checkbox {
+          font-size: $f16;
+          font-weight: bold;
+
+          ::ng-deep .mat-checkbox-frame {
+            border-width: 1px;
+            border-color: $light-gray !important;
+          }
+          ::ng-deep .mat-checkbox-background,
+          ::ng-deep .mat-checkbox-label,
+          ::ng-deep .mat-checkbox-frame {
+            width: 24px;
+            height: 24px;
+          }
+
+          ::ng-deep .mat-checkbox-label {
+            margin-left: 12px;
+            line-height: 22px;
+          }
+        }
+      }
+
+      .status-container {
+        margin-bottom: 24px;
+      }
+      /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      .sub-title {
+        font-size: $f16;
+        font-weight: bold;
+        margin-top: 26px;
+      }
+      &.xs,
+      .sm {
+        margin: 20px 0px 70px 0px;
+      }
+
+      margin: 20px 0px 16px 0px;
+      mat-form-field {
+        margin-bottom: 8px;
+      }
+
+      mat-form-field.select-with-chips {
+        margin-bottom: 24px;
+
+        ::ng-deep .mat-form-field-wrapper {
+          height: auto !important;
+          min-height: 50px;
+
+          padding-bottom: 10px;
+          ::ng-deep .mat-form-field-infix {
+            ::ng-deep .mat-select-arrow-wrapper {
+              vertical-align: top;
+            }
+          }
+        }
+      }
+      mat-form-field.due-date-field {
+        max-width: 360px;
+        ::ng-deep .mat-form-field-wrapper {
+          ::ng-deep .mat-form-field-suffix {
+            mat-datepicker-toggle {
+              .mat-icon-button {
+                margin-right: $f14;
+                svg {
+                  width: 24px;
+                  height: 24px;
+                  fill: $main-color;
+                  // margin-top: -8px;
+                }
+              }
+              .date-clear-btn {
+                color: $main-color;
+                font-weight: bold;
+                vertical-align: top;
+                margin-top: 0px;
+                margin-left: 12px;
+              }
+            }
+          }
+        }
+      }
+
+      .filter-btn {
+        height: 32px;
+        line-height: 24px;
+        border-radius: 4px;
+        border: solid 1px $primary-color;
+        color: $primary-color;
+        font-size: $f14;
+        font-weight: bold;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        padding: 0 12px;
+        span {
+          vertical-align: middle;
+        }
+        &.active {
+          background-color: $primary-color;
+          color: white;
+        }
+      }
+    }
+  }
+
+  mat-icon {
+    color: $gray;
+  }
+
+  .mat-chip.mat-standard-chip {
+    background-color: #f2f2f2;
+    color: #9e9e9e;
+    border-radius: 4px;
+    text-transform: capitalize;
+
+    &.hidden {
+      display: none;
+    }
+  }
+}
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+::ng-deep .mat-dialog-container{
+  height:auto !important;
+}
+
+
+
+
+/*------------------rtl-css--------------------*/
+::ng-deep body.rtl h1{
+  text-align: right;
+}
+::ng-deep body.rtl .mat-option-text {
+  text-align: right;
+  
+  padding-right: 20px;
+}
+::ng-deep body.rtl .custom-options-list mat-pseudo-checkbox.mat-pseudo-checkbox.mat-option-pseudo-checkbox {
+  float: right !important;
+  position: absolute;
+  right: 0;
+}
+::ng-deep body.rtl form.Filters-form.ng-pristine.ng-invalid.ng-touched {
+  text-align: right !IMPORTANT;
+  float: right !important;
+  width: 100%;
+  position: relative;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form mat-form-field {
+  margin-bottom: 8px;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form .sub-title {
+  margin-top: 80px;
+}
+::ng-deep body.rtl .mat-form-field-suffix.ng-tns-c106-17 {
+  float: left;
+  position: absolute;
+  top: 17px;
+  left: 5px;
+}
+::ng-deep body.rtl .status-container.ng-star-inserted {
+  // justify-content: flex-end !important;
+  flex-direction: row-reverse !important;
+  display: flex !important;
+}
+::ng-deep body.rtl .mat-chip-list-wrapper {
+  justify-content: flex-end;
+}
+::ng-deep body.rtl .mat-form-field.custom .mat-form-field-label {
+  right: -5px;
+  left: auto !important;
+}
+::ng-deep body.rtl .checkbox-container {
+  flex: 1 1 30% !important;
+  place-content: center flex-end !important;
+  // width: 339px !important;
+}
+::ng-deep body.rtl form.Filters-form {
+  text-align: right;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form mat-form-field.due-date-field {
+  max-width: 100% !important;
+}
+::ng-deep body.rtl .mat-form-field-infix input{
+  text-align: right;
+  padding-right: 10px;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form .filter-btn {
+  margin-right: 0;
+  margin-left: 8px;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form .filter-btn {
+  margin-left: 8px;
+  margin-right: 0 !important;
+}
+::ng-deep body.rtl .Filters-dialog-container .content .Filters-form mat-form-field.select-with-chips .mat-form-field-wrapper .mat-form-field-infix .mat-select-arrow-wrapper {
+  vertical-align: middle !important;
+}
+::ng-deep body.rtl .Filters-dialog-container{
+  position: relative;
+}
+::ng-deep body.rtl .cross-div {
+  height: 20px;
+}
+::ng-deep body.rtl mat-icon.mat-icon.notranslate.clickable.cross {
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+
+::ng-deep body.rtl .mat-form-field .mat-select-trigger {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  height: auto;
+}
+::ng-deep body.rtl .mat-form-field .mat-select-trigger .mat-select-arrow-wrapper {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translate(-50%,-50%);
+}
+::ng-deep body.rtl .mat-form-field .mat-select-trigger .mat-select-value {
+  max-width: inherit;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: auto;
+}
+/*------------------rtl-css--------------------*/
+
+::ng-deep body.rtl .checkbox-container label.mat-checkbox-layout .mat-checkbox-inner-container {
+  width: 24px;
+  height: 24px;
+  margin-right: 0 !important;
+  margin-left: 8px;
+}
+::ng-deep body.rtl .checkbox-container label.mat-checkbox-layout span.mat-checkbox-label {
+  width: auto !important;
+}
+::ng-deep body.rtl .checkbox-container label.mat-checkbox-layout {
+  flex-direction: row-reverse;
+}
+::ng-deep body.rtl .Filters-dialog-container .mat-form-field-suffix {
+  position: absolute !important;
+  top: 19px !important;
+}
+button.mat-focus-indicator.mat-icon-button.mat-button-base {
+  top: -4px;
+}

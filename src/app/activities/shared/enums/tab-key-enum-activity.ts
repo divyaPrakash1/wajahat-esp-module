@@ -1,0 +1,20 @@
+export enum TabKeyEnum {
+  Profile = "profile",
+  Members = "Members",
+  Feed = "idenedi",
+  Library = "tlibrary",
+  Calendar = "tevents",
+  Boards = "isp",
+  ContactCard = "bcard",
+  ScoreCard = "Score Card",
+  Requests = "esp",
+  Dashboards = "kpowerbi",
+  MiM = "ssa",
+  Activities = "ss",
+  Blog = "blogs",
+  Vacancies = "higher",
+  Messages = "messages",
+  Intajy = "Intajy",
+  EngagementPro = "Engpro",
+  Custom = "custom"
+}

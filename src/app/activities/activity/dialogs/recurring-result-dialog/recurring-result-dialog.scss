@@ -1,0 +1,123 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+
+.close-dialog-container {
+  max-width: 100%;
+  .content {
+    // margin: 0px 192px;
+    &.xs,
+    .sm {
+      margin: 0px;
+      h1 {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+      .progress,
+      .results-container {
+        margin-left: 24px;
+        margin-right: 24px;
+      }
+    }
+    h1 {
+      padding-top: 0px;
+      padding-bottom: 24px;
+      padding-left: 192px;
+      padding-right: 192px;
+      margin: 0;
+    }
+
+    .progress {
+      background-color: #f6f7f9;
+      padding-bottom: 24px;
+      box-shadow: none !important;
+      margin-left: 192px;
+      margin-right: 192px;
+      margin-bottom: 24px;
+    }
+    .results-container {
+      margin-left: 192px;
+      margin-right: 192px;
+      margin-bottom: 0px;
+      .result-record {
+        padding: 12px;
+        &:not(.last) {
+          border-bottom: 1px solid #dadadb;
+        }
+        border-radius: 0;
+        box-shadow: none !important;
+        .dueDate {
+          font-weight: bold;
+        }
+        .dueDate,
+        .target,
+        .day {
+          font-size: $f14;
+        }
+        mat-label {
+          padding-right: 6px;
+        }
+      }
+    }
+  }
+
+  .action-btns {
+    border-top: 1px solid #dadadb;
+    padding-top: 16px;
+    .action-btn {
+      height: 48px;
+    }
+    margin-bottom: 0px;
+    padding-left: 192px;
+    padding-right: 192px;
+
+    &.xs,
+    .sm {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 24px;
+      background: #fff;
+      margin-bottom: 0px;
+    }
+  }
+
+  mat-icon,
+  mat-label {
+    color: $gray;
+  }
+
+  .close-ic {
+    margin-right: 24px;
+  }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+::ng-deep .large-dialog .mat-dialog-container {
+  padding: 24px 0px;
+}
+
+::ng-deep .small-dialog .mat-dialog-container {
+  padding: 0px;
+}
+
+.fill-bg {
+  background-color: white;
+  border-radius: 5px;
+  height: 450px;
+  @include flex-center;
+}
+
+xcdrs-detailed-panel-placeholder {
+  margin: 14px auto;
+}

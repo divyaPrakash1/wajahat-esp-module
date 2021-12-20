@@ -1,0 +1,20 @@
+<div
+  class="confirm-reject-container"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+>
+  <div class="activity-description">{{data.form.description}}</div>
+  <div class="reject-type">Activity is rejected successfully.</div>
+  <div class="action-btn">
+    <button
+      fxFlex
+      (click)="submit()"
+      class="action-btn gradient-btn submit-btn"
+      mat-flat-button
+      color="primary"
+    >
+      Ok
+    </button>
+  </div>
+</div>

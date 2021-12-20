@@ -1,0 +1,545 @@
+<xcdrs-activity-size-detector></xcdrs-activity-size-detector>
+
+<div
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="start stretch"
+  *ngIf="isEngProDataLoaded && dataLoaded && !isLoading"
+  class="new-assigned-cards-container"
+>
+  <div fxFlex>
+    <xcdrs-breadcrumbs>
+      <a routerLink="/pages/activities"
+      [queryParams]="{fromTab: fromTab, teamId: teamId, selectedTab: scoreCardSelectedTab, SourceSystemId: SourceSystemId, SourceTenantId: SourceTenantId, SourceObjectTypeId: SourceObjectTypeId, SourceObjectId: SourceObjectId}"
+      class="clickable">{{'Activities' | translate}}</a>
+      <a routerLink="/pages/activities" class="clickable" 
+      [queryParams]="{activeTab:1, fromTab: fromTab, teamId: teamId, selectedTab: scoreCardSelectedTab, SourceSystemId: SourceSystemId, SourceTenantId: SourceTenantId, SourceObjectTypeId: SourceObjectTypeId, SourceObjectId: SourceObjectId}" *ngIf="listType == 'reported'">{{'Following' | translate}}</a>
+      <span *ngIf="listType == 'assigned'"
+        >{{'New-Activities-Assigned-To-Me' | translate }} ({{ newList.length | numberPipe }})</span
+      >
+
+      <span *ngIf="listType == 'reported'"
+        >{{'New-Activities-Reported-To-Me' | translate }} ({{ newList.length | numberPipe }})</span
+      >
+    </xcdrs-breadcrumbs>
+  </div>
+
+  <div
+    class="mine-activities-conatiner"
+    fxLayout="column"
+    fxLayoutAlign="start stretch"
+    fxFlex
+  >
+    <!-- start crad slider & srearch-->
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start start"
+      class="actions-container"
+    >
+      <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+        <xcdrs-search-field (search)="onSearch($event)"></xcdrs-search-field>
+      </div>
+      <div fxFlex="nogrow">
+        <!-- <button
+          *ngIf="listType == 'assigned'"
+          fxFlex="nogrow"
+          fxHide.xs
+          fxHide.sm
+          class="add-action-btn gradient-btn"
+          mat-flat-button
+          color="primary"
+          type="submit"
+          (click)="openAddNewDialog('new')"
+        >
+          <span>Add Activity</span> -->
+        <!-- <span *ngIf="listType == 'reported'">Assign Activity</span> -->
+        <!-- </button> -->
+      </div>
+    </div>
+    <!-- end card slider & search-->
+
+    <div
+      fxFlex
+      fxLayout="column"
+      fxLayoutAlign="start stretch"
+      class="cards-container"
+      *ngIf="newList.length > 0"
+    >
+      <!--start group table-->
+      <div
+        fxFlex
+        fxHide.xs
+        fxHide.sm
+        fxShow.gt-md
+        fxShow.lt-xl
+        fxShow.lg
+        fxShow.lt-lg
+        fxShow.md
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        *ngIf="!! dataSource && dataSource.data.length > 0"
+      >
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <!-- Description Column -->
+          <ng-container matColumnDef="description">
+            <mat-header-cell
+              *matHeaderCellDef
+              class="description"
+              [ngClass]="{
+                'extend-description':
+                  isAllAssignedByLoggedIn && listType == 'assigned'
+              }"
+            >
+              {{'Activity' | translate}}
+            </mat-header-cell>
+            <mat-cell
+              *matCellDef="let element"
+              class="description"
+              [ngClass]="{
+                'extend-description':
+                  isAllAssignedByLoggedIn && listType == 'assigned'
+              }"
+            >
+              <!-- <span *ngIf="!element.isHover"> -->
+                {{ element.description | textTruncate: 45 }}
+                <!-- </span>
+              <span *ngIf="element.isHover"> {{ element.description }} </span> -->
+            </mat-cell>
+          </ng-container>
+
+          <!-- Due Date Column -->
+          <ng-container matColumnDef="dueDate">
+            <mat-header-cell
+              *matHeaderCellDef
+              class="dueDate"
+              [ngClass]="{
+                'extend-duedate':
+                  isAllAssignedByLoggedIn && listType == 'assigned'
+              }"
+              >{{'Due-Date' | translate}}</mat-header-cell
+            >
+            <mat-cell
+              *matCellDef="let element"
+              class="dueDate"
+              [ngClass]="{
+                'extend-duedate':
+                  isAllAssignedByLoggedIn && listType == 'assigned'
+              }"
+            >
+              <span
+                *ngIf="element.dueDateLabel == 'Overdue'"
+                class="over-due"
+                >{{ element.dueDate | datePipe : "medium"}}</span
+              >
+              <span *ngIf="element.dueDateLabel != 'Overdue'">{{
+                element.dueDate | datePipe : "medium"
+              }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <!-- Job Column -->
+          <ng-container matColumnDef="tacticTitle">
+            <mat-header-cell *matHeaderCellDef class="tacticTitle"
+              >{{'Job' | translate}}</mat-header-cell
+            >
+            <mat-cell *matCellDef="let element" class="tacticTitle">
+              {{ element.tacticTitle | textTruncate: 30 }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Assigned By Column-->
+          <div *ngIf="!isAllAssignedByLoggedIn && listType == 'assigned'">
+            <ng-container matColumnDef="assignedBy">
+              <mat-header-cell *matHeaderCellDef class="assignedBy"
+                >{{'Assigned-By' | translate}}</mat-header-cell
+              >
+              <mat-cell *matCellDef="let element" class="assignedBy">
+                <span *ngIf="loggedInUserId != element.createdBy.UserId">{{
+                  element.createdBy.UserFirstName +
+                    " " +
+                    element.createdBy.UserLastName
+                }}</span>
+              </mat-cell>
+            </ng-container>
+          </div>
+
+          <!-- <ng-container matColumnDef="requestNumber">
+            <mat-header-cell *matHeaderCellDef class="assignedBy"
+              >Request#</mat-header-cell
+            >
+            <mat-cell *matCellDef="let element" class="assignedBy">
+              <span> {{ element.requestNumber }} </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="requestName">
+            <mat-header-cell *matHeaderCellDef class="assignedBy"
+              >Request Name</mat-header-cell
+            >
+            <mat-cell *matCellDef="let element" class="assignedBy">
+              <span> {{ element.requestName }} </span>
+            </mat-cell>
+          </ng-container> -->
+
+          <!-- Assigned To Column-->
+          <div *ngIf="listType == 'reported'">
+            <ng-container matColumnDef="assignedBy">
+              <mat-header-cell *matHeaderCellDef class="assignedBy"
+                >{{'Assigned-To' | translate}}</mat-header-cell
+              >
+              <mat-cell *matCellDef="let element" class="assignedBy">
+                <span>{{
+                  element.owner.UserFirstName + " " + element.owner.UserLastName
+                }}</span>
+              </mat-cell>
+            </ng-container>
+          </div>
+
+          <!-- Flag Column-->
+          <ng-container matColumnDef="flag">
+            <mat-header-cell *matHeaderCellDef class="flag"></mat-header-cell>
+            <mat-cell *matCellDef="let element" class="flag">
+              <svg
+                *ngIf="element.important"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" fill-rule="evenodd">
+                  <path
+                    d="M0 0L24 0 24 24 0 24z"
+                    transform="matrix(1 0 0 -1 0 24)"
+                  />
+                  <path
+                    fill="#CDD0D8"
+                    d="M14 6l-.72-1.45c-.17-.34-.52-.55-.9-.55H6c-.55 0-1 .45-1 1v15c0 .55.45 1 1 1s1-.45 1-1v-6h5l.72 1.45c.17.34.52.55.89.55H19c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1h-5z"
+                  />
+                </g>
+              </svg>
+            </mat-cell>
+          </ng-container>
+          <!--actions-->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef class="actions">
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="actions">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="accept-btn"
+                (click)="$event.stopPropagation(); doAcceptAction(element)"
+                [ngClass]="{ 'approve-btn': listType == 'reported' }"
+                *ngIf="!element.isHover"
+              >
+                <span class="material-icons"> check_circle_outline </span>
+                <span class="accept-btn-lbl" *ngIf="listType == 'assigned' && !element.isShared"
+                  >{{'Accept' | translate }}</span
+                >
+                <span class="accept-btn-lbl" *ngIf="listType == 'reported' && !element.isShared"
+                  >{{'Approve' | translate }}</span
+                >
+
+                <span class="accept-btn-lbl" *ngIf="element.isShared"
+                >{{'Claim' | translate }}</span
+              >
+              </button>
+
+              <button
+                mat-flat-button
+                color="primary"
+                class="gradient-btn accept-btn"
+                [ngClass]="{ 'approve-btn': listType == 'reported' }"
+                (click)="$event.stopPropagation();doAcceptAction(element)"
+                *ngIf="element.isHover"
+              >
+                <span class="material-icons"> check_circle_outline </span>
+                <span class="accept-btn-lbl" *ngIf="listType == 'assigned' && !element.isShared"
+                  >{{'Accept' | translate }}</span
+                >
+                <span class="accept-btn-lbl" *ngIf="listType == 'reported' && !element.isShared"
+                  >{{'Approve' | translate }}</span
+                >
+                <span class="accept-btn-lbl" *ngIf="element.isShared"
+                >{{'Claim' | translate }}</span
+              >
+              </button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="hover">
+            <mat-header-cell *matHeaderCellDef class="hover"></mat-header-cell>
+            <mat-cell *matCellDef="let element" class="hover">
+              {{ element.isHover }}</mat-cell
+            >
+          </ng-container>
+
+          <div
+            *ngIf="
+              (!isAllAssignedByLoggedIn && listType == 'assigned') ||
+              listType == 'reported'
+            "
+          >
+            <mat-header-row
+              *matHeaderRowDef="[
+                'description',
+                'dueDate',
+                'tacticTitle',
+                'assignedBy',
+                'flag',
+                'actions'
+              ]"
+              [ngClass]="{ 'first-row': isFirstRow == true }"
+            ></mat-header-row>
+            <mat-row
+              *matRowDef="
+                let row;
+                columns: [
+                  'description',
+                  'dueDate',
+                  'tacticTitle',
+                  'assignedBy',
+                  'flag',
+                  'actions',
+                  'hover'
+                ]
+              "
+              class="clickable table-row"
+              (click)="openActivityDetails(row)"
+              [ngClass]="{ 'row-before': row.isRowBefore == true }"
+              (mouseover)="changePreStyle(row.id, dataSource)"
+              (mouseout)="resetPreStyle(dataSource)"
+            ></mat-row>
+          </div>
+
+          <div *ngIf="isAllAssignedByLoggedIn && listType == 'assigned'">
+            <mat-header-row
+              *matHeaderRowDef="[
+                'description',
+                'dueDate',
+                'tacticTitle',
+                'flag',
+                'actions'
+              ]"
+              [ngClass]="{ 'first-row': isFirstRow == true }"
+            ></mat-header-row>
+            <mat-row
+              *matRowDef="
+                let row;
+                columns: [
+                  'description',
+                  'dueDate',
+                  'tacticTitle',
+                  'flag',
+                  'actions',
+                  'hover'
+                ]
+              "
+              class="clickable table-row"
+              (click)="openActivityDetails(row)"
+              [ngClass]="{ 'row-before': row.isRowBefore == true }"
+              (mouseover)="changePreStyle(row.id, dataSource)"
+              (mouseout)="resetPreStyle(dataSource)"
+            ></mat-row>
+          </div>
+        </mat-table>
+
+        <mat-paginator [hidePageSize]="true" [pageSize]="10"></mat-paginator>
+      </div>
+      <div
+        fxFlex
+        fxShow.xs
+        fxShow.sm
+        fxHide.gt-md
+        fxHide.lt-xl
+        fxHide.lg
+        fxHide.lt-lg
+        fxHide.md
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+      >
+        <mat-card
+          *ngFor="let activity of newList"
+          fxFlex
+          fxLayout="column"
+          fxLayoutAlign="space-around stretch"
+        >
+          <mat-card-header class="card-header">
+            <mat-card-title
+              class="clickable"
+              (click)="openActivityDetails(activity)"
+            >
+              {{ activity.description | textTruncate: 60 }}</mat-card-title
+            >
+          </mat-card-header>
+          <mat-card-content
+            fxFlex
+            fxLayout="column"
+            fxLayoutAlign="space-around stretch"
+          >
+            <p
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              ng-if="
+                (!isAllAssignedByLoggedIn && listType == 'assigned') ||
+                listType == 'reported'
+              "
+            >
+              <mat-label fxFlex="35" *ngIf="listType == 'assigned'"
+                >{{'Assigned-By' | translate }}:
+              </mat-label>
+              <span *ngIf="listType == 'assigned'">
+                {{
+                  activity.createdBy.UserFirstName +
+                    " " +
+                    activity.createdBy.UserLastName
+                }}
+              </span>
+
+              <mat-label fxFlex="35" *ngIf="listType == 'reported'"
+                >{{'Assigned-To' | translate }}:
+              </mat-label>
+              <span *ngIf="listType == 'reported'">
+                {{
+                  activity.owner.UserFirstName +
+                    " " +
+                    activity.owner.UserLastName
+                }}
+              </span>
+            </p>
+            <p
+              fxFlex
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              *ngIf="activity.parentBoardId != null"
+            >
+              <mat-label fxFlex="35">{{'Project' | translate}}: </mat-label>
+              <span> {{ activity.parentBoardName }} </span>
+            </p>
+            <p fxFlex fxLayout="row" fxLayoutAlign="start center">
+              <mat-label fxFlex="35">{{'Due-Date' | translate}}: </mat-label>
+              <span
+                *ngIf="activity.dueDateLabel == 'Overdue'"
+                class="over-due"
+                >{{ activity.dueDate | datePipe: "medium"}}</span
+              >
+              <span *ngIf="activity.dueDateLabel != 'Overdue'">{{
+                activity.dueDate | datePipe: "medium"
+              }}</span>
+            </p>
+
+            <p fxFlex fxLayout="row" fxLayoutAlign="end center">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="accept-btn"
+                (click)="$event.stopPropagation();doAcceptAction(activity)"
+              >
+                <span class="material-icons"> check_circle_outline </span>
+                <span class="accept-btn-lbl" *ngIf="listType == 'assigned' && !activity.isShared"
+                  >{{'Accept' | translate }}</span
+                >
+                <span class="accept-btn-lbl" *ngIf="listType == 'reported'  && !activity.isShared"
+                  >{{'Approve' | translate }}</span
+                >
+                <span class="accept-btn-lbl" *ngIf="activity.isShared"
+                >{{'Claim' | translate }}</span
+              >
+              </button>
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="fill-bg"
+        *ngIf="
+          !isLoading && !isError && newList.length === 0 && !isSearchMode()
+        "
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="''"
+          [title]="'No-Activities-Available' | translate"
+          [subTitle]="'It-Seems-There-Is-No-Activites-Yet' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+      <div
+        fxFlex
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="fill-bg"
+        *ngIf="!isLoading && isError && newList.length == 0"
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="'../../../assets/images/ic_error.png'"
+          [title]="'EMPTY-SCREEN.OOP-SOMETHING-WENT-WRONG' | translate"
+          [subTitle]="'EMPTY-SCREEN.CHECK-YOUR-INTERNET-CONNECTION' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+      <div
+        fxFlex
+        fxShow.xs
+        fxShow.sm
+        fxHide.gt-md
+        fxHide.lt-xl
+        fxHide.lg
+        fxHide.lt-lg
+        fxHide.md
+        fxLayout="column"
+        fxLayoutAlign="start stretch"
+        class="fill-bg"
+        *ngIf="!isLoading && !isError && newList.length == 0 && isSearchMode()"
+      >
+        <xcdrs-detailed-panel-placeholder
+          [imagePath]="'../../../assets/images/ic_no_result.png'"
+          [title]="'Sorry-We-Could-Not-Find-Any-Aesult' | translate "
+          [subTitle]="'Maybe-Your-Search-Was-Too-Specific' | translate"
+        >
+        </xcdrs-detailed-panel-placeholder>
+      </div>
+      <!-- end group table-->
+    </div>
+
+    <!-- end groups accordion-->
+  </div>
+  <!-- <div
+    fxFlex
+    fxShow.xs
+    fxShow.sm
+    fxHide.gt-md
+    fxHide.lt-xl
+    fxHide.lg
+    fxHide.lt-lg
+    fxHide.md
+    fxLayout="column"
+    fxLayoutAlign="space-around end"
+    class="fab-container"
+  >
+    <button
+      mat-fab
+      color="primary"
+      aria-label="create fab"
+      fxFlex="nogrow"
+      class="gradient-btn"
+      type="submit"
+      (click)="openAddNewDialog('new')"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div> -->
+</div>
+
+<div
+  fxFlex
+  fxLayout="column"
+  *ngIf="!isEngProDataLoaded || (!dataLoaded && isLoading)"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>

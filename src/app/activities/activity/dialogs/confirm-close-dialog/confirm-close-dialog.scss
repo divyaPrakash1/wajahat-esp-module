@@ -1,0 +1,49 @@
+@import "../../../theme/styles/variables";
+@import "../../../theme/styles/mixins";
+.confirm-close-container {
+  .activity-description {
+    font-weight: bold;
+    margin: 12px 0px;
+    font-size: $f16;
+  }
+  .close-type {
+    margin: 12px 0px;
+  }
+  .action-btns {
+    .action-btn {
+      margin-top: 12px;
+      height: 48px;
+      &.cancel-btn {
+        margin-right: 12px;
+      }
+    }
+    margin-bottom: 24px;
+    &.xs,
+    .sm {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 24px;
+      background: #fff;
+      margin-bottom: 0px;
+    }
+  }
+  // .action-btn {
+  //   margin-top: 12px;
+  //   button {
+  //     width: 252px;
+  //   }
+  // }
+}
+
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include flex-center;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+}

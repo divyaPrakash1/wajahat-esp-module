@@ -1,0 +1,215 @@
+<div class="fab-container">
+  <button mat-fab class="fab-toggler" (click)="onToggleFab()">
+    <i class="material-icons icon">add</i>
+  </button>
+  <div>
+    <button
+      *ngFor="let btn of buttons"
+      mat-mini-fab
+      class="gradient-btn fab-secondary"
+      color="secondary"
+      (click)="doFabAction(btn)"
+    >
+      <span class="btn-lbl">{{ btn.name }}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        *ngIf="btn.id == 0"
+      >
+        <defs>
+          <filter
+            id="a4qdhyfl7a"
+            width="196.1%"
+            height="188.7%"
+            x="-48.1%"
+            y="-44.4%"
+            filterUnits="objectBoundingBox"
+          >
+            <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1" />
+            <feGaussianBlur
+              in="shadowOffsetOuter1"
+              result="shadowBlurOuter1"
+              stdDeviation="20"
+            />
+            <feColorMatrix
+              in="shadowBlurOuter1"
+              result="shadowMatrixOuter1"
+              values="0 0 0 0 0.777579312 0 0 0 0 0.787937264 0 0 0 0 0.822463768 0 0 0 0.6 0"
+            />
+            <feMerge>
+              <feMergeNode in="shadowMatrixOuter1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g
+          fill="none"
+          fill-rule="evenodd"
+          filter="url(#a4qdhyfl7a)"
+          transform="translate(-16 -12)"
+        >
+          <g>
+            <path d="M0 0L24 0 24 24 0 24z" transform="translate(16 12)" />
+            <path
+              fill="#6CB33F"
+              d="M8 15h5c.552 0 1 .448 1 1s-.448 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1zm0-4h8c.552 0 1 .448 1 1s-.448 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1zm0-4h8c.552 0 1 .448 1 1s-.448 1-1 1H8c-.552 0-1-.448-1-1s.448-1 1-1zm11-4h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-.14 0-.27.01-.4.04-.39.08-.74.28-1.01.55-.18.18-.33.4-.43.64-.1.23-.16.49-.16.77v14c0 .27.06.54.16.78s.25.45.43.64c.27.27.62.47 1.01.55.13.02.26.03.4.03h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7-.25c.41 0 .75.34.75.75s-.34.75-.75.75-.75-.34-.75-.75.34-.75.75-.75zM19 19H5V5h14v14z"
+              transform="translate(16 12)"
+            />
+          </g>
+        </g>
+      </svg>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        *ngIf="btn.id == 1"
+      >
+        <defs>
+          <filter
+            id="zy3iwd6jka"
+            width="196.1%"
+            height="188.7%"
+            x="-48.1%"
+            y="-44.4%"
+            filterUnits="objectBoundingBox"
+          >
+            <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1" />
+            <feGaussianBlur
+              in="shadowOffsetOuter1"
+              result="shadowBlurOuter1"
+              stdDeviation="20"
+            />
+            <feColorMatrix
+              in="shadowBlurOuter1"
+              result="shadowMatrixOuter1"
+              values="0 0 0 0 0.777579312 0 0 0 0 0.787937264 0 0 0 0 0.822463768 0 0 0 0.6 0"
+            />
+            <feMerge>
+              <feMergeNode in="shadowMatrixOuter1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g
+          fill="none"
+          fill-rule="evenodd"
+          filter="url(#zy3iwd6jka)"
+          transform="translate(-16 -61)"
+        >
+          <g>
+            <path d="M0 0L24 0 24 24 0 24z" transform="translate(16 61)" />
+            <path
+              fill="#6CB33F"
+              d="M16.983 12.529c-.692 0-1.346.293-1.884.83l-1.01 1.002-.135-.07c-.065-.033-.117-.062-.16-.089-1.185-.75-2.27-1.734-3.317-3.015-.367-.462-.643-.868-.858-1.261l1.01-1.011c1.13-1.125 1.13-2.662 0-3.787L9.172 3.673l-.441-.451-.309-.3-.149-.14C7.766 2.283 7.121 2 6.436 2c-.614 0-1.202.227-1.703.645l-.181.163-1.437 1.443c-.642.64-1.014 1.432-1.094 2.337-.094 1.136.13 2.187.577 3.389.711 1.911 1.77 3.673 3.333 5.543 1.907 2.267 4.2 4.057 6.819 5.317 1.45.684 2.629 1.07 3.944 1.153L17 22c1.15 0 2.134-.421 2.894-1.243l.035-.05.176-.19.308-.312.211-.204c.214-.203.395-.38.566-.559.523-.542.81-1.198.81-1.883 0-.695-.295-1.352-.835-1.884l-2.31-2.308c-.522-.54-1.175-.838-1.872-.838zM17 20l-.242-.009c-.903-.058-1.825-.335-3.154-.962-2.348-1.13-4.417-2.744-6.143-4.797-1.418-1.698-2.36-3.265-2.989-4.953-.385-1.034-.52-1.78-.458-2.526.038-.424.203-.777.513-1.085l1.404-1.41.142-.129c.094-.076.233-.129.363-.129.141 0 .287.063.433.206l.189.178.277.27.408.418 1.472 1.47c.347.346.347.612.002.956L7.147 9.57l.717 1.314c.274.5.613.999 1.047 1.546 1.194 1.46 2.437 2.59 3.814 3.461.105.065.196.117.3.171l1.445.737 2.038-2.022c.18-.18.335-.25.475-.25.134 0 .275.064.436.23l2.332 2.332c.182.179.249.33.249.469 0 .145-.071.31-.25.494l-.23.235-.496.478-.341.344-.318.343-.022.031c-.36.35-.788.516-1.343.516z"
+              transform="translate(16 61)"
+            />
+          </g>
+        </g>
+      </svg>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        *ngIf="btn.id == 2"
+      >
+        <defs>
+          <filter
+            id="n7jdutwvha"
+            width="196.1%"
+            height="188.7%"
+            x="-48.1%"
+            y="-44.4%"
+            filterUnits="objectBoundingBox"
+          >
+            <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1" />
+            <feGaussianBlur
+              in="shadowOffsetOuter1"
+              result="shadowBlurOuter1"
+              stdDeviation="20"
+            />
+            <feColorMatrix
+              in="shadowBlurOuter1"
+              result="shadowMatrixOuter1"
+              values="0 0 0 0 0.777579312 0 0 0 0 0.787937264 0 0 0 0 0.822463768 0 0 0 0.6 0"
+            />
+            <feMerge>
+              <feMergeNode in="shadowMatrixOuter1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g
+          fill="none"
+          fill-rule="evenodd"
+          filter="url(#n7jdutwvha)"
+          transform="translate(-16 -110)"
+        >
+          <g>
+            <path d="M0 0L24 0 24 24 0 24z" transform="translate(16 110)" />
+            <path
+              fill="#6CB33F"
+              d="M19.169 3.95h-.882V2.187h-1.762V3.95H7.71V2.187H5.948V3.95h-.882c-.97 0-1.763.793-1.763 1.763v14.102c0 .97.794 1.763 1.763 1.763H19.17c.97 0 1.763-.793 1.763-1.763V5.713c0-.97-.794-1.763-1.763-1.763zm0 15.865H5.066V10.12H19.17v9.695zm0-11.458H5.066V5.713H19.17v2.644z"
+              transform="translate(16 110)"
+            />
+          </g>
+        </g>
+      </svg>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        *ngIf="btn.id == 3"
+      >
+        <defs>
+          <filter
+            id="8943ana36a"
+            width="196.1%"
+            height="188.7%"
+            x="-48.1%"
+            y="-44.4%"
+            filterUnits="objectBoundingBox"
+          >
+            <feOffset dy="5" in="SourceAlpha" result="shadowOffsetOuter1" />
+            <feGaussianBlur
+              in="shadowOffsetOuter1"
+              result="shadowBlurOuter1"
+              stdDeviation="20"
+            />
+            <feColorMatrix
+              in="shadowBlurOuter1"
+              result="shadowMatrixOuter1"
+              values="0 0 0 0 0.777579312 0 0 0 0 0.787937264 0 0 0 0 0.822463768 0 0 0 0.6 0"
+            />
+            <feMerge>
+              <feMergeNode in="shadowMatrixOuter1" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <g
+          fill="none"
+          fill-rule="evenodd"
+          filter="url(#8943ana36a)"
+          transform="translate(-16 -159)"
+        >
+          <g>
+            <path d="M0 0L24 0 24 24 0 24z" transform="translate(16 159)" />
+            <path
+              stroke="#6CB33F"
+              d="M12 1.5c.504 0 .972.152 1.363.412.437.29.779.715.97 1.213l.064.19 4.594.185c.395-.002.757.151 1.027.402.228.211.391.492.454.808l.022.161L20.5 19c0 .392-.153.75-.402 1.018-.211.228-.492.391-.808.454l-.161.022-14.094.006c-.597-.087-.88-.222-1.082-.424-.103-.109-.195-.226-.267-.355l-.064-.133L3.5 5c0-.207.044-.4.122-.578.074-.18.187-.344.322-.478.153-.154.341-.279.551-.356l.162-.048 4.899-.043c.137-.632.508-1.18 1.018-1.542.404-.286.895-.455 1.426-.455zm0 .75c-.342 0-.655.14-.882.368-.228.227-.368.54-.368.882 0 .342.14.655.368.882.043.043.089.083.137.12L4.5 4.5v15h15v-15l-6.755.001c.048-.036.094-.076.137-.119.228-.227.368-.54.368-.882 0-.342-.14-.655-.368-.882-.195-.195-.453-.326-.737-.36h0zm.677 5l-.001 1.175c.576.097 1.045.336 1.372.682.117.123.215.26.293.407l.071.15-.738.26c-.08-.256-.202-.45-.359-.599-.27-.258-.668-.404-1.266-.404-.525 0-.936.11-1.222.276-.838 1.536-.477 1.675-.146 1.867l.075.046c.247.161.632.317 1.205.466 1.032.273 1.768.563 2.236.968.383.332.55.747.553 1.283-.002.38-.117.703-.33.964-.249.305-.622.522-1.079.662l-.2.055-.339 1.242h-1.388l-.001-1.154c-.684-.148-1.224-.387-1.597-.73-.125-.116-.23-.243-.315-.382l-.077-.142.748-.269c.108.268.268.474.476.633.317.243.77.38 1.409.38.56 0 .958-.106 1.228-.256.82-1.589.428-1.747.094-2.001-.252-.192-.643-.368-1.235-.515-1.02-.253-1.753-.542-2.225-.927-.385-.314-.563-.695-.563-1.173 0-.36.12-.68.335-.945.253-.312.63-.548 1.082-.7l.199-.06.328-1.259h1.377z"
+              transform="translate(16 159)"
+            />
+          </g>
+        </g>
+      </svg>
+    </button>
+  </div>
+</div>

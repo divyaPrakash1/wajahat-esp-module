@@ -1,0 +1,37 @@
+<!-- <xcdrs-size-detector></xcdrs-size-detector> -->
+<div fxFlex fxLayout="column" fxLayoutAlign="center stretch" class="activities-counters-container">
+  <div fxFlex fxLayout="row" fxLayoutAlign="start start" class="counters-container" *ngIf="!isLoading && dataLoaded">
+    <div fxFlex="30"><b class="title" [translate]="'Application.ACTIVITIES'"></b></div>
+    <div fxFlex>
+      <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+        <span class="lbl">{{ counters.open.name }}</span>
+        <span><b>{{ counters.open?.value }}</b></span>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+        <span class="lbl">{{ counters.overdue.name }}</span>
+        <span class="val overdue"><b>{{ counters.overdue?.value }}</b></span>
+      </div>
+      <!-- <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+                <span class="lbl">{{counters.planned.name}}</span>
+                <span class="val"><b>{{counters.planned.value}}</b></span>
+              </div> -->
+      <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+        <span class="lbl">{{ counters.closed.name }}</span>
+        <span><b>{{ counters.closed?.value }}</b></span>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+        <span class="lbl">{{ counters.backlog.name }}</span>
+        <span><b>{{ counters.backlog?.value }}</b></span>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="space-between start" class="counter">
+        <span class="lbl">{{ counters.totalTime.name }}</span>
+        <span><b><span class="counter-col" *ngIf="counters.totalTime?.value.hrs != null">{{ counters.totalTime.value.hrs
+              }}h&nbsp;</span><span class="counter-col" *ngIf="counters.totalTime?.value.mins != null">{{
+              counters.totalTime?.value.mins }}m</span></b></span>
+      </div>
+    </div>
+  </div>
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner [diameter]="24"></mat-spinner>
+  </div>
+</div>

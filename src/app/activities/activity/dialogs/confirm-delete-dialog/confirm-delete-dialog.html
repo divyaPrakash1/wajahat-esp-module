@@ -1,0 +1,39 @@
+<div
+  class="confirm-delete-container"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+
+>
+  <div class="activity-description">{{ data.activity.description }}</div>
+  <div class="delete-type">{{'Are-You-Sure-You-Want-To-Delete-This-Activity' | translate}}</div>
+  <div class="action-btn">
+    <button
+      fxFlex
+      (click)="cancel()"
+      class="action-btn cancel-btn"
+      mat-stroked-button
+      color="primary"
+    >
+      {{'CANCEL' | translate}}
+    </button>
+    <button
+      fxFlex
+      (click)="submit()"
+      class="action-btn gradient-btn submit-btn"
+      mat-flat-button
+      color="primary"
+    >
+      {{'FEEDBACK.CONFIRM-DIALOG.CONFIRM' | translate}}
+    </button>
+  </div>
+</div>
+<div
+  *ngIf="isLoading"
+  fxFlex
+  fxLayout="column"
+  fxLayoutAlign="space-around center"
+  class="spinner-container"
+>
+  <mat-spinner></mat-spinner>
+</div>
